@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinançaSX</title>
+
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="fsx.css">
+
+    <!-- JavaScript -->
+    <script src="fsx.js" defer></script>
+</head>
+
+<body>
+
+    <!--fundo animado -->
+    <canvas id="bg"> </canvas>
+
+    <div class="container">
+
+        <!-- Cabeçalho -->
+        <header>
+            <h1>FinançaSX</h1>
+            <div id="icon">💸</div>
+        </header>
+
+        <!-- Cards -->
+        <div class="cards">
+
+            <div class="card">
+                <div>SALDO</div>
+                <div class="value" id="saldo">R$ 0,00</div>
+            </div>
+
+            <div class="card">
+                <div>ENTRADAS</div>
+                <div class="value green" id="entradas">R$ 0,00</div>
+            </div>
+
+            <div class="card">
+                <div>SAÍDAS</div>
+                <div class="value red" id="saidas">R$ 0,00</div>
+            </div>
+<div class="card">
+ <div class="card">
+    <div>🎯 META FINANCEIRA</div>
+
+    <input
+        type="number"
+        id="metaInput"
+        placeholder="Digite sua meta"
+        min="0"
+        step="0.01"
+        style="margin-top:10px;width:100%;padding:10px;border-radius:10px;border:none;"
+    >
+
+    <button onclick="salvarMeta()" style="margin-top:10px;">
+        Salvar Meta
+    </button>
+
+    <div id="metaValor" class="value" style="margin-top:10px;">
+        R$ 0,00 / R$ 0,00
+    </div>
+
+    <progress
+        id="metaBar"
+        value="0"
+        max="100"
+        style="width:100%;margin-top:10px;">
+    </progress>
+</div>
+
+<progress
+    id="metaBar"
+    value="0"
+    max="5000"
+    style="width:100%;margin-top:10px;">
+</progress>
+
+</div>
+
+        </div>
+
+        <!-- Alertas -->
+        <div id="alert"></div>
+
+        <!-- Formulário -->
+        <div class="form">
+
+            <input
+                type="text"
+                id="desc"
+                placeholder="Descrição"
+            >
+
+            <input
+                type="number"
+                id="valor"
+                min="0"
+                step="0.01"
+                placeholder="Valor"
+            >
+
+            <select id="tipo">
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+            </select>
+
+            <select id="cat">
+                <option>Geral</option>
+                <option>Alimentação</option>
+                <option>Transporte</option>
+                <option>Lazer</option>
+                <option>Saúde</option>
+                <option>Educação</option>
+                <option>Moradia</option>
+            </select>
+
+            <button onclick="add()">
+                Adicionar
+            </button>
+
+        </div>
+
+        <!-- Lista -->
+        <div id="list"></div>
+
+        <!-- Gráfico -->
+        <canvas id="chart"></canvas>
+
+    </div>
+
+</body>
+</html>
+
