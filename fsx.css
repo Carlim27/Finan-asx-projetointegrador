@@ -1,359 +1,685 @@
-
-
-:root{
-    --bg:#0b1220;
-    --card:#111a2e;
-    --accent:#38bdf8;
-    --text:#e5e7eb;
-
-    --green:#22c55e;
-    --red:#ef4444;
-
-    --shadow:0 8px 25px rgba(0,0,0,.25);
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-}
-html{
-    scroll-behavior:smooth;
+:root {
+    --bg: #0b1220;
+    --card: #111a2e;
+    --accent: #38bdf8;
+    --text: #e5e7eb;
+    --green: #22c55e;
+    --red: #ef4444;
+    --shadow: 0 8px 25px rgba(0, 0, 0, .25);
 }
 
-body{
-    background:var(--bg);
-    color:var(--text);
-    overflow-x:hidden;
-    transition:.3s;
-    min-height:100vh;
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* =======================
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: .3s;
+}
+
+/* Impede imagens, canvas e elementos de estourarem a tela */
+img,
+canvas,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* =========================
    FUNDO ANIMADO
-======================= */
+========================= */
 
-#bg{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:0;
-    pointer-events:none;
+#bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
 
-/* =======================
+/* =========================
    CONTAINER
-======================= */
+========================= */
 
-.container{
-    position:relative;
-    z-index:1;
+.container {
+    position: relative;
+    z-index: 1;
 
-    max-width:1100px;
+    width: 100%;
+    max-width: 1100px;
 
-    margin:auto;
-    padding:30px 20px;
+    margin: 0 auto;
+
+    padding: 30px 20px;
 }
 
-/* =======================
+/* =========================
    HEADER
-======================= */
+========================= */
 
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    margin-bottom:25px;
+    gap: 15px;
+    margin-bottom: 25px;
+
+    flex-wrap: wrap;
 }
 
-header h1{
-    color:var(--accent);
-    font-size:2rem;
+header h1 {
+    color: var(--accent);
+
+    /* Se adapta ao tamanho da tela */
+    font-size: clamp(1.5rem, 5vw, 2rem);
+
+    line-height: 1.2;
+
+    overflow-wrap: anywhere;
 }
 
-#icon{
-    font-size:2rem;
+#icon {
+    font-size: clamp(1.5rem, 6vw, 2rem);
 }
 
-/* =======================
+/* =========================
    CARDS
-======================= */
+========================= */
 
-.cards{
-    display:grid;
+.cards {
+    display: grid;
 
     grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
+        repeat(auto-fit, minmax(min(220px, 100%), 1fr));
 
-    gap:15px;
+    gap: 15px;
+
+    width: 100%;
 }
 
-.card{
-    background:var(--card);
+.card {
+    background: var(--card);
 
-    padding:20px;
+    padding: 20px;
 
-    border-radius:16px;
+    border-radius: 16px;
 
-    box-shadow:var(--shadow);
+    box-shadow: var(--shadow);
 
-    transition:.25s;
+    transition: .25s;
+
+    /* Evita conteúdo estourando */
+    min-width: 0;
+
+    overflow: hidden;
 }
 
-.card:hover{
-    transform:translateY(-6px);
+.card:hover {
+    transform: translateY(-6px);
 }
 
-.value{
-    font-size:1.6rem;
-    font-weight:bold;
+.value {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
 
-    margin-top:10px;
+    font-weight: bold;
+
+    margin-top: 10px;
+
+    overflow-wrap: anywhere;
 }
 
-.green{
-    color:var(--green);
+.green {
+    color: var(--green);
 }
 
-.red{
-    color:var(--red);
+.red {
+    color: var(--red);
 }
 
-/* =======================
+/* =========================
    ALERTAS
-======================= */
+========================= */
 
-.alert{
-    margin-top:20px;
+.alert {
+    margin-top: 20px;
 
-    padding:14px;
+    padding: 14px;
 
-    border-radius:12px;
+    border-radius: 12px;
 
-    font-weight:bold;
+    font-weight: bold;
+
+    width: 100%;
+
+    overflow-wrap: anywhere;
 }
 
-.redA{
-    background:#7f1d1d;
+.redA {
+    background: #7f1d1d;
 }
 
-.yellowA{
-    background:#78350f;
+.yellowA {
+    background: #78350f;
 }
 
-/* =======================
+/* =========================
    FORMULÁRIO
-======================= */
+========================= */
 
-.form{
-    margin-top:25px;
+.form {
+    margin-top: 25px;
 
-    background:var(--card);
+    background: var(--card);
 
-    padding:20px;
+    padding: 20px;
 
-    border-radius:16px;
+    border-radius: 16px;
 
-    box-shadow:var(--shadow);
+    box-shadow: var(--shadow);
 
-    display:grid;
+    display: grid;
 
-    gap:12px;
+    gap: 12px;
+
+    width: 100%;
+
+    min-width: 0;
 }
 
 input,
 select,
-button{
-    border:none;
+button {
+    width: 100%;
 
-    border-radius:12px;
+    border: none;
 
-    padding:12px;
+    border-radius: 12px;
+
+    padding: 12px;
+
+    min-height: 44px;
+
+    font-size: 16px;
 }
 
+/* Evita que o input fique maior que a tela */
 input,
-select{
-    background:#0f172a;
+select {
+    max-width: 100%;
 
-    color:white;
+    background: #0f172a;
 
-    outline:none;
+    color: white;
+
+    outline: none;
 }
 
 input:focus,
-select:focus{
-    border:1px solid var(--accent);
+select:focus {
+    border: 1px solid var(--accent);
 }
 
-button{
-    background:var(--accent);
+button {
+    background: var(--accent);
 
-    color:white;
+    color: white;
 
-    font-weight:bold;
+    font-weight: bold;
 
-    cursor:pointer;
+    cursor: pointer;
 
-    transition:.2s;
+    transition: .2s;
 }
 
-button:hover{
-    opacity:.9;
-    transform:scale(1.02);
+button:hover {
+    opacity: .9;
+    transform: scale(1.02);
 }
 
-/* =======================
+/* =========================
    LISTA
-======================= */
+========================= */
 
-#list{
-    margin-top:25px;
+#list {
+    margin-top: 25px;
+
+    width: 100%;
 }
 
-.item{
-    background:var(--card);
+.item {
+    background: var(--card);
 
-    border-radius:14px;
+    border-radius: 14px;
 
-    box-shadow:var(--shadow);
+    box-shadow: var(--shadow);
 
-    padding:15px;
+    padding: 15px;
 
-    margin-bottom:12px;
+    margin-bottom: 12px;
 
-    display:flex;
+    display: flex;
 
-    justify-content:space-between;
+    justify-content: space-between;
 
-    align-items:center;
+    align-items: center;
 
-    gap:15px;
+    gap: 15px;
 
-    flex-wrap:wrap;
+    flex-wrap: wrap;
+
+    min-width: 0;
 }
 
-.item-info{
-    flex:1;
+.item-info {
+    flex: 1 1 180px;
+
+    min-width: 0;
+
+    overflow-wrap: anywhere;
 }
 
-.item-info strong{
-    display:block;
+.item-info strong {
+    display: block;
 
-    margin-bottom:5px;
+    margin-bottom: 5px;
+
+    overflow-wrap: anywhere;
 }
 
-.small{
-    font-size:.8rem;
+.small {
+    font-size: .8rem;
 
-    opacity:.7;
+    opacity: .7;
+
+    overflow-wrap: anywhere;
 }
 
-.item-value{
-    display:flex;
+.item-value {
+    display: flex;
 
-    align-items:center;
+    align-items: center;
 
-    gap:10px;
+    gap: 10px;
+
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
 }
 
-.delete-btn{
-    background:var(--red);
+.delete-btn {
+    background: var(--red);
 
-    width:40px;
-    height:40px;
+    width: 40px;
+    min-width: 40px;
 
-    border-radius:10px;
+    height: 40px;
+    min-height: 40px;
 
-    font-size:18px;
+    border-radius: 10px;
 
-    padding:0;
+    font-size: 18px;
+
+    padding: 0;
 }
 
-.delete-btn:hover{
-    opacity:.85;
+.delete-btn:hover {
+    opacity: .85;
 }
 
-/* =======================
+/* =========================
    GRÁFICO
-======================= */
+========================= */
 
-#chart{
-    margin-top:25px;
+#chart {
+    margin-top: 25px;
 
-    background:var(--card);
+    background: var(--card);
 
-    padding:20px;
+    padding: 20px;
 
-    border-radius:16px;
+    border-radius: 16px;
 
-    box-shadow:var(--shadow);
+    box-shadow: var(--shadow);
 
-    max-height:420px;
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    /* Altura adaptável */
+    min-height: 250px;
 }
 
-/* =======================
-   RESPONSIVO
-======================= */
+/* Se o gráfico estiver dentro de canvas */
+#chart canvas {
+    width: 100% !important;
+    max-width: 100%;
+}
 
-@media(max-width:768px){
+/* =========================
+   PROGRESS
+========================= */
 
-    .container{
-        padding:20px 15px;
+progress {
+    width: 100%;
+    max-width: 100%;
+
+    height: 18px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+    background: #1e293b;
+}
+
+progress::-webkit-progress-value {
+    background: #22c55e;
+}
+
+progress::-moz-progress-bar {
+    background: #22c55e;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+
+    .container {
+        padding: 20px 15px;
     }
 
-    header h1{
-        font-size:1.7rem;
+    header {
+        margin-bottom: 20px;
     }
 
-    .value{
-        font-size:1.3rem;
+    header h1 {
+        font-size: 1.7rem;
     }
 
-    .item{
-        flex-direction:column;
-        align-items:flex-start;
+    .cards {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-    .item-value{
-        width:100%;
+    .card {
+        padding: 18px;
+    }
 
-        justify-content:space-between;
+    .value {
+        font-size: 1.3rem;
+    }
+
+    .item {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 12px;
+    }
+
+    .item-info {
+        width: 100%;
+    }
+
+    .item-value {
+        width: 100%;
+
+        justify-content: space-between;
+    }
+
+    .delete-btn {
+        flex-shrink: 0;
+    }
+
+    #chart {
+        padding: 15px;
     }
 }
 
-@media(max-width:480px){
+/* =========================
+   CELULARES
+========================= */
 
-    .cards{
-        grid-template-columns:1fr;
+@media (max-width: 600px) {
+
+    .container {
+        padding: 16px 12px;
     }
 
-    .form{
-        padding:15px;
+    header {
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 18px;
     }
 
-    .card{
-        padding:18px;
+    header h1 {
+        font-size: clamp(1.4rem, 7vw, 1.7rem);
+    }
+
+    #icon {
+        font-size: 1.5rem;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .card {
+        padding: 16px;
+
+        border-radius: 14px;
+    }
+
+    .form {
+        padding: 15px;
+
+        margin-top: 20px;
+
+        gap: 10px;
+    }
+
+    input,
+    select,
+    button {
+        font-size: 16px;
+
+        min-height: 46px;
+    }
+
+    .alert {
+        padding: 12px;
+
+        font-size: .9rem;
+    }
+
+    #chart {
+        padding: 12px;
+
+        min-height: 220px;
     }
 }
-progress{
-width:100%;
-height:18px;
-border:none;
-border-radius:10px;
-overflow:hidden;
+
+/* =========================
+   CELULARES PEQUENOS
+   320px - 400px
+========================= */
+
+@media (max-width: 400px) {
+
+    .container {
+        padding: 12px 10px;
+    }
+
+    header {
+        margin-bottom: 15px;
+    }
+
+    header h1 {
+        font-size: 1.4rem;
+    }
+
+    #icon {
+        font-size: 1.3rem;
+    }
+
+    .card {
+        padding: 14px;
+
+        border-radius: 12px;
+    }
+
+    .value {
+        font-size: 1.15rem;
+    }
+
+    .form {
+        padding: 13px;
+
+        border-radius: 12px;
+    }
+
+    input,
+    select,
+    button {
+        padding: 11px;
+
+        min-height: 44px;
+    }
+
+    .item {
+        padding: 13px;
+
+        border-radius: 12px;
+    }
+
+    .item-value {
+        font-size: .9rem;
+
+        gap: 6px;
+    }
+
+    .delete-btn {
+        width: 38px;
+        min-width: 38px;
+
+        height: 38px;
+        min-height: 38px;
+    }
+
+    #chart {
+        padding: 8px;
+
+        border-radius: 12px;
+
+        min-height: 200px;
+    }
 }
 
-progress::-webkit-progress-bar{
-background:#1e293b;
+/* =========================
+   CELULARES MUITO PEQUENOS
+   280px - 320px
+========================= */
+
+@media (max-width: 320px) {
+
+    .container {
+        padding: 10px 8px;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    #icon {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .value {
+        font-size: 1.05rem;
+    }
+
+    .form {
+        padding: 11px;
+    }
+
+    input,
+    select,
+    button {
+        padding: 10px;
+
+        font-size: 15px;
+    }
+
+    .item {
+        padding: 11px;
+    }
+
+    .item-value {
+        font-size: .82rem;
+    }
+
+    .small {
+        font-size: .75rem;
+    }
+
+    #chart {
+        padding: 6px;
+    }
 }
 
-progress::-webkit-progress-value{
-background:#22c55e;
+/* =========================
+   EVITA SCROLL HORIZONTAL
+========================= */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-progress::-moz-progress-bar{
-background:#22c55e;
+/* Garante que textos muito grandes
+   não criem uma barra horizontal */
+
+h1,
+h2,
+h3,
+p,
+span,
+strong,
+div {
+    overflow-wrap: break-word;
+    word-break: normal;
 }
