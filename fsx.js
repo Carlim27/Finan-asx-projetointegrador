@@ -81,6 +81,8 @@ const elements = {
     list: document.getElementById("list"),
     transactionCounter: document.getElementById("transactionCounter"),
     exportJsonBtn: document.getElementById("exportJsonBtn"),
+    importTriggerBtn: document.getElementById("importTriggerBtn"),
+    importFileName: document.getElementById("importFileName"),
     importFile: document.getElementById("importFile"),
     saveGoalBtn: document.getElementById("saveGoalBtn"),
     saveBudgetBtn: document.getElementById("saveBudgetBtn")
@@ -301,6 +303,8 @@ function importarJSON(event) {
     const file = event.target.files[0];
     if (!file) return;
 
+    elements.importFileName.textContent = file.name;
+
     const reader = new FileReader();
 
     reader.onload = e => {
@@ -337,6 +341,7 @@ function importarJSON(event) {
             alert("Não foi possível importar este arquivo.");
         } finally {
             event.target.value = "";
+            elements.importFileName.textContent = "Nenhum arquivo selecionado";
         }
     };
 
@@ -755,6 +760,7 @@ function bindEvents() {
     elements.saveGoalBtn.addEventListener("click", salvarMetaHandler);
     elements.saveBudgetBtn.addEventListener("click", salvarBudgetHandler);
     elements.exportJsonBtn.addEventListener("click", exportarJSON);
+    elements.importTriggerBtn.addEventListener("click", () => elements.importFile.click());
     elements.importFile.addEventListener("change", importarJSON);
     elements.clearFiltersBtn.addEventListener("click", limparFiltros);
 

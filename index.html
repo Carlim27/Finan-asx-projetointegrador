@@ -23,10 +23,9 @@
 
             <div class="hero-actions">
                 <button class="secondary-btn" id="exportJsonBtn">Exportar JSON</button>
-                <label class="secondary-btn file-btn">
-                    Importar JSON
-                    <input type="file" id="importFile" accept=".json">
-                </label>
+                <button class="secondary-btn" id="importTriggerBtn" type="button">Importar JSON</button>
+                <span class="file-name" id="importFileName">Nenhum arquivo selecionado</span>
+                <input type="file" id="importFile" accept=".json" hidden>
             </div>
         </header>
 
