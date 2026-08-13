@@ -4,137 +4,261 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinançaSX</title>
-
-
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- CSS -->
     <link rel="stylesheet" href="fsx.css">
-
-    <!-- JavaScript -->
     <script src="fsx.js" defer></script>
 </head>
-
 <body>
-
-    <!--fundo animado -->
-    <canvas id="bg"> </canvas>
+    <canvas id="bg"></canvas>
 
     <div class="container">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Controle financeiro pessoal</p>
+                <h1>FinançaSX</h1>
+                <p class="hero-text">
+                    Organize receitas, despesas, metas, orçamento por categoria e acompanhe sua evolução financeira em tempo real.
+                </p>
+            </div>
 
-        <!-- Cabeçalho -->
-        <header>
-            <h1>FinançaSX</h1>
-            <div id="icon">💸</div>
+            <div class="hero-actions">
+                <button class="secondary-btn" id="exportJsonBtn">Exportar JSON</button>
+                <label class="secondary-btn file-btn">
+                    Importar JSON
+                    <input type="file" id="importFile" accept=".json">
+                </label>
+            </div>
         </header>
 
-        <!-- Cards -->
-        <div class="cards">
+        <section class="cards">
+            <article class="card">
+                <span class="card-label">Saldo atual</span>
+                <strong class="value" id="saldo">R$ 0,00</strong>
+                <small id="saldoStatus">Situação estável.</small>
+            </article>
 
-            <div class="card">
-                <div>SALDO</div>
-                <div class="value" id="saldo">R$ 0,00</div>
-            </div>
+            <article class="card">
+                <span class="card-label">Entradas</span>
+                <strong class="value green" id="entradas">R$ 0,00</strong>
+                <small>Total recebido.</small>
+            </article>
 
-            <div class="card">
-                <div>ENTRADAS</div>
-                <div class="value green" id="entradas">R$ 0,00</div>
-            </div>
+            <article class="card">
+                <span class="card-label">Saídas</span>
+                <strong class="value red" id="saidas">R$ 0,00</strong>
+                <small>Total gasto.</small>
+            </article>
 
-            <div class="card">
-                <div>SAÍDAS</div>
-                <div class="value red" id="saidas">R$ 0,00</div>
-            </div>
-<div class="card">
- <div class="card">
-    <div>🎯 META FINANCEIRA</div>
+            <article class="card">
+                <span class="card-label">Economia do mês</span>
+                <strong class="value accent" id="economiaMes">R$ 0,00</strong>
+                <small id="economiaStatus">Acompanhe seu ritmo.</small>
+            </article>
 
-    <input
-        type="number"
-        id="metaInput"
-        placeholder="Digite sua meta"
-        min="0"
-        step="0.01"
-        style="margin-top:10px;width:100%;padding:10px;border-radius:10px;border:none;"
-    >
+            <article class="card">
+                <span class="card-label">Taxa de poupança</span>
+                <strong class="value" id="taxaPoupanca">0%</strong>
+                <small>Entradas que não viraram gastos.</small>
+            </article>
 
-    <button onclick="salvarMeta()" style="margin-top:10px;">
-        Salvar Meta
-    </button>
+            <article class="card">
+                <span class="card-label">Maior gasto</span>
+                <strong class="value" id="maiorGasto">R$ 0,00</strong>
+                <small id="maiorGastoDesc">Sem despesas registradas.</small>
+            </article>
+        </section>
 
-    <div id="metaValor" class="value" style="margin-top:10px;">
-        R$ 0,00 / R$ 0,00
-    </div>
+        <section class="grid-main">
+            <article class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Meta financeira</p>
+                        <h2>Reserva e objetivo</h2>
+                    </div>
+                </div>
 
-    <progress
-        id="metaBar"
-        value="0"
-        max="100"
-        style="width:100%;margin-top:10px;">
-    </progress>
-</div>
+                <div class="meta-grid">
+                    <div>
+                        <label for="metaInput">Valor da meta</label>
+                        <input type="number" id="metaInput" min="0" step="0.01" placeholder="Ex.: 10000">
+                    </div>
 
-<progress
-    id="metaBar"
-    value="0"
-    max="5000"
-    style="width:100%;margin-top:10px;">
-</progress>
+                    <div>
+                        <label for="metaTitulo">Nome da meta</label>
+                        <input type="text" id="metaTitulo" placeholder="Ex.: Viagem, emergência, carro">
+                    </div>
+                </div>
 
-</div>
+                <button id="saveGoalBtn">Salvar meta</button>
 
-        </div>
+                <div class="meta-box">
+                    <div class="meta-top">
+                        <strong id="metaNomeExibida">Meta principal</strong>
+                        <span id="metaPercent">0%</span>
+                    </div>
 
-        <!-- Alertas -->
+                    <div id="metaValor" class="value">R$ 0,00 / R$ 0,00</div>
+
+                    <progress id="metaBar" value="0" max="100"></progress>
+
+                    <small id="metaHint">Defina um objetivo para acompanhar seu progresso.</small>
+                </div>
+            </article>
+
+            <article class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Planejamento</p>
+                        <h2>Orçamento por categoria</h2>
+                    </div>
+                </div>
+
+                <div class="budget-form">
+                    <select id="budgetCategoria"></select>
+                    <input type="number" id="budgetValor" min="0" step="0.01" placeholder="Limite mensal">
+                    <button id="saveBudgetBtn">Salvar limite</button>
+                </div>
+
+                <div id="budgetList" class="budget-list"></div>
+            </article>
+        </section>
+
         <div id="alert"></div>
 
-        <!-- Formulário -->
-        <div class="form">
+        <section class="grid-main">
+            <article class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Lançamentos</p>
+                        <h2>Novo registro</h2>
+                    </div>
+                </div>
 
-            <input
-                type="text"
-                id="desc"
-                placeholder="Descrição"
-            >
+                <form class="form" id="transactionForm">
+                    <input type="hidden" id="editId">
 
-            <input
-                type="number"
-                id="valor"
-                min="0"
-                step="0.01"
-                placeholder="Valor"
-            >
+                    <div class="form-grid">
+                        <div>
+                            <label for="desc">Descrição</label>
+                            <input type="text" id="desc" placeholder="Ex.: Salário, aluguel, mercado">
+                        </div>
 
-            <select id="tipo">
-                <option value="entrada">Entrada</option>
-                <option value="saida">Saída</option>
-            </select>
+                        <div>
+                            <label for="valor">Valor</label>
+                            <input type="number" id="valor" min="0" step="0.01" placeholder="0,00">
+                        </div>
 
-            <select id="cat">
-                <option>Geral</option>
-                <option>Alimentação</option>
-                <option>Transporte</option>
-                <option>Lazer</option>
-                <option>Saúde</option>
-                <option>Educação</option>
-                <option>Moradia</option>
-            </select>
+                        <div>
+                            <label for="tipo">Tipo</label>
+                            <select id="tipo">
+                                <option value="entrada">Entrada</option>
+                                <option value="saida">Saída</option>
+                            </select>
+                        </div>
 
-            <button onclick="add()">
-                Adicionar
-            </button>
+                        <div>
+                            <label for="cat">Categoria</label>
+                            <select id="cat"></select>
+                        </div>
 
-        </div>
+                        <div>
+                            <label for="pagamento">Forma de pagamento</label>
+                            <select id="pagamento">
+                                <option value="Pix">Pix</option>
+                                <option value="Cartão de crédito">Cartão de crédito</option>
+                                <option value="Cartão de débito">Cartão de débito</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="Transferência">Transferência</option>
+                                <option value="Boleto">Boleto</option>
+                            </select>
+                        </div>
 
-        <!-- Lista -->
-        <div id="list"></div>
+                        <div>
+                            <label for="dataLancamento">Data</label>
+                            <input type="date" id="dataLancamento">
+                        </div>
+                    </div>
 
-        <!-- Gráfico -->
-        <canvas id="chart"></canvas>
+                    <div>
+                        <label for="obs">Observação</label>
+                        <textarea id="obs" rows="3" placeholder="Detalhes opcionais do lançamento"></textarea>
+                    </div>
 
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn">Adicionar lançamento</button>
+                        <button type="button" class="secondary-btn" id="cancelEditBtn">Cancelar edição</button>
+                    </div>
+                </form>
+            </article>
+
+            <article class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Análise</p>
+                        <h2>Filtros e busca</h2>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="searchInput" placeholder="Buscar por descrição, categoria ou pagamento">
+                    <select id="filterTipo">
+                        <option value="todos">Todos os tipos</option>
+                        <option value="entrada">Somente entradas</option>
+                        <option value="saida">Somente saídas</option>
+                    </select>
+                    <select id="filterCategoria">
+                        <option value="todas">Todas as categorias</option>
+                    </select>
+                    <select id="filterMes">
+                        <option value="todos">Todos os meses</option>
+                    </select>
+                    <button class="secondary-btn" id="clearFiltersBtn">Limpar filtros</button>
+                </div>
+            </article>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <p class="panel-label">Histórico</p>
+                    <h2>Transações</h2>
+                </div>
+                <span id="transactionCounter">0 itens</span>
+            </div>
+            <div id="list" class="transactions"></div>
+        </section>
+
+        <section class="charts-grid">
+            <article class="panel chart-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Visualização</p>
+                        <h2>Entradas x saídas</h2>
+                    </div>
+                </div>
+                <canvas id="overviewChart"></canvas>
+            </article>
+
+            <article class="panel chart-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Visualização</p>
+                        <h2>Gastos por categoria</h2>
+                    </div>
+                </div>
+                <canvas id="categoryChart"></canvas>
+            </article>
+
+            <article class="panel chart-panel full-span">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Tendência</p>
+                        <h2>Evolução mensal</h2>
+                    </div>
+                </div>
+                <canvas id="monthlyChart"></canvas>
+            </article>
+        </section>
     </div>
-
 </body>
 </html>
-
