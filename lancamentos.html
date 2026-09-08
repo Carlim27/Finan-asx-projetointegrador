@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="fsx.css">
+<script src="fsx.js" defer></script>
+<title>Lançamentos • FinançaSX</title></head>
+<body>
+<canvas id="bg"></canvas>
+<div class="app-shell">
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">F</div>
+        <div><strong>FinançaSX</strong><small>Controle financeiro</small></div>
+    </div>
+    <nav class="nav">
+        <a class="nav-btn" data-page="index.html" href="index.html"><span>⌂</span> Dashboard</a>
+        <a class="nav-btn" data-page="lancamentos.html" href="lancamentos.html"><span>↕</span> Lançamentos</a>
+        <a class="nav-btn" data-page="metas.html" href="metas.html"><span>◎</span> Metas</a>
+        <a class="nav-btn" data-page="orcamento.html" href="orcamento.html"><span>▣</span> Orçamento</a>
+        <a class="nav-btn" data-page="graficos.html" href="graficos.html"><span>◔</span> Gráficos</a>
+    </nav>
+    <div class="sidebar-footer"><small>FinançaSX</small><span>Seu dinheiro, sob controle.</span></div>
+</aside>
+
+<main class="main-content">
+<header class="topbar">
+    <div><p class="eyebrow">Receitas e despesas</p><h1>Lançamentos</h1></div>
+    <div class="topbar-status"><span class="status-dot"></span> Dados salvos neste navegador</div>
+</header>
+<div id="alert"></div>
+
+<div class="grid-main">
+<article class="panel">
+<div class="panel-header"><div><p class="panel-label">Lançamentos</p><h2>Novo registro</h2></div></div>
+<form class="form" id="transactionForm">
+<input type="hidden" id="editId">
+<div class="form-grid">
+<div><label for="desc">Descrição</label><input id="desc" type="text" placeholder="Ex.: Salário, aluguel, mercado"></div>
+<div><label for="valor">Valor</label><input id="valor" type="number" min="0" step="0.01" placeholder="0,00"></div>
+<div><label for="tipo">Tipo</label><select id="tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
+<div><label for="cat">Categoria</label><select id="cat"></select></div>
+<div><label for="pagamento">Forma de pagamento</label><select id="pagamento"><option>Pix</option><option>Cartão de crédito</option><option>Cartão de débito</option><option>Dinheiro</option><option>Transferência</option><option>Boleto</option></select></div>
+<div><label for="dataLancamento">Data</label><input id="dataLancamento" type="date"></div>
+</div>
+<div><label for="obs">Observação</label><textarea id="obs" rows="3" placeholder="Detalhes opcionais"></textarea></div>
+<div class="form-actions"><button type="submit" id="submitBtn">Adicionar lançamento</button><button type="button" class="secondary-btn" id="cancelEditBtn">Cancelar edição</button></div>
+</form>
+</article>
+
+<article class="panel">
+<div class="panel-header"><div><p class="panel-label">Análise</p><h2>Filtros e busca</h2></div></div>
+<div class="filters">
+<input id="searchInput" type="text" placeholder="Buscar por descrição, categoria ou pagamento">
+<select id="filterTipo"><option value="todos">Todos os tipos</option><option value="entrada">Somente entradas</option><option value="saida">Somente saídas</option></select>
+<select id="filterCategoria"><option value="todas">Todas as categorias</option></select>
+<select id="filterMes"><option value="todos">Todos os meses</option></select>
+<button class="secondary-btn" id="clearFiltersBtn">Limpar filtros</button>
+</div>
+</article>
+</div>
+
+<section class="panel">
+<div class="panel-header"><div><p class="panel-label">Histórico</p><h2>Transações</h2></div><span id="transactionCounter">0 itens</span></div>
+<div id="list" class="transactions"></div>
+<div class="pagination hidden" id="pagination"><button type="button" class="secondary-btn" id="prevPageBtn">Anterior</button><span id="pageInfo">Página 1</span><button type="button" class="secondary-btn" id="nextPageBtn">Próxima</button></div>
+</section>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="fsx.css">
+<script src="fsx.js" defer></script>
+<title>Gráficos • FinançaSX</title></head>
+<body>
+<canvas id="bg"></canvas>
+<div class="app-shell">
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">F</div>
+        <div><strong>FinançaSX</strong><small>Controle financeiro</small></div>
+    </div>
+    <nav class="nav">
+        <a class="nav-btn" data-page="index.html" href="index.html"><span>⌂</span> Dashboard</a>
+        <a class="nav-btn" data-page="lancamentos.html" href="lancamentos.html"><span>↕</span> Lançamentos</a>
+        <a class="nav-btn" data-page="metas.html" href="metas.html"><span>◎</span> Metas</a>
+        <a class="nav-btn" data-page="orcamento.html" href="orcamento.html"><span>▣</span> Orçamento</a>
+        <a class="nav-btn" data-page="graficos.html" href="graficos.html"><span>◔</span> Gráficos</a>
+    </nav>
+    <div class="sidebar-footer"><small>FinançaSX</small><span>Seu dinheiro, sob controle.</span></div>
+</aside>
+
+<main class="main-content">
+<header class="topbar">
+    <div><p class="eyebrow">Análise visual</p><h1>Gráficos</h1></div>
+    <div class="topbar-status"><span class="status-dot"></span> Dados salvos neste navegador</div>
+</header>
+<div id="alert"></div>
+
+<section class="charts-grid">
+<article class="panel chart-panel"><div class="panel-header"><div><p class="panel-label">Visualização</p><h2>Entradas x saídas</h2></div></div><canvas id="overviewChart"></canvas></article>
+<article class="panel chart-panel"><div class="panel-header"><div><p class="panel-label">Visualização</p><h2>Gastos por categoria</h2></div></div><canvas id="categoryChart"></canvas></article>
+<article class="panel chart-panel full-span"><div class="panel-header"><div><p class="panel-label">Tendência</p><h2>Evolução mensal</h2></div></div><canvas id="monthlyChart"></canvas></article>
+</section>
+
+</main>
+</div>
+</body>
+</html>
