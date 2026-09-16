@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="css/fsx.css">
+
+    <title>Fiscal • FinançaSX</title>
+</head>
+
+<body>
+
+    <canvas id="bg"></canvas>
+
+    <div class="app-shell">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-mark">F</div>
+
+                <div>
+                    <strong>FinançaSX</strong>
+                    <small>Controle financeiro</small>
+                </div>
+            </div>
+
+            <nav class="nav">
+
+                <a class="nav-btn" href="index.html">
+                    <span>⌂</span> Dashboard
+                </a>
+
+                <a class="nav-btn" href="lancamentos.html">
+                    <span>↕</span> Lançamentos
+                </a>
+
+                <a class="nav-btn" href="metas.html">
+                    <span>◎</span> Metas
+                </a>
+
+                <a class="nav-btn" href="orcamento.html">
+                    <span>▣</span> Orçamento
+                </a>
+
+                <a class="nav-btn" href="graficos.html">
+                    <span>◔</span> Gráficos
+                </a>
+
+                <a class="nav-btn active" href="fiscal.html">
+                    <span>▤</span> Fiscal
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <small>FinançaSX</small>
+                <span>Seu dinheiro, sob controle.</span>
+            </div>
+
+        </aside>
+
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div>
+                    <p class="eyebrow">Organização fiscal</p>
+                    <h1>Fiscal</h1>
+                </div>
+
+                <div class="topbar-status">
+                    <span class="status-dot"></span>
+                    Dados salvos neste navegador
+                </div>
+
+            </header>
+
+
+            <!-- CABEÇALHO FISCAL -->
+            <section class="hero compact">
+
+                <div>
+
+                    <p class="eyebrow">Resumo anual</p>
+
+                    <h2>
+                        Organize suas informações fiscais.
+                    </h2>
+
+                    <p class="hero-text">
+                        Consulte receitas, despesas, investimentos e
+                        movimentações que podem precisar de atenção.
+                    </p>
+
+                </div>
+
+                <div class="fiscal-year">
+
+                    <label for="anoFiscal">
+                        Ano-base
+                    </label>
+
+                    <select id="anoFiscal">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+
+                </div>
+
+            </section>
+
+
+            <!-- CARDS -->
+           <section class="cards">
+
+    <article class="card">
+        <span class="card-label">Total de receitas</span>
+        <strong class="value green" id="fiscalReceitas">
+            R$ 0,00
+        </strong>
+        <small>Receitas registradas no ano.</small>
+    </article>
+
+    <article class="card">
+        <span class="card-label">Total de despesas</span>
+        <strong class="value red" id="fiscalDespesas">
+            R$ 0,00
+        </strong>
+        <small>Despesas registradas no ano.</small>
+    </article>
+
+    <article class="card">
+        <span class="card-label">Investimentos</span>
+        <strong class="value accent" id="fiscalInvestimentos">
+            R$ 0,00
+        </strong>
+        <small>Investimentos registrados.</small>
+    </article>
+
+    <article class="card">
+        <span class="card-label">Movimentações</span>
+        <strong class="value" id="fiscalMovimentacoes">
+            0
+        </strong>
+        <small>Movimentações registradas.</small>
+    </article>
+
+</section>
+            <!-- ÁREA PRINCIPAL -->
+            <div class="grid-main">
+                
+                <!-- ATENÇÃO -->
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-label">
+                                Conferência
+                            </p>
+
+                            <h2>
+                                Movimentações
+                            </h2>
+
+                        </div>
+
+                        <span class="fiscal-badge">
+                            🟡 Atenção
+                        </span>
+
+                    </div>
+
+
+                    <div class="meta-box">
+
+                        <strong>
+                            Algumas movimentações precisam ser conferidas.
+                        </strong>
+
+                        <p class="hero-text">
+                            O FinançaSX poderá identificar informações
+                            que precisam de revisão antes de um futuro
+                            resumo fiscal.
+                        </p>
+
+                        <a href="#" class="text-btn link-btn">
+                            Ver detalhes
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <!-- DOCUMENTOS -->
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-label">
+                                Comprovantes
+                            </p>
+
+                            <h2>
+                                Documentos
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="meta-box">
+
+                        <strong>
+                            Nenhum documento registrado.
+                        </strong>
+
+                        <p class="hero-text">
+                            Nesta etapa, esta área serve apenas como
+                            espaço reservado para os comprovantes.
+                        </p>
+
+                        <button class="text-btn" type="button">
+                            Adicionar documento
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+
+            <!-- RESUMO ANUAL -->
+            <article class="panel fiscal-summary">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <p class="panel-label">
+                            Ano-base 2026
+                        </p>
+                        <h2>
+                            📑 Resumo Fiscal 2026
+                        </h2>
+                    </div>
+                </div>
+                <div class="fiscal-summary-list">
+                    <div>
+                        <span>Receitas registradas</span>
+                        <strong id="fiscalResumoReceitas">R$ 0,00</strong>
+                    </div>
+                    <div>
+                        <span>Despesas registradas</span>
+                        <strong id="fiscalResumoDespesas">R$ 0,00</strong>
+                    </div>
+                    <div>
+                        <span>Investimentos</span>
+                        <strong id="fiscalResumoInvestimentos">R$ 0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Movimentações para conferir</span>
+                        <strong id="fiscalResumoMovimentacoes">0</strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- JS ATUAL DO FSX -->
+    <script src="fsx.js" defer></script>
+
+</body>
+
+</html>

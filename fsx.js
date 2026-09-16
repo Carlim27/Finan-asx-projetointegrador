@@ -55,6 +55,11 @@ let monthlyChart = null;
 const ITEMS_PER_PAGE = 10;
 let currentPage = 1;
 
+
+/* =====================================================
+   FUNÇÕES AUXILIARES
+===================================================== */
+
 const $ = id =>
     document.getElementById(id);
 
@@ -132,6 +137,11 @@ function getMonthNameKey(valor) {
     );
 }
 
+
+/* =====================================================
+   NORMALIZAÇÃO
+===================================================== */
+
 function normalizarDados() {
 
     data = data.map(item => {
@@ -149,10 +159,12 @@ function normalizarDados() {
                 Number(item.valor) || 0,
 
             pagamento:
-                item.pagamento || "Pix",
+                item.pagamento ||
+                "Pix",
 
             observacao:
-                item.observacao || "",
+                item.observacao ||
+                "",
 
             dataISO,
 
@@ -164,6 +176,11 @@ function normalizarDados() {
 
     salvarDados();
 }
+
+
+/* =====================================================
+   CATEGORIAS
+===================================================== */
 
 function preencherCategorias() {
 
@@ -212,6 +229,11 @@ function preencherCategorias() {
     }
 }
 
+
+/* =====================================================
+   MESES DO FILTRO
+===================================================== */
+
 function preencherMesesFiltro() {
 
     if (!has("filterMes")) {
@@ -255,6 +277,11 @@ function preencherMesesFiltro() {
             : "todos";
 }
 
+
+/* =====================================================
+   DATA PADRÃO
+===================================================== */
+
 function setDefaultDate() {
 
     if (
@@ -268,6 +295,11 @@ function setDefaultDate() {
                 .split("T")[0];
     }
 }
+
+
+/* =====================================================
+   FILTROS
+===================================================== */
 
 function obterFiltradas() {
 
@@ -340,6 +372,7 @@ function obterFiltradas() {
         );
 }
 
+
 /* =====================================================
    META
 ===================================================== */
@@ -348,11 +381,6 @@ function atualizarMeta(saldo = null) {
 
     const valorMeta =
         Number(meta.valor || 0);
-
-    /*
-       Caso a função seja chamada sem saldo,
-       calcula o saldo automaticamente.
-    */
 
     if (saldo === null) {
 
@@ -392,11 +420,6 @@ function atualizarMeta(saldo = null) {
             entradas - saidas;
     }
 
-    /*
-       O progresso nunca fica abaixo de 0
-       e nunca ultrapassa o valor da meta.
-    */
-
     const progresso =
         valorMeta > 0
             ? Math.max(
@@ -434,93 +457,71 @@ function atualizarMeta(saldo = null) {
             ? "Meta atingida. Hora de definir o próximo objetivo."
             : `Faltam ${format(faltante)} para atingir sua meta.`;
 
-    /* =========================
-       CAMPOS DA PÁGINA METAS
-    ========================= */
-
     if (has("metaInput")) {
-
         $("metaInput").value =
             valorMeta || "";
     }
 
     if (has("metaTitulo")) {
-
         $("metaTitulo").value =
             meta.titulo || "";
     }
 
     if (has("metaNomeExibida2")) {
-
         $("metaNomeExibida2").textContent =
             nome;
     }
 
     if (has("metaValor2")) {
-
         $("metaValor2").textContent =
             valorTexto;
     }
 
     if (has("metaPercent2")) {
-
         $("metaPercent2").textContent =
             percentTexto;
     }
 
     if (has("metaBar2")) {
-
         $("metaBar2").value =
             percentual;
     }
 
     if (has("metaHint2")) {
-
         $("metaHint2").textContent =
             hint;
     }
 
-    /* =========================
-       CAMPOS DO DASHBOARD
-    ========================= */
-
     if (has("metaNomeExibida")) {
-
         $("metaNomeExibida").textContent =
             nome;
     }
 
     if (has("metaValor")) {
-
         $("metaValor").textContent =
             valorTexto;
     }
 
     if (has("metaPercent")) {
-
         $("metaPercent").textContent =
             percentTexto;
     }
 
     if (has("metaBar")) {
-
         $("metaBar").value =
             percentual;
     }
 
     if (has("metaHint")) {
-
         $("metaHint").textContent =
             hint;
     }
 
     if (has("dashboardMetaTitulo")) {
-
         $("dashboardMetaTitulo").textContent =
             nome;
     }
 }
-
 /* =====================================================
    RESUMO
 ===================================================== */
@@ -1134,17 +1135,7 @@ function salvarMetaHandler() {
 
     salvarMeta();
 
-    /*
-       Atualiza imediatamente a meta
-       depois de salvar.
-    */
-
     atualizarResumo();
-
-    /*
-       Caso esteja na página de metas,
-       atualiza diretamente também.
-    */
 
     atualizarMeta();
 
@@ -2114,8 +2105,94 @@ function bindEvents() {
             );
         }
     });
+    $("anoFiscal")?.addEventListener(
+        "change",
+        atualizarFiscal
+    );
 }
 
+
+function atualizarFiscal() {
+
+    if (!has("fiscalReceitas")) {
+        return;
+    }
+
+    const seletorAno = $("anoFiscal");
+
+    const ano = seletorAno
+        ? seletorAno.value
+        : "2026";
+
+    const lancamentosAno = data.filter(item => {
+
+        if (!item.dataISO) {
+            return false;
+        }
+
+        return item.dataISO.startsWith(`${ano}-`);
+
+    });
+
+    const receitas = lancamentosAno
+        .filter(item => item.tipo === "entrada")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    const despesas = lancamentosAno
+        .filter(item => item.tipo === "saida")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    const investimentos = lancamentosAno
+        .filter(item =>
+            item.tipo === "saida" &&
+            item.categoria === "Investimentos"
+        )
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    $("fiscalReceitas").textContent =
+        format(receitas);
+
+    $("fiscalDespesas").textContent =
+        format(despesas);
+
+    $("fiscalInvestimentos").textContent =
+        format(investimentos);
+
+    $("fiscalMovimentacoes").textContent =
+        lancamentosAno.length;
+  if (has("fiscalResumoReceitas")) {
+
+        $("fiscalResumo").textContent = format
+        (receitas);
+    } 
+    if (has("fiscalResumoDespesas")) {
+
+        $("fiscalResumoDespesas").textContent = format
+        (despesas);
+    }
+    if (has("fiscalResumoInvestimentos")) {
+
+        $("fiscalResumoInvestimentos").textContent = format
+        (investimentos);
+    }
+    if (has("fiscalResumoMovimentacoes")) {
+
+        $("fiscalResumoMovimentacoes").textContent = lancamentosAno.length;
+    }
+    }
+    
 /* =====================================================
    INICIALIZAÇÃO
 ===================================================== */
@@ -2145,6 +2222,8 @@ function init() {
     renderDashboard();
 
     atualizarGraficos();
+
+    atualizarFiscal();
 
     animateBackground();
 }
