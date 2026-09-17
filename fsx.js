@@ -1,6 +1,77 @@
 const STORAGE_KEY = "financasx_transacoes";
 const GOAL_KEY = "financasx_meta";
 const BUDGET_KEY = "financasx_orcamentos";
+// ===============================
+// BARRA DE CARREGAMENTO GLOBAL
+// ===============================
+
+function mostrarLoading(mensagem = "Carregando...") {
+
+    let loading = document.getElementById("fsxLoading");
+
+    if (!loading) {
+
+        loading = document.createElement("div");
+
+        loading.id = "fsxLoading";
+
+        loading.innerHTML = `
+            <div class="fsx-loading-text">
+                <span id="fsxLoadingMensagem">${mensagem}</span>
+                <span id="fsxLoadingPercentual">0%</span>
+            </div>
+
+            <div class="fsx-loading-track">
+                <div id="fsxLoadingBar"></div>
+            </div>
+        `;
+
+        document.body.appendChild(loading);
+
+    }
+
+    loading.classList.add("ativo");
+
+    atualizarLoading(0, mensagem);
+}
+
+
+function atualizarLoading(percentual, mensagem) {
+
+    const barra = document.getElementById("fsxLoadingBar");
+    const texto = document.getElementById("fsxLoadingMensagem");
+    const numero = document.getElementById("fsxLoadingPercentual");
+
+    if (barra) {
+        barra.style.width = `${percentual}%`;
+    }
+
+    if (texto) {
+        texto.textContent = mensagem;
+    }
+
+    if (numero) {
+        numero.textContent = `${percentual}%`;
+    }
+
+}
+
+
+function esconderLoading() {
+
+    const loading = document.getElementById("fsxLoading");
+
+    if (!loading) {
+        return;
+    }
+
+    atualizarLoading(100, "Concluído");
+
+    setTimeout(() => {
+        loading.classList.remove("ativo");
+    }, 300);
+
+}
 
 const categorias = [
     "Geral",
@@ -2174,7 +2245,7 @@ function atualizarFiscal() {
         lancamentosAno.length;
   if (has("fiscalResumoReceitas")) {
 
-        $("fiscalResumo").textContent = format
+        $("fiscalResumoReceitas").textContent = format
         (receitas);
     } 
     if (has("fiscalResumoDespesas")) {
@@ -2197,41 +2268,169 @@ function atualizarFiscal() {
    INICIALIZAÇÃO
 ===================================================== */
 
-function init() {
+function esperarRender() {
+
+    return new Promise(resolve => {
+
+        requestAnimationFrame(() => {
+
+            resolve();
+
+        });
+
+    });
+
+}
+
+
+async function init() {
+
+    mostrarLoading(
+        "Carregando dados..."
+    );
+
+    atualizarLoading(
+        10,
+        "Lendo dados..."
+    );
+
+    await esperarRender();
+
 
     normalizarDados();
 
+    atualizarLoading(
+        25,
+        "Preparando categorias..."
+    );
+
+    await esperarRender();
+
+
     preencherCategorias();
+
+    atualizarLoading(
+        35,
+        "Preparando filtros..."
+    );
+
+    await esperarRender();
+
 
     preencherMesesFiltro();
 
+    atualizarLoading(
+        45,
+        "Configurando data..."
+    );
+
+    await esperarRender();
+
+
     setDefaultDate();
+
+    atualizarLoading(
+        55,
+        "Configurando eventos..."
+    );
+
+    await esperarRender();
+
 
     bindEvents();
 
+    atualizarLoading(
+        65,
+        "Atualizando página..."
+    );
+
+    await esperarRender();
+
+
     marcarPaginaAtual();
+
+    atualizarLoading(
+        75,
+        "Calculando resumo financeiro..."
+    );
+
+    await esperarRender();
+
 
     atualizarResumo();
 
+    atualizarLoading(
+        80,
+        "Atualizando metas..."
+    );
+
+    await esperarRender();
+
+
     atualizarMeta();
 
+    atualizarLoading(
+        85,
+        "Atualizando orçamento..."
+    );
+
+    await esperarRender();
+
+
     atualizarBudgets();
+
+    atualizarLoading(
+        90,
+        "Preparando lançamentos..."
+    );
+
+    await esperarRender();
+
 
     renderLancamentos();
 
     renderDashboard();
+
+    atualizarLoading(
+        95,
+        "Preparando gráficos..."
+    );
+
+    await esperarRender();
+
 
     atualizarGraficos();
 
     atualizarFiscal();
 
     animateBackground();
+
+
+    atualizarLoading(
+        100,
+        "FinançaSX pronto!"
+    );
+
+    await esperarRender();
+
+    esconderLoading();
+
 }
+
+
+/* =====================================================
+   FUNÇÕES GLOBAIS
+===================================================== */
 
 window.editarItem =
     editarItem;
 
 window.removerItem =
     removerItem;
+
+
+/* =====================================================
+   INICIAR SISTEMA
+===================================================== */
 
 init();
