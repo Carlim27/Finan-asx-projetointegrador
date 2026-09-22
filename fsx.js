@@ -1,221 +1,403 @@
 const STORAGE_KEY = "financasx_transacoes";
 const GOAL_KEY = "financasx_meta";
 const BUDGET_KEY = "financasx_orcamentos";
+
 // ===============================
 // BARRA DE CARREGAMENTO GLOBAL
 // ===============================
 
 function mostrarLoading(mensagem = "Carregando...") {
 
-    let loading = document.getElementById("fsxLoading");
+let loading =
+    document.getElementById("fsxLoading");
 
-    if (!loading) {
+if (!loading) {
 
-        loading = document.createElement("div");
+    loading = document.createElement("div");
 
-        loading.id = "fsxLoading";
+    loading.id = "fsxLoading";
 
-        loading.innerHTML = `
-            <div class="fsx-loading-text">
-                <span id="fsxLoadingMensagem">${mensagem}</span>
-                <span id="fsxLoadingPercentual">0%</span>
-            </div>
+    loading.innerHTML = `
+        <div class="fsx-loading-text">
+            <span id="fsxLoadingMensagem">${mensagem}</span>
+            <span id="fsxLoadingPercentual">0%</span>
+        </div>
 
-            <div class="fsx-loading-track">
-                <div id="fsxLoadingBar"></div>
-            </div>
-        `;
+        <div class="fsx-loading-track">
+            <div id="fsxLoadingBar"></div>
+        </div>
+    `;
 
-        document.body.appendChild(loading);
-
-    }
-
-    loading.classList.add("ativo");
-
-    atualizarLoading(0, mensagem);
+    document.body.appendChild(loading);
 }
 
+loading.classList.add("ativo");
 
-function atualizarLoading(percentual, mensagem) {
-
-    const barra = document.getElementById("fsxLoadingBar");
-    const texto = document.getElementById("fsxLoadingMensagem");
-    const numero = document.getElementById("fsxLoadingPercentual");
-
-    if (barra) {
-        barra.style.width = `${percentual}%`;
-    }
-
-    if (texto) {
-        texto.textContent = mensagem;
-    }
-
-    if (numero) {
-        numero.textContent = `${percentual}%`;
-    }
+atualizarLoading(0, mensagem);
 
 }
 
+function atualizarLoading(
+percentual,
+mensagem
+) {
+
+const barra =
+    document.getElementById("fsxLoadingBar");
+
+const texto =
+    document.getElementById(
+        "fsxLoadingMensagem"
+    );
+
+const numero =
+    document.getElementById(
+        "fsxLoadingPercentual"
+    );
+
+if (barra) {
+    barra.style.width =
+        `${percentual}%`;
+}
+
+if (texto) {
+    texto.textContent =
+        mensagem;
+}
+
+if (numero) {
+    numero.textContent =
+        `${percentual}%`;
+}
+
+}
 
 function esconderLoading() {
 
-    const loading = document.getElementById("fsxLoading");
+const loading =
+    document.getElementById("fsxLoading");
 
-    if (!loading) {
-        return;
-    }
+if (!loading) {
+    return;
+}
 
-    atualizarLoading(100, "Concluído");
+atualizarLoading(
+    100,
+    "Concluído"
+);
 
-    setTimeout(() => {
-        loading.classList.remove("ativo");
-    }, 300);
+setTimeout(() => {
+
+    loading.classList.remove(
+        "ativo"
+    );
+
+}, 300);
 
 }
 
 const categorias = [
-    "Geral",
-    "Alimentação",
-    "Transporte",
-    "Lazer",
-    "Saúde",
-    "Educação",
-    "Moradia",
-    "Assinaturas",
-    "Investimentos",
-    "Contas",
-    "Compras"
+"Geral",
+"Alimentação",
+"Transporte",
+"Lazer",
+"Saúde",
+"Educação",
+"Moradia",
+"Assinaturas",
+"Investimentos",
+"Contas",
+"Compras"
 ];
 
 const coresCategorias = [
-    "#38bdf8",
-    "#22c55e",
-    "#f59e0b",
-    "#8b5cf6",
-    "#ef4444",
-    "#14b8a6",
-    "#f97316",
-    "#e879f9",
-    "#84cc16",
-    "#06b6d4",
-    "#a78bfa"
+"#38bdf8",
+"#22c55e",
+"#f59e0b",
+"#8b5cf6",
+"#ef4444",
+"#14b8a6",
+"#f97316",
+"#e879f9",
+"#84cc16",
+"#06b6d4",
+"#a78bfa"
 ];
 
 let data =
-    JSON.parse(
-        localStorage.getItem(STORAGE_KEY)
-    ) || [];
+JSON.parse(
+localStorage.getItem(
+STORAGE_KEY
+)
+) || [];
 
 let meta =
-    JSON.parse(
-        localStorage.getItem(GOAL_KEY)
-    ) || {
-        titulo: "Meta principal",
-        valor: 5000
-    };
+JSON.parse(
+localStorage.getItem(
+GOAL_KEY
+)
+) || {
+
+    titulo:
+        "Meta principal",
+
+    valor:
+        5000
+};
 
 let budgets =
-    JSON.parse(
-        localStorage.getItem(BUDGET_KEY)
-    ) || {};
+JSON.parse(
+localStorage.getItem(
+BUDGET_KEY
+)
+) || {};
 
 let overviewChart = null;
 let categoryChart = null;
 let monthlyChart = null;
 
 const ITEMS_PER_PAGE = 10;
+
 let currentPage = 1;
 
-
 /* =====================================================
-   FUNÇÕES AUXILIARES
+FUNÇÕES AUXILIARES
 ===================================================== */
 
-const $ = id =>
-    document.getElementById(id);
+const $ =
+id =>
+document.getElementById(id);
 
-const has = id =>
-    !!$(id);
+const has =
+id =>
+!!$(id);
+
+function escaparHtml(valor) {
+    return String(valor ??"")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/* =====================================================
+NOTIFICAÇÕES
+===================================================== */
+
+function mostrarNotificacao(
+mensagem,
+tipo = "sucesso"
+) {
+
+const notificacao =
+    document.createElement("div");
+
+notificacao.className =
+    `fsx-notificacao ${tipo}`;
+
+notificacao.textContent =
+    mensagem;
+
+document.body.appendChild(
+    notificacao
+);
+
+setTimeout(() => {
+
+    notificacao.classList.add(
+        "saindo"
+    );
+
+    setTimeout(() => {
+
+        notificacao.remove();
+
+    }, 300);
+
+}, 3000);
+
+}
+
+/* =====================================================
+CONFIRMAÇÃO FSX
+===================================================== */
+
+function mostrarConfirmacao(
+mensagem,
+aoConfirmar
+) {
+
+const overlay =
+    document.createElement("div");
+
+overlay.className =
+    "fsx-confirmacao-overlay";
+
+overlay.innerHTML = `
+    <div class="fsx-confirmacao">
+
+        <h3>
+            Confirmar ação
+        </h3>
+
+        <p>
+            ${mensagem}
+        </p>
+
+        <div class="fsx-confirmacao-acoes">
+
+            <button
+                class="fsx-confirmar-cancelar">
+                Cancelar
+            </button>
+
+            <button
+                class="fsx-confirmar-ok">
+                Confirmar
+            </button>
+
+        </div>
+
+    </div>
+`;
+
+document.body.appendChild(
+    overlay
+);
+
+const cancelar =
+    overlay.querySelector(
+        ".fsx-confirmar-cancelar"
+    );
+
+const confirmar =
+    overlay.querySelector(
+        ".fsx-confirmar-ok"
+    );
+
+cancelar.addEventListener(
+    "click",
+    () => {
+
+        overlay.remove();
+
+    }
+);
+
+confirmar.addEventListener(
+    "click",
+    () => {
+
+        overlay.remove();
+
+        aoConfirmar();
+
+    }
+);
+
+}
 
 function format(valor) {
-    return Number(valor || 0).toLocaleString(
-        "pt-BR",
-        {
-            style: "currency",
-            currency: "BRL"
-        }
-    );
+
+return Number(
+    valor || 0
+).toLocaleString(
+    "pt-BR",
+    {
+        style:
+            "currency",
+
+        currency:
+            "BRL"
+    }
+);
+
 }
 
 function salvarDados() {
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-    );
+
+localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(data)
+);
+
 }
 
 function salvarMeta() {
-    localStorage.setItem(
-        GOAL_KEY,
-        JSON.stringify(meta)
-    );
+
+localStorage.setItem(
+    GOAL_KEY,
+    JSON.stringify(meta)
+);
+
 }
 
 function salvarBudgets() {
-    localStorage.setItem(
-        BUDGET_KEY,
-        JSON.stringify(budgets)
-    );
+
+localStorage.setItem(
+    BUDGET_KEY,
+    JSON.stringify(budgets)
+);
+
 }
 
 function formatarData(valor) {
 
-    if (!valor) {
-        return new Date().toLocaleDateString(
+if (!valor) {
+
+    return new Date()
+        .toLocaleDateString(
             "pt-BR"
         );
-    }
+}
 
-    return new Date(
-        `${valor}T12:00:00`
-    ).toLocaleDateString(
-        "pt-BR"
-    );
+return new Date(
+    `${valor}T12:00:00`
+).toLocaleDateString(
+    "pt-BR"
+);
+
 }
 
 function extrairMes(valor) {
 
-    if (!valor) {
-        return "Sem data";
-    }
+if (!valor) {
+    return "Sem data";
+}
 
-    const [ano, mes] =
-        valor.split("-");
+const [ano, mes] =
+    valor.split("-");
 
-    return `${mes}/${ano}`;
+return `${mes}/${ano}`;
+
 }
 
 function getMonthNameKey(valor) {
 
-    return new Date(
-        `${valor}T12:00:00`
-    ).toLocaleDateString(
-        "pt-BR",
-        {
-            month: "short",
-            year: "numeric"
-        }
-    );
+return new Date(
+    `${valor}T12:00:00`
+).toLocaleDateString(
+    "pt-BR",
+    {
+        month:
+            "short",
+
+        year:
+            "numeric"
+    }
+);
+
 }
 
-
 /* =====================================================
-   NORMALIZAÇÃO
+NORMALIZAÇÃO
 ===================================================== */
 
 function normalizarDados() {
 
-    data = data.map(item => {
+data =
+    data.map(item => {
 
         const dataISO =
             item.dataISO ||
@@ -224,10 +406,13 @@ function normalizarDados() {
                 .split("T")[0];
 
         return {
+
             ...item,
 
             valor:
-                Number(item.valor) || 0,
+                Number(
+                    item.valor
+                ) || 0,
 
             pagamento:
                 item.pagamento ||
@@ -241,375 +426,229 @@ function normalizarDados() {
 
             dataFormatada:
                 item.dataFormatada ||
-                formatarData(dataISO)
+                formatarData(
+                    dataISO
+                )
         };
     });
 
-    salvarDados();
+salvarDados();
+
 }
 
-
 /* =====================================================
-   CATEGORIAS
+CATEGORIAS
 ===================================================== */
 
 function preencherCategorias() {
 
-    if (has("cat")) {
+if (has("cat")) {
 
-        $("cat").innerHTML =
-            categorias
-                .map(
-                    categoria =>
-                        `<option value="${categoria}">
-                            ${categoria}
-                        </option>`
-                )
-                .join("");
-    }
-
-    if (has("budgetCategoria")) {
-
-        $("budgetCategoria").innerHTML =
-            categorias
-                .map(
-                    categoria =>
-                        `<option value="${categoria}">
-                            ${categoria}
-                        </option>`
-                )
-                .join("");
-    }
-
-    if (has("filterCategoria")) {
-
-        $("filterCategoria").innerHTML =
-            `
-            <option value="todas">
-                Todas as categorias
-            </option>
-            ` +
-            categorias
-                .map(
-                    categoria =>
-                        `<option value="${categoria}">
-                            ${categoria}
-                        </option>`
-                )
-                .join("");
-    }
+    $("cat").innerHTML =
+        categorias
+            .map(
+                categoria =>
+                    `<option value="${categoria}">
+                        ${categoria}
+                    </option>`
+            )
+            .join("");
 }
 
+if (has("budgetCategoria")) {
+
+    $("budgetCategoria").innerHTML =
+        categorias
+            .map(
+                categoria =>
+                    `<option value="${categoria}">
+                        ${categoria}
+                    </option>`
+            )
+            .join("");
+}
+
+if (has("filterCategoria")) {
+
+    $("filterCategoria").innerHTML =
+        `
+        <option value="todas">
+            Todas as categorias
+        </option>
+        ` +
+        categorias
+            .map(
+                categoria =>
+                    `<option value="${categoria}">
+                        ${categoria}
+                    </option>`
+            )
+            .join("");
+}
+
+}
 
 /* =====================================================
-   MESES DO FILTRO
+MESES DO FILTRO
 ===================================================== */
 
 function preencherMesesFiltro() {
 
-    if (!has("filterMes")) {
-        return;
-    }
+if (!has("filterMes")) {
+    return;
+}
 
-    const selecionado =
-        $("filterMes").value ||
-        "todos";
+const selecionado =
+    $("filterMes").value ||
+    "todos";
 
-    const meses =
-        [
-            ...new Set(
-                data.map(item =>
+const meses =
+    [
+        ...new Set(
+            data.map(
+                item =>
                     extrairMes(
                         item.dataISO
                     )
-                )
             )
-        ].filter(Boolean);
+        )
+    ].filter(Boolean);
 
-    $("filterMes").innerHTML =
-        `
-        <option value="todos">
-            Todos os meses
-        </option>
-        ` +
-        meses
-            .map(
-                mes =>
-                    `<option value="${mes}">
-                        ${mes}
-                    </option>`
-            )
-            .join("");
+$("filterMes").innerHTML =
+    `
+    <option value="todos">
+        Todos os meses
+    </option>
+    ` +
+    meses
+        .map(
+            mes =>
+                `<option value="${mes}">
+                    ${mes}
+                </option>`
+        )
+        .join("");
 
-    $("filterMes").value =
-        meses.includes(selecionado) ||
-        selecionado === "todos"
-            ? selecionado
-            : "todos";
+$("filterMes").value =
+    meses.includes(
+        selecionado
+    ) ||
+    selecionado === "todos"
+        ? selecionado
+        : "todos";
+
 }
 
-
 /* =====================================================
-   DATA PADRÃO
+DATA PADRÃO
 ===================================================== */
 
 function setDefaultDate() {
 
-    if (
-        has("dataLancamento") &&
-        !$("dataLancamento").value
-    ) {
+if (
+    has("dataLancamento") &&
+    !$("dataLancamento").value
+) {
 
-        $("dataLancamento").value =
-            new Date()
-                .toISOString()
-                .split("T")[0];
-    }
+    $("dataLancamento").value =
+        new Date()
+            .toISOString()
+            .split("T")[0];
 }
 
+}
 
 /* =====================================================
-   FILTROS
+FILTROS
 ===================================================== */
 
 function obterFiltradas() {
 
-    if (!has("searchInput")) {
-        return [...data];
-    }
-
-    const termo =
-        $("searchInput")
-            .value
-            .trim()
-            .toLowerCase();
-
-    const tipo =
-        $("filterTipo").value;
-
-    const categoria =
-        $("filterCategoria").value;
-
-    const mes =
-        $("filterMes").value;
-
-    return [...data]
-
-        .filter(
-            item =>
-                tipo === "todos" ||
-                item.tipo === tipo
-        )
-
-        .filter(
-            item =>
-                categoria === "todas" ||
-                item.categoria === categoria
-        )
-
-        .filter(
-            item =>
-                mes === "todos" ||
-                extrairMes(
-                    item.dataISO
-                ) === mes
-        )
-
-        .filter(item => {
-
-            if (!termo) {
-                return true;
-            }
-
-            return [
-                item.descricao,
-                item.categoria,
-                item.pagamento,
-                item.observacao
-            ]
-                .join(" ")
-                .toLowerCase()
-                .includes(termo);
-        })
-
-        .sort(
-            (a, b) =>
-                new Date(
-                    b.dataISO
-                ) -
-                new Date(
-                    a.dataISO
-                )
-        );
+if (!has("searchInput")) {
+    return [...data];
 }
 
+const termo =
+    $("searchInput")
+        .value
+        .trim()
+        .toLowerCase();
 
-/* =====================================================
-   META
-===================================================== */
+const tipo =
+    $("filterTipo").value;
 
-function atualizarMeta(saldo = null) {
+const categoria =
+    $("filterCategoria").value;
 
-    const valorMeta =
-        Number(meta.valor || 0);
+const mes =
+    $("filterMes").value;
 
-    if (saldo === null) {
+return [...data]
 
-        const entradas =
-            data
-                .filter(
-                    item =>
-                        item.tipo ===
-                        "entrada"
-                )
-                .reduce(
-                    (total, item) =>
-                        total +
-                        Number(
-                            item.valor || 0
-                        ),
-                    0
-                );
+    .filter(
+        item =>
+            tipo === "todos" ||
+            item.tipo === tipo
+    )
 
-        const saidas =
-            data
-                .filter(
-                    item =>
-                        item.tipo ===
-                        "saida"
-                )
-                .reduce(
-                    (total, item) =>
-                        total +
-                        Number(
-                            item.valor || 0
-                        ),
-                    0
-                );
+    .filter(
+        item =>
+            categoria === "todas" ||
+            item.categoria ===
+                categoria
+    )
 
-        saldo =
-            entradas - saidas;
-    }
+    .filter(
+        item =>
+            mes === "todos" ||
+            extrairMes(
+                item.dataISO
+            ) === mes
+    )
 
-    const progresso =
-        valorMeta > 0
-            ? Math.max(
-                0,
-                Math.min(
-                    Number(saldo),
-                    valorMeta
-                )
+    .filter(item => {
+
+        if (!termo) {
+            return true;
+        }
+
+        return [
+            item.descricao,
+            item.categoria,
+            item.pagamento,
+            item.observacao
+        ]
+            .join(" ")
+            .toLowerCase()
+            .includes(termo);
+    })
+
+    .sort(
+        (a, b) =>
+            new Date(
+                b.dataISO
+            ) -
+            new Date(
+                a.dataISO
             )
-            : 0;
+    );
 
-    const percentual =
-        valorMeta > 0
-            ? (progresso / valorMeta) * 100
-            : 0;
-
-    const nome =
-        meta.titulo ||
-        "Meta principal";
-
-    const valorTexto =
-        `${format(progresso)} / ${format(valorMeta)}`;
-
-    const percentTexto =
-        `${percentual.toFixed(1)}%`;
-
-    const faltante =
-        Math.max(
-            valorMeta - progresso,
-            0
-        );
-
-    const hint =
-        percentual >= 100
-            ? "Meta atingida. Hora de definir o próximo objetivo."
-            : `Faltam ${format(faltante)} para atingir sua meta.`;
-
-    if (has("metaInput")) {
-        $("metaInput").value =
-            valorMeta || "";
-    }
-
-    if (has("metaTitulo")) {
-        $("metaTitulo").value =
-            meta.titulo || "";
-    }
-
-    if (has("metaNomeExibida2")) {
-        $("metaNomeExibida2").textContent =
-            nome;
-    }
-
-    if (has("metaValor2")) {
-        $("metaValor2").textContent =
-            valorTexto;
-    }
-
-    if (has("metaPercent2")) {
-        $("metaPercent2").textContent =
-            percentTexto;
-    }
-
-    if (has("metaBar2")) {
-        $("metaBar2").value =
-            percentual;
-    }
-
-    if (has("metaHint2")) {
-        $("metaHint2").textContent =
-            hint;
-    }
-
-    if (has("metaNomeExibida")) {
-        $("metaNomeExibida").textContent =
-            nome;
-    }
-
-    if (has("metaValor")) {
-        $("metaValor").textContent =
-            valorTexto;
-    }
-
-    if (has("metaPercent")) {
-        $("metaPercent").textContent =
-            percentTexto;
-    }
-
-    if (has("metaBar")) {
-        $("metaBar").value =
-            percentual;
-    }
-
-    if (has("metaHint")) {
-        $("metaHint").textContent =
-            hint;
-    }
-
-    if (has("dashboardMetaTitulo")) {
-        $("dashboardMetaTitulo").textContent =
-            nome;
-    }
 }
+
 /* =====================================================
-   RESUMO
+META
 ===================================================== */
 
-function atualizarResumo() {
+function atualizarMeta(
+saldo = null
+) {
 
-    /*
-       Se não estiver no dashboard,
-       ainda precisamos atualizar a meta.
-    */
+const valorMeta =
+    Number(
+        meta.valor || 0
+    );
 
-    if (!has("saldo")) {
-
-        atualizarMeta();
-
-        return;
-    }
+if (saldo === null) {
 
     const entradas =
         data
@@ -619,10 +658,14 @@ function atualizarResumo() {
                     "entrada"
             )
             .reduce(
-                (total, item) =>
+                (
+                    total,
+                    item
+                ) =>
                     total +
                     Number(
-                        item.valor
+                        item.valor ||
+                        0
                     ),
                 0
             );
@@ -635,238 +678,457 @@ function atualizarResumo() {
                     "saida"
             )
             .reduce(
-                (total, item) =>
+                (
+                    total,
+                    item
+                ) =>
                     total +
                     Number(
-                        item.valor
+                        item.valor ||
+                        0
                     ),
                 0
             );
 
-    const saldo =
-        entradas - saidas;
+    saldo =
+        entradas -
+        saidas;
+}
 
-    $("saldo").textContent =
-        format(saldo);
-
-    $("entradas").textContent =
-        format(entradas);
-
-    $("saidas").textContent =
-        format(saidas);
-
-    $("taxaPoupanca").textContent =
-        `${
-            entradas > 0
-                ? Math.max(
-                    0,
-                    (saldo /
-                        entradas) *
-                        100
-                ).toFixed(1)
-                : 0
-        }%`;
-
-    $("saldoStatus").textContent =
-        saldo > 0
-            ? "Seu saldo está positivo."
-            : saldo < 0
-                ? "Seu saldo exige atenção."
-                : "Sem sobra financeira no momento.";
-
-    const mesAtual =
-        new Date()
-            .toISOString()
-            .slice(0, 7);
-
-    const atual =
-        data.filter(item =>
-            item.dataISO?.startsWith(
-                mesAtual
+const progresso =
+    valorMeta > 0
+        ? Math.max(
+            0,
+            Math.min(
+                Number(saldo),
+                valorMeta
             )
-        );
+        )
+        : 0;
 
-    const entradasMes =
-        atual
-            .filter(
-                item =>
-                    item.tipo ===
-                    "entrada"
-            )
-            .reduce(
-                (total, item) =>
-                    total +
-                    Number(
-                        item.valor
-                    ),
-                0
-            );
+const percentual =
+    valorMeta > 0
+        ? (
+            progresso /
+            valorMeta
+        ) * 100
+        : 0;
 
-    const saidasMes =
-        atual
-            .filter(
-                item =>
-                    item.tipo ===
-                    "saida"
-            )
-            .reduce(
-                (total, item) =>
-                    total +
-                    Number(
-                        item.valor
-                    ),
-                0
-            );
+const nome =
+    meta.titulo ||
+    "Meta principal";
 
-    const economia =
-        entradasMes -
-        saidasMes;
+const valorTexto =
+    `${format(progresso)} / ${format(valorMeta)}`;
 
-    $("economiaMes").textContent =
-        format(economia);
+const percentTexto =
+    `${percentual.toFixed(1)}%`;
 
-    $("economiaStatus").textContent =
-        economia >= 0
-            ? "Você está acumulando no mês atual."
-            : "O mês atual está no vermelho.";
+const faltante =
+    Math.max(
+        valorMeta -
+        progresso,
+        0
+    );
 
-    const maior =
-        [...data]
-            .filter(
-                item =>
-                    item.tipo ===
-                    "saida"
-            )
-            .sort(
-                (a, b) =>
-                    Number(
-                        b.valor
-                    ) -
-                    Number(
-                        a.valor
-                    )
-            )[0];
+const hint =
+    percentual >= 100
+        ? "Meta atingida. Hora de definir o próximo objetivo."
+        : `Faltam ${format(faltante)} para atingir sua meta.`;
 
-    $("maiorGasto").textContent =
-        maior
-            ? format(maior.valor)
-            : format(0);
+if (has("metaInput")) {
 
-    $("maiorGastoDesc").textContent =
-        maior
-            ? `${maior.descricao} • ${maior.categoria}`
-            : "Sem despesas registradas.";
+    $("metaInput").value =
+        valorMeta || "";
+}
 
-    /* ATUALIZA ALERTA E META */
+if (has("metaTitulo")) {
 
-    atualizarAlerta(saldo);
+    $("metaTitulo").value =
+        meta.titulo || "";
+}
 
-    atualizarMeta(saldo);
+if (has("metaNomeExibida2")) {
+
+    $("metaNomeExibida2")
+        .textContent =
+        nome;
+}
+
+if (has("metaValor2")) {
+
+    $("metaValor2")
+        .textContent =
+        valorTexto;
+}
+
+if (has("metaPercent2")) {
+
+    $("metaPercent2")
+        .textContent =
+        percentTexto;
+}
+
+if (has("metaBar2")) {
+
+    $("metaBar2").value =
+        percentual;
+}
+
+if (has("metaHint2")) {
+
+    $("metaHint2")
+        .textContent =
+        hint;
+}
+
+if (has("metaNomeExibida")) {
+
+    $("metaNomeExibida")
+        .textContent =
+        nome;
+}
+
+if (has("metaValor")) {
+
+    $("metaValor")
+        .textContent =
+        valorTexto;
+}
+
+if (has("metaPercent")) {
+
+    $("metaPercent")
+        .textContent =
+        percentTexto;
+}
+
+if (has("metaBar")) {
+
+    $("metaBar").value =
+        percentual;
+}
+
+if (has("metaHint")) {
+
+    $("metaHint")
+        .textContent =
+        hint;
+}
+
+if (has("dashboardMetaTitulo")) {
+
+    $("dashboardMetaTitulo")
+        .textContent =
+        nome;
+}
+
 }
 
 /* =====================================================
-   ALERTA
+RESUMO
 ===================================================== */
 
-function atualizarAlerta(saldo) {
+function atualizarResumo() {
 
-    if (!has("alert")) {
-        return;
-    }
+if (!has("saldo")) {
 
-    $("alert").className = "";
-    $("alert").innerHTML = "";
+    atualizarMeta();
 
-    if (saldo < 0) {
-
-        $("alert").classList.add(
-            "alert",
-            "redA"
-        );
-
-        $("alert").textContent =
-            "⚠️ Seu saldo está negativo. Reveja seus gastos e prioridades.";
-
-    } else if (
-        saldo <
-        Number(meta.valor || 0) * 0.2
-    ) {
-
-        $("alert").classList.add(
-            "alert",
-            "yellowA"
-        );
-
-        $("alert").textContent =
-            "⚠️ Seu saldo ainda está distante da meta.";
-
-    } else {
-
-        $("alert").classList.add(
-            "alert",
-            "greenA"
-        );
-
-        $("alert").textContent =
-            "✅ Sua organização financeira está atualizada.";
-    }
+    return;
 }
 
-/* =====================================================
-   ORÇAMENTO
-===================================================== */
+const entradas =
+    data
+        .filter(
+            item =>
+                item.tipo ===
+                "entrada"
+        )
+        .reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.valor
+                ),
+            0
+        );
 
-function atualizarBudgets() {
-
-    if (!has("budgetList")) {
-        return;
-    }
-
-    const gastos = {};
-
+const saidas =
     data
         .filter(
             item =>
                 item.tipo ===
                 "saida"
         )
-        .forEach(item => {
-
-            gastos[
-                item.categoria
-            ] =
-                (
-                    gastos[
-                        item.categoria
-                    ] || 0
-                ) +
+        .reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
                 Number(
                     item.valor
-                );
-        });
-
-    const categoriasOrcadas =
-        Object.keys(
-            budgets
+                ),
+            0
         );
 
-    if (
-        !categoriasOrcadas.length
-    ) {
+const saldo =
+    entradas -
+    saidas;
 
-        $("budgetList").innerHTML =
-            `
-            <div class="empty-state">
-                Defina limites mensais por categoria para acompanhar seu orçamento.
-            </div>
-            `;
+$("saldo").textContent =
+    format(saldo);
 
-        return;
-    }
+$("entradas").textContent =
+    format(entradas);
+
+$("saidas").textContent =
+    format(saidas);
+
+$("taxaPoupanca")
+    .textContent =
+    `${
+        entradas > 0
+            ? Math.max(
+                0,
+                (
+                    saldo /
+                    entradas
+                ) * 100
+            ).toFixed(1)
+            : 0
+    }%`;
+
+$("saldoStatus")
+    .textContent =
+    saldo > 0
+        ? "Seu saldo está positivo."
+        : saldo < 0
+            ? "Seu saldo exige atenção."
+            : "Sem sobra financeira no momento.";
+
+const mesAtual =
+    new Date()
+        .toISOString()
+        .slice(0, 7);
+
+const atual =
+    data.filter(
+        item =>
+            item.dataISO?.startsWith(
+                mesAtual
+            )
+    );
+
+const entradasMes =
+    atual
+        .filter(
+            item =>
+                item.tipo ===
+                "entrada"
+        )
+        .reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.valor
+                ),
+            0
+        );
+
+const saidasMes =
+    atual
+        .filter(
+            item =>
+                item.tipo ===
+                "saida"
+        )
+        .reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.valor
+                ),
+            0
+        );
+
+const economia =
+    entradasMes -
+    saidasMes;
+
+$("economiaMes")
+    .textContent =
+    format(economia);
+
+$("economiaStatus")
+    .textContent =
+    economia >= 0
+        ? "Você está acumulando no mês atual."
+        : "O mês atual está no vermelho.";
+
+const maior =
+    [...data]
+        .filter(
+            item =>
+                item.tipo ===
+                "saida"
+        )
+        .sort(
+            (a, b) =>
+                Number(
+                    b.valor
+                ) -
+                Number(
+                    a.valor
+                )
+        )[0];
+
+$("maiorGasto")
+    .textContent =
+    maior
+        ? format(
+            maior.valor
+        )
+        : format(0);
+
+$("maiorGastoDesc")
+    .textContent =
+    maior
+        ? `${maior.descricao} • ${maior.categoria}`
+        : "Sem despesas registradas.";
+
+atualizarAlerta(
+    saldo
+);
+
+atualizarMeta(
+    saldo
+);
+
+}
+
+/* =====================================================
+ALERTA
+===================================================== */
+
+function atualizarAlerta(
+saldo
+) {
+
+if (!has("alert")) {
+    return;
+}
+
+$("alert").className =
+    "";
+
+$("alert").innerHTML =
+    "";
+
+if (saldo < 0) {
+
+    $("alert").classList.add(
+        "alert",
+        "redA"
+    );
+
+    $("alert").textContent =
+        "⚠️ Seu saldo está negativo. Reveja seus gastos e prioridades.";
+
+} else if (
+    saldo <
+    Number(
+        meta.valor || 0
+    ) * 0.2
+) {
+
+    $("alert").classList.add(
+        "alert",
+        "yellowA"
+    );
+
+    $("alert").textContent =
+        "⚠️ Seu saldo ainda está distante da meta.";
+
+} else {
+
+    $("alert").classList.add(
+        "alert",
+        "greenA"
+    );
+
+    $("alert").textContent =
+        "✅ Sua organização financeira está atualizada.";
+}
+
+}
+
+/* =====================================================
+ORÇAMENTO
+===================================================== */
+
+function atualizarBudgets() {
+
+if (!has("budgetList")) {
+    return;
+}
+
+const gastos = {};
+
+data
+    .filter(
+        item =>
+            item.tipo ===
+            "saida"
+    )
+    .forEach(item => {
+
+        gastos[
+            item.categoria
+        ] =
+            (
+                gastos[
+                    item.categoria
+                ] || 0
+            ) +
+            Number(
+                item.valor
+            );
+    });
+
+const categoriasOrcadas =
+    Object.keys(
+        budgets
+    );
+
+if (
+    !categoriasOrcadas.length
+) {
 
     $("budgetList").innerHTML =
-        categoriasOrcadas
-            .map(categoria => {
+        `
+        <div class="empty-state">
+            Defina limites mensais por categoria para acompanhar seu orçamento.
+        </div>
+        `;
+
+    return;
+}
+
+$("budgetList").innerHTML =
+    categoriasOrcadas
+        .map(
+            categoria => {
 
                 const limite =
                     Number(
@@ -883,15 +1145,17 @@ function atualizarBudgets() {
                 const percentual =
                     limite > 0
                         ? Math.min(
-                            (gasto /
-                                limite) *
-                                100,
+                            (
+                                gasto /
+                                limite
+                            ) * 100,
                             100
                         )
                         : 0;
 
                 const excedeu =
-                    gasto > limite;
+                    gasto >
+                    limite;
 
                 return `
                     <div class="budget-item">
@@ -938,712 +1202,779 @@ function atualizarBudgets() {
 
                     </div>
                 `;
-            })
-            .join("");
+            }
+        )
+        .join("");
+
 }
 
 /* =====================================================
-   TRANSAÇÃO HTML
+TRANSAÇÃO HTML
 ===================================================== */
 
-function transacaoHtml(item) {
+function transacaoHtml(
+item
+) {
+    const descricao=
+    escaparHtml(item.descricao);
 
-    return `
-        <div class="item">
+    const categoria =
+    escaparHtml(item.categoria);
 
-            <div class="item-info">
+    const pagamento =
+    escaparHtml(item.pagamento||"Sem forma de pagamento");
 
-                <div class="item-title-row">
+    const observacao =
+    escaparHtml(item.observacao||"");
 
-                    <strong>
-                        ${item.descricao}
-                    </strong>
+return `
+    <div class="item">
 
-                    <span
-                        class="badge ${item.tipo}">
-                        ${
-                            item.tipo ===
-                            "entrada"
-                                ? "Entrada"
-                                : "Saída"
-                        }
-                    </span>
+        <div class="item-info">
 
-                </div>
+            <div class="item-title-row">
 
-                <div class="small">
+                <strong>
+                    ${descricao}
+                </strong>
 
-                    ${item.categoria}
-
-                    •
-
-                    ${
-                        item.dataFormatada ||
-                        formatarData(
-                            item.dataISO
-                        )
-                    }
-
-                    •
-
-                    ${
-                        item.pagamento ||
-                        "Sem forma de pagamento"
-                    }
-
-                    ${
-                        item.observacao
-                            ? `<br>${item.observacao}`
-                            : ""
-                    }
-
-                </div>
-
-            </div>
-
-            <div class="item-value">
-
-                <span class="${
-                    item.tipo ===
-                    "entrada"
-                        ? "green"
-                        : "red"
-                }">
-
+                <span
+                    class="badge ${item.tipo}">
                     ${
                         item.tipo ===
                         "entrada"
-                            ? "+"
-                            : "-"
+                            ? "Entrada"
+                            : "Saída"
                     }
-
-                    ${format(
-                        item.valor
-                    )}
-
                 </span>
 
-                <button
-                    class="icon-btn edit-btn"
-                    onclick="editarItem(${item.id})"
-                    title="Editar">
-                    ✏️
-                </button>
+            </div>
 
-                <button
-                    class="icon-btn delete-btn"
-                    onclick="removerItem(${item.id})"
-                    title="Remover">
-                    🗑️
-                </button>
+            <div class="small">
+
+                ${categoria}
+
+                •
+
+                ${
+                    item.dataFormatada ||
+                    formatarData(
+                        item.dataISO
+                    )
+                }
+
+                •
+
+                ${pagamento}
+
+                ${observacao
+                        ? `<br>${item.observacao}`
+                        : ""}
 
             </div>
 
         </div>
-    `;
+
+        <div class="item-value">
+
+            <span class="${
+                item.tipo ===
+                "entrada"
+                    ? "green"
+                    : "red"
+            }">
+
+                ${
+                    item.tipo ===
+                    "entrada"
+                        ? "+"
+                        : "-"
+                }
+
+                ${format(
+                    item.valor
+                )}
+
+            </span>
+
+<button
+    class="icon-btn edit-btn"
+    onclick="editarItem(${item.id})"
+    title="Editar lançamento"
+    aria-label="Editar lançamento">
+    ✏️
+</button>
+
+<button
+    class="icon-btn delete-btn"
+    onclick="removerItem(${item.id})"
+    title="Excluir lançamento"
+    aria-label="Excluir lançamento">
+    🗑️
+</button>
+
+        </div>
+
+    </div>
+`;
+
 }
 
 /* =====================================================
-   DASHBOARD
+DASHBOARD
 ===================================================== */
 
 function renderDashboard() {
 
-    if (
-        !has(
-            "dashboardTransactions"
-        )
-    ) {
-        return;
-    }
+if (
+    !has(
+        "dashboardTransactions"
+    )
+) {
+    return;
+}
 
-    const recentes =
-        [...data]
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.dataISO
-                    ) -
-                    new Date(
-                        a.dataISO
-                    )
-            )
-            .slice(0, 4);
-
-    $("dashboardTransactions").innerHTML =
-        recentes.length
-            ? recentes
-                .map(
-                    transacaoHtml
+const recentes =
+    [...data]
+        .sort(
+            (a, b) =>
+                new Date(
+                    b.dataISO
+                ) -
+                new Date(
+                    a.dataISO
                 )
-                .join("")
-            : `
-                <div class="empty-state">
-                    Ainda não há lançamentos registrados.
-                </div>
-            `;
+        )
+        .slice(0, 4);
+
+$("dashboardTransactions")
+    .innerHTML =
+    recentes.length
+        ? recentes
+            .map(
+                transacaoHtml
+            )
+            .join("")
+        : `
+            <div class="empty-state">
+                Ainda não há lançamentos registrados.
+            </div>
+        `;
+
 }
 
 /* =====================================================
-   LANÇAMENTOS
+LANÇAMENTOS
 ===================================================== */
 
 function renderLancamentos() {
 
-    if (!has("list")) {
-        return;
-    }
+if (!has("list")) {
+    return;
+}
 
-    const filtradas =
-        obterFiltradas();
+const filtradas =
+    obterFiltradas();
 
-    const totalPages =
-        Math.max(
-            1,
-            Math.ceil(
-                filtradas.length /
-                    ITEMS_PER_PAGE
+const totalPages =
+    Math.max(
+        1,
+        Math.ceil(
+            filtradas.length /
+            ITEMS_PER_PAGE
+        )
+    );
+
+currentPage =
+    Math.min(
+        currentPage,
+        totalPages
+    );
+
+const inicio =
+    (
+        currentPage -
+        1
+    ) *
+    ITEMS_PER_PAGE;
+
+const pagina =
+    filtradas.slice(
+        inicio,
+        inicio +
+        ITEMS_PER_PAGE
+    );
+
+$("transactionCounter")
+    .textContent =
+    `${filtradas.length} ${
+        filtradas.length === 1
+            ? "item"
+            : "itens"
+    }`;
+
+$("list").innerHTML =
+    pagina.length
+        ? pagina
+            .map(
+                transacaoHtml
             )
-        );
+            .join("")
+        : `
+            <div class="empty-state">
+                Nenhum lançamento encontrado com os filtros atuais.
+            </div>
+        `;
 
-    currentPage =
-        Math.min(
-            currentPage,
-            totalPages
-        );
+if (has("pageInfo")) {
 
-    const inicio =
-        (currentPage - 1) *
-        ITEMS_PER_PAGE;
+    $("pageInfo").textContent =
+        `Página ${currentPage} de ${totalPages}`;
+}
 
-    const pagina =
-        filtradas.slice(
-            inicio,
-            inicio +
-                ITEMS_PER_PAGE
-        );
+if (has("prevPageBtn")) {
 
-    $("transactionCounter").textContent =
-        `${filtradas.length} ${
-            filtradas.length === 1
-                ? "item"
-                : "itens"
-        }`;
+    $("prevPageBtn").disabled =
+        currentPage <= 1;
+}
 
-    $("list").innerHTML =
-        pagina.length
-            ? pagina
-                .map(
-                    transacaoHtml
-                )
-                .join("")
-            : `
-                <div class="empty-state">
-                    Nenhum lançamento encontrado com os filtros atuais.
-                </div>
-            `;
+if (has("nextPageBtn")) {
 
-    if (has("pageInfo")) {
+    $("nextPageBtn").disabled =
+        currentPage >=
+        totalPages;
+}
 
-        $("pageInfo").textContent =
-            `Página ${currentPage} de ${totalPages}`;
-    }
+if (has("pagination")) {
 
-    if (has("prevPageBtn")) {
-
-        $("prevPageBtn").disabled =
-            currentPage <= 1;
-    }
-
-    if (has("nextPageBtn")) {
-
-        $("nextPageBtn").disabled =
-            currentPage >= totalPages;
-    }
-
-    if (has("pagination")) {
-
-        $("pagination").classList.toggle(
+    $("pagination")
+        .classList.toggle(
             "hidden",
             totalPages <= 1
         );
-    }
+}
+
 }
 
 /* =====================================================
-   SALVAR META
+SALVAR META
 ===================================================== */
 
 function salvarMetaHandler() {
 
-    const valor =
-        parseFloat(
-            $("metaInput").value
-        );
-
-    const titulo =
-        $("metaTitulo")
-            .value
-            .trim() ||
-        "Meta principal";
-
-    if (
-        !valor ||
-        valor <= 0
-    ) {
-
-        alert(
-            "Digite uma meta válida."
-        );
-
-        return;
-    }
-
-    meta = {
-        titulo,
-        valor
-    };
-
-    salvarMeta();
-
-    atualizarResumo();
-
-    atualizarMeta();
-
-    alert(
-        "Meta salva com sucesso."
+const valor =
+    parseFloat(
+        $("metaInput").value
     );
+
+const titulo =
+    $("metaTitulo")
+        .value
+        .trim() ||
+    "Meta principal";
+
+if (
+    !valor ||
+    valor <= 0
+) {
+
+    mostrarNotificacao(
+        "Digite um valor de meta válido.",
+        "erro"
+    );
+
+    return;
+}
+
+meta = {
+    titulo,
+    valor
+};
+
+salvarMeta();
+
+atualizarResumo();
+
+atualizarMeta();
+
+mostrarNotificacao(
+    "meta salva com sucesso.",
+    "sucesso"
+);
+
 }
 
 /* =====================================================
-   SALVAR ORÇAMENTO
+SALVAR ORÇAMENTO
 ===================================================== */
 
 function salvarBudgetHandler() {
 
-    const categoria =
-        $("budgetCategoria")
-            .value;
+const categoria =
+    $("budgetCategoria")
+        .value;
 
-    const valor =
-        parseFloat(
-            $("budgetValor")
-                .value
-        );
+const valor =
+    parseFloat(
+        $("budgetValor")
+            .value
+    );
 
-    if (!categoria) {
+if (!categoria) {
 
-        alert(
-            "Selecione uma categoria."
-        );
+    mostrarNotificacao(
+        "Selecione uma categoria.",
+        "erro"
+    );
 
-        return;
-    }
+    return;
+}
 
-    if (
-        !valor ||
-        valor <= 0
-    ) {
+if (
+    !valor ||
+    valor <= 0
+) {
 
-        alert(
-            "Digite um valor de limite válido."
-        );
+    mostrarNotificacao(
+        "Digite um valor de limite válido.",
+        "erro"
+    );
 
-        return;
-    }
+    return;
+}
 
-    budgets[categoria] =
-        valor;
+budgets[categoria] =
+    valor;
 
-    salvarBudgets();
+salvarBudgets();
 
-    $("budgetValor").value =
-        "";
+$("budgetValor").value =
+    "";
 
-    atualizarBudgets();
+atualizarBudgets();
+
+mostrarNotificacao(
+    "Orçamento salvo com sucesso.",
+    "sucesso"
+);
+
 }
 
 /* =====================================================
-   ADICIONAR / EDITAR LANÇAMENTO
+ADICIONAR / EDITAR LANÇAMENTO
 ===================================================== */
 
 function handleSubmit(e) {
 
-    e.preventDefault();
+e.preventDefault();
 
-    const descricao =
-        $("desc")
+const descricao =
+    $("desc")
+        .value
+        .trim();
+
+const valor =
+    parseFloat(
+        $("valor").value
+    );
+
+if (!descricao) {
+
+    mostrarNotificacao(
+        "Digite uma descrição.",
+        "erro"
+    );
+
+    return;
+}
+
+if (
+    !valor ||
+    valor <= 0
+) {
+
+    mostrarNotificacao(
+        "Digite um valor válido.",
+        "erro"
+    );
+
+    return;
+}
+
+const dataISO =
+    $("dataLancamento")
+        .value;
+
+if (!dataISO) {
+
+    mostrarNotificacao(
+        "Selecione a data do lançamento.",
+        "erro"
+    );
+
+    return;
+}
+
+const editId =
+    $("editId").value;
+
+const payload = {
+
+    id:
+        editId
+            ? Number(editId)
+            : Date.now(),
+
+    descricao,
+
+    valor,
+
+    tipo:
+        $("tipo").value,
+
+    categoria:
+        $("cat").value,
+
+    pagamento:
+        $("pagamento").value,
+
+    observacao:
+        $("obs")
             .value
-            .trim();
+            .trim(),
 
-    const valor =
-        parseFloat(
-            $("valor").value
-        );
+    dataISO,
 
-    if (!descricao) {
+    dataFormatada:
+        formatarData(
+            dataISO
+        )
+};
 
-        alert(
-            "Digite uma descrição."
-        );
+if (editId) {
 
-        return;
-    }
-
-    if (
-        !valor ||
-        valor <= 0
-    ) {
-
-        alert(
-            "Digite um valor válido."
-        );
-
-        return;
-    }
-
-    const dataISO =
-        $("dataLancamento")
-            .value;
-
-    if (!dataISO) {
-
-        alert(
-            "Selecione a data do lançamento."
-        );
-
-        return;
-    }
-
-    const editId =
-        $("editId").value;
-
-    const payload = {
-
-        id:
-            editId
-                ? Number(editId)
-                : Date.now(),
-
-        descricao,
-
-        valor,
-
-        tipo:
-            $("tipo").value,
-
-        categoria:
-            $("cat").value,
-
-        pagamento:
-            $("pagamento").value,
-
-        observacao:
-            $("obs")
-                .value
-                .trim(),
-
-        dataISO,
-
-        dataFormatada:
-            formatarData(
-                dataISO
-            )
-    };
-
-    if (editId) {
-
-        data =
-            data.map(item =>
+    data =
+        data.map(
+            item =>
                 item.id ===
                 Number(editId)
                     ? payload
                     : item
-            );
-
-    } else {
-
-        data.unshift(
-            payload
-        );
-    }
-
-    salvarDados();
-
-    $("transactionForm")
-        .reset();
-
-    $("editId").value =
-        "";
-
-    $("submitBtn").textContent =
-        "Adicionar lançamento";
-
-    $("cancelEditBtn")
-        .classList.add(
-            "hidden"
         );
 
-    setDefaultDate();
+} else {
 
-    currentPage = 1;
+    data.unshift(
+        payload
+    );
+}
 
-    atualizarResumo();
+salvarDados();
 
-    atualizarMeta();
+$("transactionForm")
+    .reset();
 
-    renderLancamentos();
+$("editId").value =
+    "";
 
-    renderDashboard();
+$("submitBtn").textContent =
+    "Adicionar lançamento";
 
-    atualizarBudgets();
+$("cancelEditBtn")
+    .classList.add(
+        "hidden"
+    );
 
-    atualizarGraficos();
+setDefaultDate();
+
+currentPage = 1;
+
+atualizarResumo();
+
+atualizarMeta();
+
+renderLancamentos();
+
+renderDashboard();
+
+atualizarBudgets();
+
+atualizarGraficos();
+
+mostrarNotificacao(
+    editId
+        ? "Lançamento atualizado com sucesso."
+        : "Lançamento adicionado com sucesso.",
+    "sucesso"
+);
+
 }
 
 /* =====================================================
-   EDITAR ITEM
+EDITAR ITEM
 ===================================================== */
 
 function editarItem(id) {
 
-    if (!has("transactionForm")) {
+if (!has("transactionForm")) {
 
-        window.location.href =
-            "lancamentos.html";
+    window.location.href =
+        "lancamentos.html";
 
-        return;
-    }
+    return;
+}
 
-    const item =
-        data.find(
-            x => x.id === id
-        );
+const item =
+    data.find(
+        x =>
+            x.id === id
+    );
 
-    if (!item) {
-        return;
-    }
+if (!item) {
+    return;
+}
 
-    $("editId").value =
-        item.id;
+$("editId").value =
+    item.id;
 
-    $("desc").value =
-        item.descricao;
+$("desc").value =
+    item.descricao;
 
-    $("valor").value =
-        item.valor;
+$("valor").value =
+    item.valor;
 
-    $("tipo").value =
-        item.tipo;
+$("tipo").value =
+    item.tipo;
 
-    $("cat").value =
-        item.categoria;
+$("cat").value =
+    item.categoria;
 
-    $("pagamento").value =
-        item.pagamento ||
-        "Pix";
+$("pagamento").value =
+    item.pagamento ||
+    "Pix";
 
-    $("dataLancamento").value =
-        item.dataISO;
+$("dataLancamento").value =
+    item.dataISO;
 
-    $("obs").value =
-        item.observacao ||
-        "";
+$("obs").value =
+    item.observacao ||
+    "";
 
-    $("submitBtn").textContent =
-        "Salvar alterações";
+$("submitBtn").textContent =
+    "Salvar alterações";
 
-    $("cancelEditBtn")
-        .classList.remove(
-            "hidden"
-        );
+$("cancelEditBtn")
+    .classList.remove(
+        "hidden"
+    );
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+window.scrollTo({
+    top: 0,
+    behavior:
+        "smooth"
+});
+
 }
 
 /* =====================================================
-   REMOVER ITEM
+REMOVER ITEM
 ===================================================== */
 
 function removerItem(id) {
 
-    if (
-        !confirm(
-            "Deseja remover este lançamento?"
-        )
-    ) {
-        return;
-    }
+    mostrarConfirmacao(
+        "Deseja remover este lançamento? Essa ação não poderá ser desfeita.",
+        () => {
 
-    data =
-        data.filter(
-            item =>
-                item.id !== id
-        );
+            data =
+                data.filter(
+                    item =>
+                        item.id !== id
+                );
 
-    salvarDados();
+            salvarDados();
 
-    atualizarResumo();
+            atualizarResumo();
 
-    atualizarMeta();
+            atualizarMeta();
 
-    renderLancamentos();
+            renderLancamentos();
 
-    renderDashboard();
+            renderDashboard();
 
-    atualizarBudgets();
+            atualizarBudgets();
 
-    atualizarGraficos();
+            atualizarGraficos();
+
+            mostrarNotificacao(
+                "Lançamento removido com sucesso.",
+                "sucesso"
+            );
+        }
+    );
 }
 
 /* =====================================================
-   FILTROS
+FILTROS
 ===================================================== */
 
 function limparFiltros() {
 
-    $("searchInput").value =
-        "";
+$("searchInput").value =
+    "";
 
-    $("filterTipo").value =
-        "todos";
+$("filterTipo").value =
+    "todos";
 
-    $("filterCategoria").value =
-        "todas";
+$("filterCategoria").value =
+    "todas";
 
-    $("filterMes").value =
-        "todos";
+$("filterMes").value =
+    "todos";
 
-    currentPage = 1;
+currentPage = 1;
 
-    renderLancamentos();
+renderLancamentos();
+
 }
 
 /* =====================================================
-   GRÁFICOS
+GRÁFICOS
 ===================================================== */
 
 function criarGrafico(
-    id,
-    config
+id,
+config
 ) {
 
-    const canvas = $(id);
+const canvas =
+    $(id);
 
-    if (
-        !canvas ||
-        typeof Chart ===
-            "undefined"
-    ) {
-        return null;
-    }
+if (
+    !canvas ||
+    typeof Chart ===
+        "undefined"
+) {
+    return null;
+}
 
-    return new Chart(
-        canvas,
-        config
-    );
+return new Chart(
+    canvas,
+    config
+);
+
 }
 
 function atualizarGraficos() {
 
-    if (!has("overviewChart")) {
-        return;
-    }
+if (!has("overviewChart")) {
+    return;
+}
 
-    const entradas =
-        data
-            .filter(
-                i =>
-                    i.tipo ===
-                    "entrada"
-            )
-            .reduce(
-                (a, i) =>
-                    a +
-                    Number(
-                        i.valor
-                    ),
-                0
-            );
-
-    const saidas =
-        data
-            .filter(
-                i =>
-                    i.tipo ===
-                    "saida"
-            )
-            .reduce(
-                (a, i) =>
-                    a +
-                    Number(
-                        i.valor
-                    ),
-                0
-            );
-
-    if (overviewChart) {
-        overviewChart.destroy();
-    }
-
-    overviewChart =
-        criarGrafico(
-            "overviewChart",
-            {
-                type:
-                    "doughnut",
-
-                data: {
-
-                    labels: [
-                        "Entradas",
-                        "Saídas"
-                    ],
-
-                    datasets: [
-                        {
-                            data: [
-                                entradas,
-                                saidas
-                            ],
-
-                            backgroundColor:
-                                [
-                                    "#22c55e",
-                                    "#ef4444"
-                                ],
-
-                            borderWidth:
-                                0
-                        }
-                    ]
-                },
-
-                options: {
-
-                    responsive:
-                        true,
-
-                    maintainAspectRatio:
-                        false
-                }
-            }
+const entradas =
+    data
+        .filter(
+            i =>
+                i.tipo ===
+                "entrada"
+        )
+        .reduce(
+            (
+                a,
+                i
+            ) =>
+                a +
+                Number(
+                    i.valor
+                ),
+            0
         );
 
-    const cats = {};
-
+const saidas =
     data
         .filter(
             i =>
                 i.tipo ===
                 "saida"
         )
-        .forEach(i => {
+        .reduce(
+            (
+                a,
+                i
+            ) =>
+                a +
+                Number(
+                    i.valor
+                ),
+            0
+        );
 
-            cats[i.categoria] =
+if (overviewChart) {
+
+    overviewChart.destroy();
+}
+
+overviewChart =
+    criarGrafico(
+        "overviewChart",
+        {
+
+            type:
+                "doughnut",
+
+            data: {
+
+                labels: [
+                    "Entradas",
+                    "Saídas"
+                ],
+
+                datasets: [
+                    {
+
+                        data: [
+                            entradas,
+                            saidas
+                        ],
+
+                        backgroundColor:
+                            [
+                                "#22c55e",
+                                "#ef4444"
+                            ],
+
+                        borderWidth:
+                            0
+                    }
+                ]
+            },
+
+            options: {
+
+                responsive:
+                    true,
+
+                maintainAspectRatio:
+                    false
+            }
+        }
+    );
+
+
+const cats = {};
+
+data
+    .filter(
+        i =>
+            i.tipo ===
+            "saida"
+    )
+    .forEach(
+        i => {
+
+            cats[
+                i.categoria
+            ] =
                 (
                     cats[
                         i.categoria
@@ -1652,70 +1983,77 @@ function atualizarGraficos() {
                 Number(
                     i.valor
                 );
-        });
+        }
+    );
 
-    if (categoryChart) {
-        categoryChart.destroy();
-    }
 
-    categoryChart =
-        criarGrafico(
-            "categoryChart",
-            {
-                type:
-                    "bar",
+if (categoryChart) {
 
-                data: {
+    categoryChart.destroy();
+}
 
-                    labels:
-                        Object.keys(
-                            cats
-                        ),
+categoryChart =
+    criarGrafico(
+        "categoryChart",
+        {
 
-                    datasets: [
-                        {
-                            label:
-                                "Gastos",
+            type:
+                "bar",
 
-                            data:
-                                Object.values(
-                                    cats
-                                ),
+            data: {
 
-                            backgroundColor:
-                                Object.keys(
-                                    cats
-                                ).map(
-                                    (
-                                        _,
-                                        i
-                                    ) =>
-                                        coresCategorias[
-                                            i %
-                                            coresCategorias.length
-                                        ]
-                                ),
+                labels:
+                    Object.keys(
+                        cats
+                    ),
 
-                            borderRadius:
-                                10
-                        }
-                    ]
-                },
+                datasets: [
+                    {
 
-                options: {
+                        label:
+                            "Gastos",
 
-                    responsive:
-                        true,
+                        data:
+                            Object.values(
+                                cats
+                            ),
 
-                    maintainAspectRatio:
-                        false
-                }
+                        backgroundColor:
+                            Object.keys(
+                                cats
+                            ).map(
+                                (
+                                    _,
+                                    i
+                                ) =>
+                                    coresCategorias[
+                                        i %
+                                        coresCategorias.length
+                                    ]
+                            ),
+
+                        borderRadius:
+                            10
+                    }
+                ]
+            },
+
+            options: {
+
+                responsive:
+                    true,
+
+                maintainAspectRatio:
+                    false
             }
-        );
+        }
+    );
 
-    const mensal = {};
 
-    data.forEach(i => {
+const mensal = {};
+
+data.forEach(
+    i => {
 
         const chave =
             i.dataISO?.slice(
@@ -1724,9 +2062,7 @@ function atualizarGraficos() {
             ) ||
             "Sem data";
 
-        if (
-            !mensal[chave]
-        ) {
+        if (!mensal[chave]) {
 
             mensal[chave] = {
 
@@ -1747,421 +2083,449 @@ function atualizarGraficos() {
             Number(
                 i.valor
             );
-    });
+    }
+);
 
-    const keys =
-        Object.keys(
-            mensal
-        ).sort();
 
-    const labels =
-        keys.map(k =>
+const keys =
+    Object.keys(
+        mensal
+    ).sort();
+
+
+const labels =
+    keys.map(
+        k =>
             k === "Sem data"
                 ? k
                 : getMonthNameKey(
                     `${k}-01`
                 )
-        );
+    );
 
-    const saldos =
-        keys.map(k =>
+
+const saldos =
+    keys.map(
+        k =>
             mensal[k]
                 .entradas -
             mensal[k]
                 .saidas
-        );
+    );
 
-    if (monthlyChart) {
-        monthlyChart.destroy();
-    }
 
-    monthlyChart =
-        criarGrafico(
-            "monthlyChart",
-            {
-                type:
-                    "line",
+if (monthlyChart) {
 
-                data: {
+    monthlyChart.destroy();
+}
 
-                    labels,
 
-                    datasets: [
-                        {
-                            label:
-                                "Saldo mensal",
+monthlyChart =
+    criarGrafico(
+        "monthlyChart",
+        {
 
-                            data:
-                                saldos,
+            type:
+                "line",
 
-                            borderColor:
-                                "#38bdf8",
+            data: {
 
-                            backgroundColor:
-                                "rgba(56,189,248,.18)",
+                labels,
 
-                            fill:
-                                true,
+                datasets: [
+                    {
 
-                            tension:
-                                .35
-                        }
-                    ]
-                },
+                        label:
+                            "Saldo mensal",
 
-                options: {
+                        data:
+                            saldos,
 
-                    responsive:
-                        true,
+                        borderColor:
+                            "#38bdf8",
 
-                    maintainAspectRatio:
-                        false
-                }
+                        backgroundColor:
+                            "rgba(56,189,248,.18)",
+
+                        fill:
+                            true,
+
+                        tension:
+                            .35
+                    }
+                ]
+            },
+
+            options: {
+
+                responsive:
+                    true,
+
+                maintainAspectRatio:
+                    false
             }
-        );
+        }
+    );
+
 }
 
 /* =====================================================
-   FUNDO ANIMADO
+FUNDO ANIMADO
 ===================================================== */
 
 function animateBackground() {
 
-    const canvas =
-        $("bg");
+const canvas =
+    $("bg");
 
-    if (!canvas) {
-        return;
-    }
+if (!canvas) {
+    return;
+}
 
-    const ctx =
-        canvas.getContext(
-            "2d"
-        );
+const ctx =
+    canvas.getContext(
+        "2d"
+    );
 
-    let w =
+let w =
+    canvas.width =
+        innerWidth;
+
+let h =
+    canvas.height =
+        innerHeight;
+
+const points =
+    Array.from(
+        {
+            length:
+                Math.min(
+                    65,
+                    Math.floor(
+                        w / 20
+                    )
+                )
+        },
+        () => ({
+
+            x:
+                Math.random() *
+                w,
+
+            y:
+                Math.random() *
+                h,
+
+            r:
+                Math.random() *
+                2.2 +
+                1,
+
+            sx:
+                (
+                    Math.random() -
+                    0.5
+                ) *
+                0.5,
+
+            sy:
+                (
+                    Math.random() -
+                    0.5
+                ) *
+                0.5
+        })
+    );
+
+
+function resize() {
+
+    w =
         canvas.width =
             innerWidth;
 
-    let h =
+    h =
         canvas.height =
             innerHeight;
+}
 
-    const points =
-        Array.from(
-            {
-                length:
-                    Math.min(
-                        65,
-                        Math.floor(
-                            w / 20
-                        )
-                    )
-            },
-            () => ({
 
-                x:
-                    Math.random() *
-                    w,
+function draw() {
 
-                y:
-                    Math.random() *
-                    h,
-
-                r:
-                    Math.random() *
-                        2.2 +
-                    1,
-
-                sx:
-                    (
-                        Math.random() -
-                        0.5
-                    ) *
-                    0.5,
-
-                sy:
-                    (
-                        Math.random() -
-                        0.5
-                    ) *
-                    0.5
-            })
-        );
-
-    function resize() {
-
-        w =
-            canvas.width =
-                innerWidth;
-
-        h =
-            canvas.height =
-                innerHeight;
-    }
-
-    function draw() {
-
-        ctx.clearRect(
-            0,
-            0,
-            w,
-            h
-        );
-
-        points.forEach(
-            p => {
-
-                p.x +=
-                    p.sx;
-
-                p.y +=
-                    p.sy;
-
-                if (
-                    p.x < 0 ||
-                    p.x > w
-                ) {
-
-                    p.sx *=
-                        -1;
-                }
-
-                if (
-                    p.y < 0 ||
-                    p.y > h
-                ) {
-
-                    p.sy *=
-                        -1;
-                }
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    p.x,
-                    p.y,
-                    p.r,
-                    0,
-                    Math.PI * 2
-                );
-
-                ctx.fillStyle =
-                    "rgba(56,189,248,.35)";
-
-                ctx.fill();
-            }
-        );
-
-        requestAnimationFrame(
-            draw
-        );
-    }
-
-    addEventListener(
-        "resize",
-        resize
+    ctx.clearRect(
+        0,
+        0,
+        w,
+        h
     );
 
-    draw();
+    points.forEach(
+        p => {
+
+            p.x +=
+                p.sx;
+
+            p.y +=
+                p.sy;
+
+            if (
+                p.x < 0 ||
+                p.x > w
+            ) {
+
+                p.sx *=
+                    -1;
+            }
+
+            if (
+                p.y < 0 ||
+                p.y > h
+            ) {
+
+                p.sy *=
+                    -1;
+            }
+
+            ctx.beginPath();
+
+            ctx.arc(
+                p.x,
+                p.y,
+                p.r,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "rgba(56,189,248,.35)";
+
+            ctx.fill();
+        }
+    );
+
+    requestAnimationFrame(
+        draw
+    );
+}
+
+
+addEventListener(
+    "resize",
+    resize
+);
+
+draw();
+
 }
 
 /* =====================================================
-   PÁGINA ATUAL
+PÁGINA ATUAL
 ===================================================== */
 
 function marcarPaginaAtual() {
 
-    const atual =
-        location.pathname
-            .split("/")
-            .pop() ||
-        "index.html";
+const atual =
+    location.pathname
+        .split("/")
+        .pop() ||
+    "index.html";
 
-    document
-        .querySelectorAll(
-            ".nav-btn"
-        )
-        .forEach(link => {
+document
+    .querySelectorAll(
+        ".nav-btn"
+    )
+    .forEach(
+        link => {
 
             link.classList.toggle(
                 "active",
                 link.dataset.page ===
                     atual
             );
-        });
+        }
+    );
+
 }
 
 /* =====================================================
-   EVENTOS
+EVENTOS
 ===================================================== */
 
 function bindEvents() {
 
-    if (
-        has(
-            "transactionForm"
-        )
-    ) {
+if (
+    has(
+        "transactionForm"
+    )
+) {
 
-        $("transactionForm")
-            .addEventListener(
-                "submit",
-                handleSubmit
-            );
-    }
+    $("transactionForm")
+        .addEventListener(
+            "submit",
+            handleSubmit
+        );
+}
 
-    if (
-        has(
-            "cancelEditBtn"
-        )
-    ) {
 
-        $("cancelEditBtn")
-            .addEventListener(
-                "click",
-                () => {
+if (
+    has(
+        "cancelEditBtn"
+    )
+) {
 
-                    $("transactionForm")
-                        .reset();
+    $("cancelEditBtn")
+        .addEventListener(
+            "click",
+            () => {
 
-                    $("editId").value =
-                        "";
+                $("transactionForm")
+                    .reset();
 
-                    $("submitBtn")
-                        .textContent =
-                        "Adicionar lançamento";
+                $("editId").value =
+                    "";
 
-                    $("cancelEditBtn")
-                        .classList.add(
-                            "hidden"
-                        );
+                $("submitBtn")
+                    .textContent =
+                    "Adicionar lançamento";
 
-                    setDefaultDate();
-                }
-            );
-    }
+                $("cancelEditBtn")
+                    .classList.add(
+                        "hidden"
+                    );
 
-    if (
-        has(
-            "saveGoalBtn"
-        )
-    ) {
+                setDefaultDate();
+            }
+        );
+}
 
-        $("saveGoalBtn")
-            .addEventListener(
-                "click",
-                salvarMetaHandler
-            );
-    }
 
-    if (
-        has(
-            "saveBudgetBtn"
-        )
-    ) {
+if (
+    has(
+        "saveGoalBtn"
+    )
+) {
 
-        $("saveBudgetBtn")
-            .addEventListener(
-                "click",
-                salvarBudgetHandler
-            );
-    }
+    $("saveGoalBtn")
+        .addEventListener(
+            "click",
+            salvarMetaHandler
+        );
+}
 
-    if (
-        has(
-            "clearFiltersBtn"
-        )
-    ) {
 
-        $("clearFiltersBtn")
-            .addEventListener(
-                "click",
-                limparFiltros
-            );
-    }
+if (
+    has(
+        "saveBudgetBtn"
+    )
+) {
 
-    if (
-        has(
-            "prevPageBtn"
-        )
-    ) {
+    $("saveBudgetBtn")
+        .addEventListener(
+            "click",
+            salvarBudgetHandler
+        );
+}
 
-        $("prevPageBtn")
-            .addEventListener(
-                "click",
-                () => {
 
-                    if (
-                        currentPage >
-                        1
-                    ) {
+if (
+    has(
+        "clearFiltersBtn"
+    )
+) {
 
-                        currentPage--;
+    $("clearFiltersBtn")
+        .addEventListener(
+            "click",
+            limparFiltros
+        );
+}
 
-                        renderLancamentos();
-                    }
-                }
-            );
-    }
 
-    if (
-        has(
-            "nextPageBtn"
-        )
-    ) {
+if (
+    has(
+        "prevPageBtn"
+    )
+) {
 
-        $("nextPageBtn")
-            .addEventListener(
-                "click",
-                () => {
+    $("prevPageBtn")
+        .addEventListener(
+            "click",
+            () => {
 
-                    const total =
-                        Math.max(
-                            1,
-                            Math.ceil(
-                                obterFiltradas()
-                                    .length /
-                                ITEMS_PER_PAGE
-                            )
-                        );
+                if (
+                    currentPage >
+                    1
+                ) {
 
-                    if (
-                        currentPage <
-                        total
-                    ) {
-
-                        currentPage++;
-
-                        renderLancamentos();
-                    }
-                }
-            );
-    }
-
-    if (
-        has(
-            "searchInput"
-        )
-    ) {
-
-        $("searchInput")
-            .addEventListener(
-                "input",
-                () => {
-
-                    currentPage = 1;
+                    currentPage--;
 
                     renderLancamentos();
                 }
-            );
-    }
+            }
+        );
+}
 
-    [
-        "filterTipo",
-        "filterCategoria",
-        "filterMes"
-    ].forEach(id => {
+
+if (
+    has(
+        "nextPageBtn"
+    )
+) {
+
+    $("nextPageBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                const total =
+                    Math.max(
+                        1,
+                        Math.ceil(
+                            obterFiltradas()
+                                .length /
+                            ITEMS_PER_PAGE
+                        )
+                    );
+
+                if (
+                    currentPage <
+                    total
+                ) {
+
+                    currentPage++;
+
+                    renderLancamentos();
+                }
+            }
+        );
+}
+
+
+if (
+    has(
+        "searchInput"
+    )
+) {
+
+    $("searchInput")
+        .addEventListener(
+            "input",
+            () => {
+
+                currentPage = 1;
+
+                renderLancamentos();
+            }
+        );
+}
+
+
+[
+    "filterTipo",
+    "filterCategoria",
+    "filterMes"
+].forEach(
+    id => {
 
         if (has(id)) {
 
@@ -2175,262 +2539,408 @@ function bindEvents() {
                 }
             );
         }
-    });
-    $("anoFiscal")?.addEventListener(
-        "change",
-        atualizarFiscal
+    }
+);
+
+
+$("anoFiscal")?.addEventListener(
+    "change",
+    atualizarFiscal
+);
+
+
+document
+    .querySelectorAll(
+        ".nav-btn"
+    )
+    .forEach(
+        link => {
+
+            const destino =
+                link.getAttribute(
+                    "href"
+                );
+
+            if (!destino) {
+                return;
+            }
+
+            link.addEventListener(
+                "click",
+                e => {
+
+                    e.preventDefault();
+
+                    document.body.classList.add(
+                        "fsx-saindo"
+                    );
+
+                    setTimeout(
+                        () => {
+
+                            window.location.href =
+                                destino;
+
+                        },
+                        180
+                    );
+                }
+            );
+        }
     );
+
 }
 
+/* =====================================================
+FISCAL
+===================================================== */
 
 function atualizarFiscal() {
 
-    if (!has("fiscalReceitas")) {
-        return;
-    }
+if (!has("fiscalReceitas")) {
+    return;
+}
 
-    const seletorAno = $("anoFiscal");
+const seletorAno =
+    $("anoFiscal");
 
-    const ano = seletorAno
+const ano =
+    seletorAno
         ? seletorAno.value
         : "2026";
 
-    const lancamentosAno = data.filter(item => {
+const lancamentosAno =
+    data.filter(
+        item => {
 
-        if (!item.dataISO) {
-            return false;
+            if (!item.dataISO) {
+                return false;
+            }
+
+            return item.dataISO
+                .startsWith(
+                    `${ano}-`
+                );
         }
+    );
 
-        return item.dataISO.startsWith(`${ano}-`);
 
-    });
-
-    const receitas = lancamentosAno
-        .filter(item => item.tipo === "entrada")
-        .reduce(
-            (total, item) =>
-                total + Number(item.valor || 0),
-            0
-        );
-
-    const despesas = lancamentosAno
-        .filter(item => item.tipo === "saida")
-        .reduce(
-            (total, item) =>
-                total + Number(item.valor || 0),
-            0
-        );
-
-    const investimentos = lancamentosAno
-        .filter(item =>
-            item.tipo === "saida" &&
-            item.categoria === "Investimentos"
+const receitas =
+    lancamentosAno
+        .filter(
+            item =>
+                item.tipo ===
+                "entrada"
         )
         .reduce(
-            (total, item) =>
-                total + Number(item.valor || 0),
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.valor ||
+                    0
+                ),
             0
         );
 
-    $("fiscalReceitas").textContent =
-        format(receitas);
 
-    $("fiscalDespesas").textContent =
-        format(despesas);
+const despesas =
+    lancamentosAno
+        .filter(
+            item =>
+                item.tipo ===
+                "saida"
+        )
+        .reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.valor ||
+                    0
+                ),
+            0
+        );
 
-    $("fiscalInvestimentos").textContent =
-        format(investimentos);
 
-    $("fiscalMovimentacoes").textContent =
+const investimentos =
+    lancamentosAno
+        .filter(
+            item =>
+                item.tipo ===
+                    "saida" &&
+                item.categoria ===
+                    "Investimentos"
+        )
+        .reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                Number(
+                    item.valor ||
+                    0
+                ),
+            0
+        );
+
+
+$("fiscalReceitas")
+    .textContent =
+    format(
+        receitas
+    );
+
+$("fiscalDespesas")
+    .textContent =
+    format(
+        despesas
+    );
+
+$("fiscalInvestimentos")
+    .textContent =
+    format(
+        investimentos
+    );
+
+$("fiscalMovimentacoes")
+    .textContent =
+    lancamentosAno.length;
+
+
+if (
+    has(
+        "fiscalResumoReceitas"
+    )
+) {
+
+    $("fiscalResumoReceitas")
+        .textContent =
+        format(
+            receitas
+        );
+}
+
+
+if (
+    has(
+        "fiscalResumoDespesas"
+    )
+) {
+
+    $("fiscalResumoDespesas")
+        .textContent =
+        format(
+            despesas
+        );
+}
+
+
+if (
+    has(
+        "fiscalResumoInvestimentos"
+    )
+) {
+
+    $("fiscalResumoInvestimentos")
+        .textContent =
+        format(
+            investimentos
+        );
+}
+
+
+if (
+    has(
+        "fiscalResumoMovimentacoes"
+    )
+) {
+
+    $("fiscalResumoMovimentacoes")
+        .textContent =
         lancamentosAno.length;
-  if (has("fiscalResumoReceitas")) {
+}
 
-        $("fiscalResumoReceitas").textContent = format
-        (receitas);
-    } 
-    if (has("fiscalResumoDespesas")) {
+}
 
-        $("fiscalResumoDespesas").textContent = format
-        (despesas);
-    }
-    if (has("fiscalResumoInvestimentos")) {
-
-        $("fiscalResumoInvestimentos").textContent = format
-        (investimentos);
-    }
-    if (has("fiscalResumoMovimentacoes")) {
-
-        $("fiscalResumoMovimentacoes").textContent = lancamentosAno.length;
-    }
-    }
-    
 /* =====================================================
-   INICIALIZAÇÃO
+INICIALIZAÇÃO
 ===================================================== */
 
 function esperarRender() {
 
-    return new Promise(resolve => {
+return new Promise(
+    resolve => {
 
-        requestAnimationFrame(() => {
+        requestAnimationFrame(
+            () => {
 
-            resolve();
+                resolve();
 
-        });
-
-    });
+            }
+        );
+    }
+);
 
 }
-
 
 async function init() {
 
-    mostrarLoading(
-        "Carregando dados..."
-    );
+mostrarLoading(
+    "Carregando dados..."
+);
 
-    atualizarLoading(
-        10,
-        "Lendo dados..."
-    );
+atualizarLoading(
+    10,
+    "Lendo dados..."
+);
 
-    await esperarRender();
-
-
-    normalizarDados();
-
-    atualizarLoading(
-        25,
-        "Preparando categorias..."
-    );
-
-    await esperarRender();
+await esperarRender();
 
 
-    preencherCategorias();
+normalizarDados();
 
-    atualizarLoading(
-        35,
-        "Preparando filtros..."
-    );
+atualizarLoading(
+    25,
+    "Preparando categorias..."
+);
 
-    await esperarRender();
-
-
-    preencherMesesFiltro();
-
-    atualizarLoading(
-        45,
-        "Configurando data..."
-    );
-
-    await esperarRender();
+await esperarRender();
 
 
-    setDefaultDate();
+preencherCategorias();
 
-    atualizarLoading(
-        55,
-        "Configurando eventos..."
-    );
+atualizarLoading(
+    35,
+    "Preparando filtros..."
+);
 
-    await esperarRender();
-
-
-    bindEvents();
-
-    atualizarLoading(
-        65,
-        "Atualizando página..."
-    );
-
-    await esperarRender();
+await esperarRender();
 
 
-    marcarPaginaAtual();
+preencherMesesFiltro();
 
-    atualizarLoading(
-        75,
-        "Calculando resumo financeiro..."
-    );
+atualizarLoading(
+    45,
+    "Configurando data..."
+);
 
-    await esperarRender();
-
-
-    atualizarResumo();
-
-    atualizarLoading(
-        80,
-        "Atualizando metas..."
-    );
-
-    await esperarRender();
+await esperarRender();
 
 
-    atualizarMeta();
+setDefaultDate();
 
-    atualizarLoading(
-        85,
-        "Atualizando orçamento..."
-    );
+atualizarLoading(
+    55,
+    "Configurando eventos..."
+);
 
-    await esperarRender();
-
-
-    atualizarBudgets();
-
-    atualizarLoading(
-        90,
-        "Preparando lançamentos..."
-    );
-
-    await esperarRender();
+await esperarRender();
 
 
-    renderLancamentos();
+bindEvents();
 
-    renderDashboard();
+atualizarLoading(
+    65,
+    "Atualizando página..."
+);
 
-    atualizarLoading(
-        95,
-        "Preparando gráficos..."
-    );
-
-    await esperarRender();
+await esperarRender();
 
 
-    atualizarGraficos();
+marcarPaginaAtual();
 
-    atualizarFiscal();
+atualizarLoading(
+    75,
+    "Calculando resumo financeiro..."
+);
 
-    animateBackground();
+await esperarRender();
 
 
-    atualizarLoading(
-        100,
-        "FinançaSX pronto!"
-    );
+atualizarResumo();
 
-    await esperarRender();
+atualizarLoading(
+    80,
+    "Atualizando metas..."
+);
 
-    esconderLoading();
+await esperarRender();
+
+
+atualizarMeta();
+
+atualizarLoading(
+    85,
+    "Atualizando orçamento..."
+);
+
+await esperarRender();
+
+
+atualizarBudgets();
+
+atualizarLoading(
+    90,
+    "Preparando lançamentos..."
+);
+
+await esperarRender();
+
+
+renderLancamentos();
+
+renderDashboard();
+
+atualizarLoading(
+    95,
+    "Preparando gráficos..."
+);
+
+await esperarRender();
+
+
+atualizarGraficos();
+
+atualizarFiscal();
+
+animateBackground();
+
+
+atualizarLoading(
+    100,
+    "FinançaSX pronto!"
+);
+
+await esperarRender();
+
+
+mostrarNotificacao(
+    "FinançaSX pronto!",
+    "sucesso"
+);
+
+esconderLoading();
 
 }
 
-
 /* =====================================================
-   FUNÇÕES GLOBAIS
+FUNÇÕES GLOBAIS
 ===================================================== */
 
 window.editarItem =
-    editarItem;
+editarItem;
 
 window.removerItem =
-    removerItem;
-
+removerItem;
 
 /* =====================================================
-   INICIAR SISTEMA
+INICIAR SISTEMA
 ===================================================== */
 
 init();
