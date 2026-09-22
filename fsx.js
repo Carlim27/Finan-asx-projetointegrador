@@ -2926,8 +2926,23 @@ mostrarNotificacao(
 );
 
 esconderLoading();
+const mobieMenuToggle = $("mobileMenuToggle");
+const sidebar = document.querySelector(".sidebar");
 
+if (mobieMenuToggle && sidebar) {
+    mobieMenuToggle.addEventListener("click", () => {
+    const aberto = sidebar.classList.toggle("menu aberto");
+    });
+    mobieMenuToggle.setAttribute("aria-expanded", sidebar.classList.contains("aberto"));
+    mobilemenutoggle.textContent= aberto ? "X" : "☰";
 }
+
+document.querySelectorAll(".sidebar a").forEach(link => {
+link.addEventListener("click", () => {
+    sidebar.classList.remove("menu aberto");
+    mobilemenutoggle.textContent= "☰";
+    mobilemenutoggle.setAttribute("aria-expanded", "false");
+});
 
 /* =====================================================
 FUNÇÕES GLOBAIS
