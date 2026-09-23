@@ -3745,3 +3745,71 @@ small {
     }
 
 }
+/* =====================================================
+   CORREÇÃO FINAL — MENU HAMBÚRGUER MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .sidebar .nav {
+        max-height: none !important;
+        height: auto !important;
+
+        overflow: visible !important;
+
+        display: none;
+
+        position: absolute;
+
+        top: calc(100% + 8px);
+        left: 12px;
+        right: 12px;
+
+        width: auto !important;
+        max-width: none !important;
+
+        padding: 10px;
+
+        flex-direction: column;
+
+        gap: 6px;
+
+        background: rgba(15, 23, 42, 0.98);
+
+        border: 1px solid var(--line);
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.45);
+
+        z-index: 10000;
+    }
+
+    .sidebar.menu-aberto .nav {
+        display: flex !important;
+    }
+
+    .sidebar .nav-btn {
+        display: flex !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+
+        height: auto !important;
+        min-height: 46px;
+
+        padding: 13px 14px;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        white-space: normal;
+
+        justify-content: flex-start;
+
+        box-sizing: border-box;
+    }
+
+}
