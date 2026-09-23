@@ -2942,8 +2942,10 @@ link.addEventListener("click", () => {
     sidebar.classList.remove("menu aberto");
     mobilemenutoggle.textContent= "☰";
     mobilemenutoggle.setAttribute("aria-expanded", "false");
+}
+);
 });
-
+}
 /* =====================================================
 FUNÇÕES GLOBAIS
 ===================================================== */
