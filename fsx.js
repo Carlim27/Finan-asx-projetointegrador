@@ -6,151 +6,188 @@ const BUDGET_KEY = "financasx_orcamentos";
 // BARRA DE CARREGAMENTO GLOBAL
 // ===============================
 
-function mostrarLoading(mensagem = "Carregando...") {
+function mostrarLoading(
+    mensagem = "Carregando..."
+) {
 
-let loading =
-    document.getElementById("fsxLoading");
+    let loading =
+        document.getElementById(
+            "fsxLoading"
+        );
 
-if (!loading) {
+    if (!loading) {
 
-    loading = document.createElement("div");
+        loading =
+            document.createElement(
+                "div"
+            );
 
-    loading.id = "fsxLoading";
+        loading.id =
+            "fsxLoading";
 
-    loading.innerHTML = `
-        <div class="fsx-loading-text">
-            <span id="fsxLoadingMensagem">${mensagem}</span>
-            <span id="fsxLoadingPercentual">0%</span>
-        </div>
+        loading.innerHTML = `
+            <div class="fsx-loading-text">
+                <span id="fsxLoadingMensagem">
+                    ${mensagem}
+                </span>
 
-        <div class="fsx-loading-track">
-            <div id="fsxLoadingBar"></div>
-        </div>
-    `;
+                <span id="fsxLoadingPercentual">
+                    0%
+                </span>
+            </div>
 
-    document.body.appendChild(loading);
-}
+            <div class="fsx-loading-track">
+                <div id="fsxLoadingBar"></div>
+            </div>
+        `;
 
-loading.classList.add("ativo");
+        document.body.appendChild(
+            loading
+        );
+    }
 
-atualizarLoading(0, mensagem);
+    loading.classList.add(
+        "ativo"
+    );
 
+    atualizarLoading(
+        0,
+        mensagem
+    );
 }
 
 function atualizarLoading(
-percentual,
-mensagem
+    percentual,
+    mensagem
 ) {
 
-const barra =
-    document.getElementById("fsxLoadingBar");
+    const barra =
+        document.getElementById(
+            "fsxLoadingBar"
+        );
 
-const texto =
-    document.getElementById(
-        "fsxLoadingMensagem"
-    );
+    const texto =
+        document.getElementById(
+            "fsxLoadingMensagem"
+        );
 
-const numero =
-    document.getElementById(
-        "fsxLoadingPercentual"
-    );
+    const numero =
+        document.getElementById(
+            "fsxLoadingPercentual"
+        );
 
-if (barra) {
-    barra.style.width =
-        `${percentual}%`;
-}
+    if (barra) {
 
-if (texto) {
-    texto.textContent =
-        mensagem;
-}
+        barra.style.width =
+            `${percentual}%`;
+    }
 
-if (numero) {
-    numero.textContent =
-        `${percentual}%`;
-}
+    if (texto) {
 
+        texto.textContent =
+            mensagem;
+    }
+
+    if (numero) {
+
+        numero.textContent =
+            `${percentual}%`;
+    }
 }
 
 function esconderLoading() {
 
-const loading =
-    document.getElementById("fsxLoading");
+    const loading =
+        document.getElementById(
+            "fsxLoading"
+        );
 
-if (!loading) {
-    return;
-}
+    if (!loading) {
 
-atualizarLoading(
-    100,
-    "Concluído"
-);
+        return;
+    }
 
-setTimeout(() => {
-
-    loading.classList.remove(
-        "ativo"
+    atualizarLoading(
+        100,
+        "Concluído"
     );
 
-}, 300);
+    setTimeout(
+        () => {
 
+            loading.classList.remove(
+                "ativo"
+            );
+
+        },
+        300
+    );
 }
 
+
+// =====================================================
+// DADOS
+// =====================================================
+
 const categorias = [
-"Geral",
-"Alimentação",
-"Transporte",
-"Lazer",
-"Saúde",
-"Educação",
-"Moradia",
-"Assinaturas",
-"Investimentos",
-"Contas",
-"Compras"
+
+    "Geral",
+    "Alimentação",
+    "Transporte",
+    "Lazer",
+    "Saúde",
+    "Educação",
+    "Moradia",
+    "Assinaturas",
+    "Investimentos",
+    "Contas",
+    "Compras"
+
 ];
 
 const coresCategorias = [
-"#38bdf8",
-"#22c55e",
-"#f59e0b",
-"#8b5cf6",
-"#ef4444",
-"#14b8a6",
-"#f97316",
-"#e879f9",
-"#84cc16",
-"#06b6d4",
-"#a78bfa"
+
+    "#38bdf8",
+    "#22c55e",
+    "#f59e0b",
+    "#8b5cf6",
+    "#ef4444",
+    "#14b8a6",
+    "#f97316",
+    "#e879f9",
+    "#84cc16",
+    "#06b6d4",
+    "#a78bfa"
+
 ];
 
 let data =
-JSON.parse(
-localStorage.getItem(
-STORAGE_KEY
-)
-) || [];
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_KEY
+        )
+    ) || [];
 
 let meta =
-JSON.parse(
-localStorage.getItem(
-GOAL_KEY
-)
-) || {
+    JSON.parse(
+        localStorage.getItem(
+            GOAL_KEY
+        )
+    ) || {
 
-    titulo:
-        "Meta principal",
+        titulo:
+            "Meta principal",
 
-    valor:
-        5000
-};
+        valor:
+            5000
+    };
 
 let budgets =
-JSON.parse(
-localStorage.getItem(
-BUDGET_KEY
-)
-) || {};
+    JSON.parse(
+        localStorage.getItem(
+            BUDGET_KEY
+        )
+    ) || {};
 
 let overviewChart = null;
 let categoryChart = null;
@@ -160,495 +197,798 @@ const ITEMS_PER_PAGE = 10;
 
 let currentPage = 1;
 
-/* =====================================================
-FUNÇÕES AUXILIARES
-===================================================== */
+
+// =====================================================
+// FUNÇÕES AUXILIARES
+// =====================================================
 
 const $ =
-id =>
-document.getElementById(id);
+    id =>
+        document.getElementById(
+            id
+        );
 
 const has =
-id =>
-!!$(id);
+    id =>
+        !!$(id);
 
-function escaparHtml(valor) {
-    return String(valor ??"")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+function escaparHtml(
+    valor
+) {
+
+    return String(
+        valor ?? ""
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#39;"
+        );
 }
 
-/* =====================================================
-NOTIFICAÇÕES
-===================================================== */
+
+// =====================================================
+// NOTIFICAÇÕES
+// =====================================================
 
 function mostrarNotificacao(
-mensagem,
-tipo = "sucesso"
+    mensagem,
+    tipo = "sucesso"
 ) {
 
-const notificacao =
-    document.createElement("div");
+    const notificacao =
+        document.createElement(
+            "div"
+        );
 
-notificacao.className =
-    `fsx-notificacao ${tipo}`;
+    notificacao.className =
+        `fsx-notificacao ${tipo}`;
 
-notificacao.textContent =
-    mensagem;
+    notificacao.textContent =
+        mensagem;
 
-document.body.appendChild(
-    notificacao
-);
-
-setTimeout(() => {
-
-    notificacao.classList.add(
-        "saindo"
+    document.body.appendChild(
+        notificacao
     );
 
-    setTimeout(() => {
+    setTimeout(
+        () => {
 
-        notificacao.remove();
+            notificacao.classList.add(
+                "saindo"
+            );
 
-    }, 300);
+            setTimeout(
+                () => {
 
-}, 3000);
+                    notificacao.remove();
 
+                },
+                300
+            );
+
+        },
+        3000
+    );
 }
 
-/* =====================================================
-CONFIRMAÇÃO FSX
-===================================================== */
+
+// =====================================================
+// CONFIRMAÇÃO FSX
+// =====================================================
 
 function mostrarConfirmacao(
-mensagem,
-aoConfirmar
+    mensagem,
+    aoConfirmar
 ) {
 
-const overlay =
-    document.createElement("div");
+    const overlay =
+        document.createElement(
+            "div"
+        );
 
-overlay.className =
-    "fsx-confirmacao-overlay";
+    overlay.className =
+        "fsx-confirmacao-overlay";
 
-overlay.innerHTML = `
-    <div class="fsx-confirmacao">
+    overlay.innerHTML = `
+        <div class="fsx-confirmacao">
 
-        <h3>
-            Confirmar ação
-        </h3>
+            <h3>
+                Confirmar ação
+            </h3>
 
-        <p>
-            ${mensagem}
-        </p>
+            <p>
+                ${mensagem}
+            </p>
 
-        <div class="fsx-confirmacao-acoes">
+            <div class="fsx-confirmacao-acoes">
 
-            <button
-                class="fsx-confirmar-cancelar">
-                Cancelar
-            </button>
+                <button
+                    class="fsx-confirmar-cancelar">
+                    Cancelar
+                </button>
 
-            <button
-                class="fsx-confirmar-ok">
-                Confirmar
-            </button>
+                <button
+                    class="fsx-confirmar-ok">
+                    Confirmar
+                </button>
+
+            </div>
 
         </div>
+    `;
 
-    </div>
-`;
-
-document.body.appendChild(
-    overlay
-);
-
-const cancelar =
-    overlay.querySelector(
-        ".fsx-confirmar-cancelar"
+    document.body.appendChild(
+        overlay
     );
 
-const confirmar =
-    overlay.querySelector(
-        ".fsx-confirmar-ok"
+    const cancelar =
+        overlay.querySelector(
+            ".fsx-confirmar-cancelar"
+        );
+
+    const confirmar =
+        overlay.querySelector(
+            ".fsx-confirmar-ok"
+        );
+
+    cancelar.addEventListener(
+        "click",
+        () => {
+
+            overlay.remove();
+
+        }
     );
 
-cancelar.addEventListener(
-    "click",
-    () => {
+    confirmar.addEventListener(
+        "click",
+        () => {
 
-        overlay.remove();
+            overlay.remove();
 
-    }
-);
+            aoConfirmar();
 
-confirmar.addEventListener(
-    "click",
-    () => {
-
-        overlay.remove();
-
-        aoConfirmar();
-
-    }
-);
-
+        }
+    );
 }
 
-function format(valor) {
 
-return Number(
-    valor || 0
-).toLocaleString(
-    "pt-BR",
-    {
-        style:
-            "currency",
+// =====================================================
+// FORMATAÇÃO
+// =====================================================
 
-        currency:
-            "BRL"
-    }
-);
+function format(
+    valor
+) {
 
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "pt-BR",
+        {
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+        }
+    );
 }
+
+
+// =====================================================
+// STORAGE
+// =====================================================
 
 function salvarDados() {
 
-localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-);
-
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(
+            data
+        )
+    );
 }
 
 function salvarMeta() {
 
-localStorage.setItem(
-    GOAL_KEY,
-    JSON.stringify(meta)
-);
-
+    localStorage.setItem(
+        GOAL_KEY,
+        JSON.stringify(
+            meta
+        )
+    );
 }
 
 function salvarBudgets() {
 
-localStorage.setItem(
-    BUDGET_KEY,
-    JSON.stringify(budgets)
-);
-
+    localStorage.setItem(
+        BUDGET_KEY,
+        JSON.stringify(
+            budgets
+        )
+    );
 }
 
-function formatarData(valor) {
 
-if (!valor) {
+// =====================================================
+// DATAS
+// =====================================================
 
-    return new Date()
-        .toLocaleDateString(
-            "pt-BR"
-        );
-}
+function formatarData(
+    valor
+) {
 
-return new Date(
-    `${valor}T12:00:00`
-).toLocaleDateString(
-    "pt-BR"
-);
+    if (!valor) {
 
-}
-
-function extrairMes(valor) {
-
-if (!valor) {
-    return "Sem data";
-}
-
-const [ano, mes] =
-    valor.split("-");
-
-return `${mes}/${ano}`;
-
-}
-
-function getMonthNameKey(valor) {
-
-return new Date(
-    `${valor}T12:00:00`
-).toLocaleDateString(
-    "pt-BR",
-    {
-        month:
-            "short",
-
-        year:
-            "numeric"
+        return new Date()
+            .toLocaleDateString(
+                "pt-BR"
+            );
     }
-);
 
+    return new Date(
+        `${valor}T12:00:00`
+    ).toLocaleDateString(
+        "pt-BR"
+    );
 }
 
-/* =====================================================
-NORMALIZAÇÃO
-===================================================== */
+function extrairMes(
+    valor
+) {
+
+    if (!valor) {
+
+        return "Sem data";
+    }
+
+    const [
+        ano,
+        mes
+    ] =
+        valor.split("-");
+
+    return `${mes}/${ano}`;
+}
+
+function getMonthNameKey(
+    valor
+) {
+
+    return new Date(
+        `${valor}T12:00:00`
+    ).toLocaleDateString(
+        "pt-BR",
+        {
+            month:
+                "short",
+
+            year:
+                "numeric"
+        }
+    );
+}
+
+
+// =====================================================
+// NORMALIZAÇÃO
+// =====================================================
 
 function normalizarDados() {
 
-data =
-    data.map(item => {
+    data =
+        data.map(
+            item => {
 
-        const dataISO =
-            item.dataISO ||
-            new Date()
-                .toISOString()
-                .split("T")[0];
+                const dataISO =
+                    item.dataISO ||
+                    new Date()
+                        .toISOString()
+                        .split("T")[0];
 
-        return {
+                return {
 
-            ...item,
+                    ...item,
 
-            valor:
-                Number(
-                    item.valor
-                ) || 0,
+                    valor:
+                        Number(
+                            item.valor
+                        ) || 0,
 
-            pagamento:
-                item.pagamento ||
-                "Pix",
+                    pagamento:
+                        item.pagamento ||
+                        "Pix",
 
-            observacao:
-                item.observacao ||
-                "",
+                    observacao:
+                        item.observacao ||
+                        "",
 
-            dataISO,
+                    dataISO,
 
-            dataFormatada:
-                item.dataFormatada ||
-                formatarData(
-                    dataISO
-                )
-        };
-    });
+                    dataFormatada:
+                        item.dataFormatada ||
+                        formatarData(
+                            dataISO
+                        )
+                };
+            }
+        );
 
-salvarDados();
-
+    salvarDados();
 }
 
-/* =====================================================
-CATEGORIAS
-===================================================== */
+
+// =====================================================
+// CATEGORIAS
+// =====================================================
 
 function preencherCategorias() {
 
-if (has("cat")) {
+    if (has("cat")) {
 
-    $("cat").innerHTML =
-        categorias
-            .map(
-                categoria =>
-                    `<option value="${categoria}">
-                        ${categoria}
-                    </option>`
-            )
-            .join("");
+        $("cat").innerHTML =
+            categorias
+                .map(
+                    categoria =>
+                        `
+                        <option value="${categoria}">
+                            ${categoria}
+                        </option>
+                        `
+                )
+                .join("");
+    }
+
+    if (has("budgetCategoria")) {
+
+        $("budgetCategoria").innerHTML =
+            categorias
+                .map(
+                    categoria =>
+                        `
+                        <option value="${categoria}">
+                            ${categoria}
+                        </option>
+                        `
+                )
+                .join("");
+    }
+
+    if (has("filterCategoria")) {
+
+        $("filterCategoria").innerHTML =
+            `
+            <option value="todas">
+                Todas as categorias
+            </option>
+            ` +
+            categorias
+                .map(
+                    categoria =>
+                        `
+                        <option value="${categoria}">
+                            ${categoria}
+                        </option>
+                        `
+                )
+                .join("");
+    }
 }
 
-if (has("budgetCategoria")) {
 
-    $("budgetCategoria").innerHTML =
-        categorias
-            .map(
-                categoria =>
-                    `<option value="${categoria}">
-                        ${categoria}
-                    </option>`
-            )
-            .join("");
-}
-
-if (has("filterCategoria")) {
-
-    $("filterCategoria").innerHTML =
-        `
-        <option value="todas">
-            Todas as categorias
-        </option>
-        ` +
-        categorias
-            .map(
-                categoria =>
-                    `<option value="${categoria}">
-                        ${categoria}
-                    </option>`
-            )
-            .join("");
-}
-
-}
-
-/* =====================================================
-MESES DO FILTRO
-===================================================== */
+// =====================================================
+// MESES
+// =====================================================
 
 function preencherMesesFiltro() {
 
-if (!has("filterMes")) {
-    return;
-}
+    if (!has("filterMes")) {
 
-const selecionado =
-    $("filterMes").value ||
-    "todos";
+        return;
+    }
 
-const meses =
-    [
-        ...new Set(
-            data.map(
-                item =>
-                    extrairMes(
-                        item.dataISO
-                    )
+    const selecionado =
+        $("filterMes").value ||
+        "todos";
+
+    const meses =
+        [
+            ...new Set(
+                data.map(
+                    item =>
+                        extrairMes(
+                            item.dataISO
+                        )
+                )
             )
-        )
-    ].filter(Boolean);
+        ]
+        .filter(Boolean);
 
-$("filterMes").innerHTML =
-    `
-    <option value="todos">
-        Todos os meses
-    </option>
-    ` +
-    meses
-        .map(
-            mes =>
-                `<option value="${mes}">
-                    ${mes}
-                </option>`
-        )
-        .join("");
+    $("filterMes").innerHTML =
+        `
+        <option value="todos">
+            Todos os meses
+        </option>
+        ` +
+        meses
+            .map(
+                mes =>
+                    `
+                    <option value="${mes}">
+                        ${mes}
+                    </option>
+                    `
+            )
+            .join("");
 
-$("filterMes").value =
-    meses.includes(
-        selecionado
-    ) ||
-    selecionado === "todos"
-        ? selecionado
-        : "todos";
-
+    $("filterMes").value =
+        meses.includes(
+            selecionado
+        ) ||
+        selecionado === "todos"
+            ? selecionado
+            : "todos";
 }
 
-/* =====================================================
-DATA PADRÃO
-===================================================== */
+
+// =====================================================
+// DATA PADRÃO
+// =====================================================
 
 function setDefaultDate() {
 
-if (
-    has("dataLancamento") &&
-    !$("dataLancamento").value
-) {
+    if (
+        has(
+            "dataLancamento"
+        ) &&
+        !$(
+            "dataLancamento"
+        ).value
+    ) {
 
-    $("dataLancamento").value =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+        $(
+            "dataLancamento"
+        ).value =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+    }
 }
 
-}
 
-/* =====================================================
-FILTROS
-===================================================== */
+// =====================================================
+// FILTROS
+// =====================================================
 
 function obterFiltradas() {
 
-if (!has("searchInput")) {
-    return [...data];
-}
-
-const termo =
-    $("searchInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-const tipo =
-    $("filterTipo").value;
-
-const categoria =
-    $("filterCategoria").value;
-
-const mes =
-    $("filterMes").value;
-
-return [...data]
-
-    .filter(
-        item =>
-            tipo === "todos" ||
-            item.tipo === tipo
-    )
-
-    .filter(
-        item =>
-            categoria === "todas" ||
-            item.categoria ===
-                categoria
-    )
-
-    .filter(
-        item =>
-            mes === "todos" ||
-            extrairMes(
-                item.dataISO
-            ) === mes
-    )
-
-    .filter(item => {
-
-        if (!termo) {
-            return true;
-        }
+    if (!has("searchInput")) {
 
         return [
-            item.descricao,
-            item.categoria,
-            item.pagamento,
-            item.observacao
-        ]
-            .join(" ")
-            .toLowerCase()
-            .includes(termo);
-    })
+            ...data
+        ];
+    }
 
-    .sort(
-        (a, b) =>
-            new Date(
-                b.dataISO
-            ) -
-            new Date(
-                a.dataISO
-            )
-    );
+    const termo =
+        $("searchInput")
+            .value
+            .trim()
+            .toLowerCase();
 
+    const tipo =
+        $("filterTipo").value;
+
+    const categoria =
+        $("filterCategoria").value;
+
+    const mes =
+        $("filterMes").value;
+
+    return [
+        ...data
+    ]
+
+        .filter(
+            item =>
+                tipo === "todos" ||
+                item.tipo === tipo
+        )
+
+        .filter(
+            item =>
+                categoria === "todas" ||
+                item.categoria ===
+                    categoria
+        )
+
+        .filter(
+            item =>
+                mes === "todos" ||
+                extrairMes(
+                    item.dataISO
+                ) === mes
+        )
+
+        .filter(
+            item => {
+
+                if (!termo) {
+
+                    return true;
+                }
+
+                return [
+
+                    item.descricao,
+                    item.categoria,
+                    item.pagamento,
+                    item.observacao
+
+                ]
+
+                    .join(" ")
+                    .toLowerCase()
+                    .includes(
+                        termo
+                    );
+            }
+        )
+
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                new Date(
+                    b.dataISO
+                ) -
+                new Date(
+                    a.dataISO
+                )
+        );
 }
 
-/* =====================================================
-META
-===================================================== */
+
+// =====================================================
+// META
+// =====================================================
 
 function atualizarMeta(
-saldo = null
+    saldo = null
 ) {
 
-const valorMeta =
-    Number(
-        meta.valor || 0
-    );
+    const valorMeta =
+        Number(
+            meta.valor || 0
+        );
 
-if (saldo === null) {
+    if (
+        saldo === null
+    ) {
+
+        const entradas =
+            data
+                .filter(
+                    item =>
+                        item.tipo ===
+                        "entrada"
+                )
+                .reduce(
+                    (
+                        total,
+                        item
+                    ) =>
+                        total +
+                        Number(
+                            item.valor ||
+                            0
+                        ),
+                    0
+                );
+
+        const saidas =
+            data
+                .filter(
+                    item =>
+                        item.tipo ===
+                        "saida"
+                )
+                .reduce(
+                    (
+                        total,
+                        item
+                    ) =>
+                        total +
+                        Number(
+                            item.valor ||
+                            0
+                        ),
+                    0
+                );
+
+        saldo =
+            entradas -
+            saidas;
+    }
+
+    const progresso =
+        valorMeta > 0
+            ? Math.max(
+                0,
+                Math.min(
+                    Number(
+                        saldo
+                    ),
+                    valorMeta
+                )
+            )
+            : 0;
+
+    const percentual =
+        valorMeta > 0
+            ? (
+                progresso /
+                valorMeta
+            ) * 100
+            : 0;
+
+    const nome =
+        meta.titulo ||
+        "Meta principal";
+
+    const valorTexto =
+        `${format(
+            progresso
+        )} / ${format(
+            valorMeta
+        )}`;
+
+    const percentTexto =
+        `${percentual.toFixed(
+            1
+        )}%`;
+
+    const faltante =
+        Math.max(
+            valorMeta -
+            progresso,
+            0
+        );
+
+    const hint =
+        percentual >= 100
+            ? "Meta atingida. Hora de definir o próximo objetivo."
+            : `Faltam ${format(
+                faltante
+            )} para atingir sua meta.`;
+
+    if (has("metaInput")) {
+
+        $("metaInput").value =
+            valorMeta || "";
+    }
+
+    if (has("metaTitulo")) {
+
+        $("metaTitulo").value =
+            meta.titulo || "";
+    }
+
+    if (has("metaNomeExibida2")) {
+
+        $("metaNomeExibida2")
+            .textContent =
+            nome;
+    }
+
+    if (has("metaValor2")) {
+
+        $("metaValor2")
+            .textContent =
+            valorTexto;
+    }
+
+    if (has("metaPercent2")) {
+
+        $("metaPercent2")
+            .textContent =
+            percentTexto;
+    }
+
+    if (has("metaBar2")) {
+
+        $("metaBar2").value =
+            percentual;
+    }
+
+    if (has("metaHint2")) {
+
+        $("metaHint2")
+            .textContent =
+            hint;
+    }
+
+    if (has("metaNomeExibida")) {
+
+        $("metaNomeExibida")
+            .textContent =
+            nome;
+    }
+
+    if (has("metaValor")) {
+
+        $("metaValor")
+            .textContent =
+            valorTexto;
+    }
+
+    if (has("metaPercent")) {
+
+        $("metaPercent")
+            .textContent =
+            percentTexto;
+    }
+
+    if (has("metaBar")) {
+
+        $("metaBar").value =
+            percentual;
+    }
+
+    if (has("metaHint")) {
+
+        $("metaHint")
+            .textContent =
+            hint;
+    }
+
+    if (
+        has(
+            "dashboardMetaTitulo"
+        )
+    ) {
+
+        $("dashboardMetaTitulo")
+            .textContent =
+            nome;
+    }
+}
+
+
+// =====================================================
+// RESUMO
+// =====================================================
+
+function atualizarResumo() {
+
+    if (!has("saldo")) {
+
+        atualizarMeta();
+
+        return;
+    }
 
     const entradas =
         data
@@ -664,8 +1004,7 @@ if (saldo === null) {
                 ) =>
                     total +
                     Number(
-                        item.valor ||
-                        0
+                        item.valor
                     ),
                 0
             );
@@ -684,1103 +1023,1013 @@ if (saldo === null) {
                 ) =>
                     total +
                     Number(
-                        item.valor ||
-                        0
+                        item.valor
                     ),
                 0
             );
 
-    saldo =
+    const saldo =
         entradas -
         saidas;
-}
 
-const progresso =
-    valorMeta > 0
-        ? Math.max(
-            0,
-            Math.min(
-                Number(saldo),
-                valorMeta
-            )
-        )
-        : 0;
-
-const percentual =
-    valorMeta > 0
-        ? (
-            progresso /
-            valorMeta
-        ) * 100
-        : 0;
-
-const nome =
-    meta.titulo ||
-    "Meta principal";
-
-const valorTexto =
-    `${format(progresso)} / ${format(valorMeta)}`;
-
-const percentTexto =
-    `${percentual.toFixed(1)}%`;
-
-const faltante =
-    Math.max(
-        valorMeta -
-        progresso,
-        0
-    );
-
-const hint =
-    percentual >= 100
-        ? "Meta atingida. Hora de definir o próximo objetivo."
-        : `Faltam ${format(faltante)} para atingir sua meta.`;
-
-if (has("metaInput")) {
-
-    $("metaInput").value =
-        valorMeta || "";
-}
-
-if (has("metaTitulo")) {
-
-    $("metaTitulo").value =
-        meta.titulo || "";
-}
-
-if (has("metaNomeExibida2")) {
-
-    $("metaNomeExibida2")
-        .textContent =
-        nome;
-}
-
-if (has("metaValor2")) {
-
-    $("metaValor2")
-        .textContent =
-        valorTexto;
-}
-
-if (has("metaPercent2")) {
-
-    $("metaPercent2")
-        .textContent =
-        percentTexto;
-}
-
-if (has("metaBar2")) {
-
-    $("metaBar2").value =
-        percentual;
-}
-
-if (has("metaHint2")) {
-
-    $("metaHint2")
-        .textContent =
-        hint;
-}
-
-if (has("metaNomeExibida")) {
-
-    $("metaNomeExibida")
-        .textContent =
-        nome;
-}
-
-if (has("metaValor")) {
-
-    $("metaValor")
-        .textContent =
-        valorTexto;
-}
-
-if (has("metaPercent")) {
-
-    $("metaPercent")
-        .textContent =
-        percentTexto;
-}
-
-if (has("metaBar")) {
-
-    $("metaBar").value =
-        percentual;
-}
-
-if (has("metaHint")) {
-
-    $("metaHint")
-        .textContent =
-        hint;
-}
-
-if (has("dashboardMetaTitulo")) {
-
-    $("dashboardMetaTitulo")
-        .textContent =
-        nome;
-}
-
-}
-
-/* =====================================================
-RESUMO
-===================================================== */
-
-function atualizarResumo() {
-
-if (!has("saldo")) {
-
-    atualizarMeta();
-
-    return;
-}
-
-const entradas =
-    data
-        .filter(
-            item =>
-                item.tipo ===
-                "entrada"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor
-                ),
-            0
+    $("saldo").textContent =
+        format(
+            saldo
         );
 
-const saidas =
-    data
-        .filter(
-            item =>
-                item.tipo ===
-                "saida"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor
-                ),
-            0
+    $("entradas").textContent =
+        format(
+            entradas
         );
 
-const saldo =
-    entradas -
-    saidas;
+    $("saidas").textContent =
+        format(
+            saidas
+        );
 
-$("saldo").textContent =
-    format(saldo);
+    $("taxaPoupanca")
+        .textContent =
+        `${
+            entradas > 0
+                ? Math.max(
+                    0,
+                    (
+                        saldo /
+                        entradas
+                    ) * 100
+                ).toFixed(1)
+                : 0
+        }%`;
 
-$("entradas").textContent =
-    format(entradas);
+    $("saldoStatus")
+        .textContent =
+        saldo > 0
+            ? "Seu saldo está positivo."
+            : saldo < 0
+                ? "Seu saldo exige atenção."
+                : "Sem sobra financeira no momento.";
 
-$("saidas").textContent =
-    format(saidas);
-
-$("taxaPoupanca")
-    .textContent =
-    `${
-        entradas > 0
-            ? Math.max(
+    const mesAtual =
+        new Date()
+            .toISOString()
+            .slice(
                 0,
-                (
-                    saldo /
-                    entradas
-                ) * 100
-            ).toFixed(1)
-            : 0
-    }%`;
+                7
+            );
 
-$("saldoStatus")
-    .textContent =
-    saldo > 0
-        ? "Seu saldo está positivo."
-        : saldo < 0
-            ? "Seu saldo exige atenção."
-            : "Sem sobra financeira no momento.";
+    const atual =
+        data.filter(
+            item =>
+                item.dataISO?.startsWith(
+                    mesAtual
+                )
+        );
 
-const mesAtual =
-    new Date()
-        .toISOString()
-        .slice(0, 7);
-
-const atual =
-    data.filter(
-        item =>
-            item.dataISO?.startsWith(
-                mesAtual
+    const entradasMes =
+        atual
+            .filter(
+                item =>
+                    item.tipo ===
+                    "entrada"
             )
+            .reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    Number(
+                        item.valor
+                    ),
+                0
+            );
+
+    const saidasMes =
+        atual
+            .filter(
+                item =>
+                    item.tipo ===
+                    "saida"
+            )
+            .reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    Number(
+                        item.valor
+                    ),
+                0
+            );
+
+    const economia =
+        entradasMes -
+        saidasMes;
+
+    $("economiaMes")
+        .textContent =
+        format(
+            economia
+        );
+
+    $("economiaStatus")
+        .textContent =
+        economia >= 0
+            ? "Você está acumulando no mês atual."
+            : "O mês atual está no vermelho.";
+
+    const maior =
+        [
+            ...data
+        ]
+            .filter(
+                item =>
+                    item.tipo ===
+                    "saida"
+            )
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    Number(
+                        b.valor
+                    ) -
+                    Number(
+                        a.valor
+                    )
+            )[0];
+
+    $("maiorGasto")
+        .textContent =
+        maior
+            ? format(
+                maior.valor
+            )
+            : format(0);
+
+    $("maiorGastoDesc")
+        .textContent =
+        maior
+            ? `${escaparHtml(
+                maior.descricao
+            )} • ${escaparHtml(
+                maior.categoria
+            )}`
+            : "Sem despesas registradas.";
+
+    atualizarAlerta(
+        saldo
     );
 
-const entradasMes =
-    atual
-        .filter(
-            item =>
-                item.tipo ===
-                "entrada"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor
-                ),
-            0
-        );
-
-const saidasMes =
-    atual
-        .filter(
-            item =>
-                item.tipo ===
-                "saida"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor
-                ),
-            0
-        );
-
-const economia =
-    entradasMes -
-    saidasMes;
-
-$("economiaMes")
-    .textContent =
-    format(economia);
-
-$("economiaStatus")
-    .textContent =
-    economia >= 0
-        ? "Você está acumulando no mês atual."
-        : "O mês atual está no vermelho.";
-
-const maior =
-    [...data]
-        .filter(
-            item =>
-                item.tipo ===
-                "saida"
-        )
-        .sort(
-            (a, b) =>
-                Number(
-                    b.valor
-                ) -
-                Number(
-                    a.valor
-                )
-        )[0];
-
-$("maiorGasto")
-    .textContent =
-    maior
-        ? format(
-            maior.valor
-        )
-        : format(0);
-
-$("maiorGastoDesc")
-    .textContent =
-    maior
-        ? `${maior.descricao} • ${maior.categoria}`
-        : "Sem despesas registradas.";
-
-atualizarAlerta(
-    saldo
-);
-
-atualizarMeta(
-    saldo
-);
-
+    atualizarMeta(
+        saldo
+    );
 }
 
-/* =====================================================
-ALERTA
-===================================================== */
+
+// =====================================================
+// ALERTA
+// =====================================================
 
 function atualizarAlerta(
-saldo
+    saldo
 ) {
 
-if (!has("alert")) {
-    return;
+    if (!has("alert")) {
+
+        return;
+    }
+
+    $("alert").className =
+        "";
+
+    $("alert").innerHTML =
+        "";
+
+    if (saldo < 0) {
+
+        $("alert").classList.add(
+            "alert",
+            "redA"
+        );
+
+        $("alert").textContent =
+            "⚠️ Seu saldo está negativo. Reveja seus gastos e prioridades.";
+
+    } else if (
+        saldo <
+        Number(
+            meta.valor || 0
+        ) * 0.2
+    ) {
+
+        $("alert").classList.add(
+            "alert",
+            "yellowA"
+        );
+
+        $("alert").textContent =
+            "⚠️ Seu saldo ainda está distante da meta.";
+
+    } else {
+
+        $("alert").classList.add(
+            "alert",
+            "greenA"
+        );
+
+        $("alert").textContent =
+            "✅ Sua organização financeira está atualizada.";
+    }
 }
 
-$("alert").className =
-    "";
 
-$("alert").innerHTML =
-    "";
-
-if (saldo < 0) {
-
-    $("alert").classList.add(
-        "alert",
-        "redA"
-    );
-
-    $("alert").textContent =
-        "⚠️ Seu saldo está negativo. Reveja seus gastos e prioridades.";
-
-} else if (
-    saldo <
-    Number(
-        meta.valor || 0
-    ) * 0.2
-) {
-
-    $("alert").classList.add(
-        "alert",
-        "yellowA"
-    );
-
-    $("alert").textContent =
-        "⚠️ Seu saldo ainda está distante da meta.";
-
-} else {
-
-    $("alert").classList.add(
-        "alert",
-        "greenA"
-    );
-
-    $("alert").textContent =
-        "✅ Sua organização financeira está atualizada.";
-}
-
-}
-
-/* =====================================================
-ORÇAMENTO
-===================================================== */
+// =====================================================
+// ORÇAMENTO
+// =====================================================
 
 function atualizarBudgets() {
 
-if (!has("budgetList")) {
-    return;
-}
+    if (!has("budgetList")) {
 
-const gastos = {};
+        return;
+    }
 
-data
-    .filter(
-        item =>
-            item.tipo ===
-            "saida"
-    )
-    .forEach(item => {
+    const gastos = {};
 
-        gastos[
-            item.categoria
-        ] =
-            (
+    data
+
+        .filter(
+            item =>
+                item.tipo ===
+                "saida"
+        )
+
+        .forEach(
+            item => {
+
                 gastos[
                     item.categoria
-                ] || 0
-            ) +
-            Number(
-                item.valor
-            );
-    });
-
-const categoriasOrcadas =
-    Object.keys(
-        budgets
-    );
-
-if (
-    !categoriasOrcadas.length
-) {
-
-    $("budgetList").innerHTML =
-        `
-        <div class="empty-state">
-            Defina limites mensais por categoria para acompanhar seu orçamento.
-        </div>
-        `;
-
-    return;
-}
-
-$("budgetList").innerHTML =
-    categoriasOrcadas
-        .map(
-            categoria => {
-
-                const limite =
+                ] =
+                    (
+                        gastos[
+                            item.categoria
+                        ] || 0
+                    ) +
                     Number(
-                        budgets[
-                            categoria
-                        ]
+                        item.valor
                     );
-
-                const gasto =
-                    gastos[
-                        categoria
-                    ] || 0;
-
-                const percentual =
-                    limite > 0
-                        ? Math.min(
-                            (
-                                gasto /
-                                limite
-                            ) * 100,
-                            100
-                        )
-                        : 0;
-
-                const excedeu =
-                    gasto >
-                    limite;
-
-                return `
-                    <div class="budget-item">
-
-                        <div class="budget-head">
-
-                            <strong>
-                                ${categoria}
-                            </strong>
-
-                            <span>
-                                ${percentual.toFixed(1)}%
-                            </span>
-
-                        </div>
-
-                        <progress
-                            value="${percentual}"
-                            max="100">
-                        </progress>
-
-                        <div class="budget-meta">
-
-                            <span>
-                                Gasto:
-                                ${format(gasto)}
-                            </span>
-
-                            <span>
-                                ${
-                                    excedeu
-                                        ? `Acima em ${format(
-                                            gasto -
-                                            limite
-                                        )}`
-                                        : `Restante: ${format(
-                                            limite -
-                                            gasto
-                                        )}`
-                                }
-                            </span>
-
-                        </div>
-
-                    </div>
-                `;
             }
-        )
-        .join("");
+        );
 
+    const categoriasOrcadas =
+        Object.keys(
+            budgets
+        );
+
+    if (
+        !categoriasOrcadas.length
+    ) {
+
+        $("budgetList")
+            .innerHTML =
+            `
+            <div class="empty-state">
+                Defina limites mensais por categoria para acompanhar seu orçamento.
+            </div>
+            `;
+
+        return;
+    }
+
+    $("budgetList")
+        .innerHTML =
+        categoriasOrcadas
+
+            .map(
+                categoria => {
+
+                    const limite =
+                        Number(
+                            budgets[
+                                categoria
+                            ]
+                        );
+
+                    const gasto =
+                        gastos[
+                            categoria
+                        ] || 0;
+
+                    const percentual =
+                        limite > 0
+                            ? Math.min(
+                                (
+                                    gasto /
+                                    limite
+                                ) * 100,
+                                100
+                            )
+                            : 0;
+
+                    const excedeu =
+                        gasto >
+                        limite;
+
+                    return `
+                        <div class="budget-item">
+
+                            <div class="budget-head">
+
+                                <strong>
+                                    ${escaparHtml(
+                                        categoria
+                                    )}
+                                </strong>
+
+                                <span>
+                                    ${percentual.toFixed(
+                                        1
+                                    )}%
+                                </span>
+
+                            </div>
+
+                            <progress
+                                value="${percentual}"
+                                max="100">
+                            </progress>
+
+                            <div class="budget-meta">
+
+                                <span>
+                                    Gasto:
+                                    ${format(
+                                        gasto
+                                    )}
+                                </span>
+
+                                <span>
+                                    ${
+                                        excedeu
+                                            ? `Acima em ${format(
+                                                gasto -
+                                                limite
+                                            )}`
+                                            : `Restante: ${format(
+                                                limite -
+                                                gasto
+                                            )}`
+                                    }
+                                </span>
+
+                            </div>
+
+                        </div>
+                    `;
+                }
+            )
+
+            .join("");
 }
 
-/* =====================================================
-TRANSAÇÃO HTML
-===================================================== */
+
+// =====================================================
+// TRANSAÇÃO HTML
+// =====================================================
 
 function transacaoHtml(
-item
+    item
 ) {
-    const descricao=
-    escaparHtml(item.descricao);
+
+    const descricao =
+        escaparHtml(
+            item.descricao
+        );
 
     const categoria =
-    escaparHtml(item.categoria);
+        escaparHtml(
+            item.categoria
+        );
 
     const pagamento =
-    escaparHtml(item.pagamento||"Sem forma de pagamento");
+        escaparHtml(
+            item.pagamento ||
+            "Sem forma de pagamento"
+        );
 
     const observacao =
-    escaparHtml(item.observacao||"");
+        escaparHtml(
+            item.observacao ||
+            ""
+        );
 
-return `
-    <div class="item">
+    return `
+        <div class="item">
 
-        <div class="item-info">
+            <div class="item-info">
 
-            <div class="item-title-row">
+                <div class="item-title-row">
 
-                <strong>
-                    ${descricao}
-                </strong>
+                    <strong>
+                        ${descricao}
+                    </strong>
+
+                    <span
+                        class="badge ${item.tipo}">
+                        ${
+                            item.tipo ===
+                            "entrada"
+                                ? "Entrada"
+                                : "Saída"
+                        }
+                    </span>
+
+                </div>
+
+                <div class="small">
+
+                    ${categoria}
+
+                    •
+
+                    ${
+                        item.dataFormatada ||
+                        formatarData(
+                            item.dataISO
+                        )
+                    }
+
+                    •
+
+                    ${pagamento}
+
+                    ${
+                        observacao
+                            ? `<br>${observacao}`
+                            : ""
+                    }
+
+                </div>
+
+            </div>
+
+            <div class="item-value">
 
                 <span
-                    class="badge ${item.tipo}">
+                    class="${
+                        item.tipo ===
+                        "entrada"
+                            ? "green"
+                            : "red"
+                    }">
+
                     ${
                         item.tipo ===
                         "entrada"
-                            ? "Entrada"
-                            : "Saída"
+                            ? "+"
+                            : "-"
                     }
+
+                    ${format(
+                        item.valor
+                    )}
+
                 </span>
 
-            </div>
+                <button
+                    class="icon-btn edit-btn"
+                    onclick="editarItem(${item.id})"
+                    title="Editar lançamento"
+                    aria-label="Editar lançamento">
+                    ✏️
+                </button>
 
-            <div class="small">
-
-                ${categoria}
-
-                •
-
-                ${
-                    item.dataFormatada ||
-                    formatarData(
-                        item.dataISO
-                    )
-                }
-
-                •
-
-                ${pagamento}
-
-                ${observacao
-                        ? `<br>${item.observacao}`
-                        : ""}
+                <button
+                    class="icon-btn delete-btn"
+                    onclick="removerItem(${item.id})"
+                    title="Excluir lançamento"
+                    aria-label="Excluir lançamento">
+                    🗑️
+                </button>
 
             </div>
 
         </div>
-
-        <div class="item-value">
-
-            <span class="${
-                item.tipo ===
-                "entrada"
-                    ? "green"
-                    : "red"
-            }">
-
-                ${
-                    item.tipo ===
-                    "entrada"
-                        ? "+"
-                        : "-"
-                }
-
-                ${format(
-                    item.valor
-                )}
-
-            </span>
-
-<button
-    class="icon-btn edit-btn"
-    onclick="editarItem(${item.id})"
-    title="Editar lançamento"
-    aria-label="Editar lançamento">
-    ✏️
-</button>
-
-<button
-    class="icon-btn delete-btn"
-    onclick="removerItem(${item.id})"
-    title="Excluir lançamento"
-    aria-label="Excluir lançamento">
-    🗑️
-</button>
-
-        </div>
-
-    </div>
-`;
-
+    `;
 }
 
-/* =====================================================
-DASHBOARD
-===================================================== */
+
+// =====================================================
+// DASHBOARD
+// =====================================================
 
 function renderDashboard() {
 
-if (
-    !has(
-        "dashboardTransactions"
-    )
-) {
-    return;
-}
-
-const recentes =
-    [...data]
-        .sort(
-            (a, b) =>
-                new Date(
-                    b.dataISO
-                ) -
-                new Date(
-                    a.dataISO
-                )
+    if (
+        !has(
+            "dashboardTransactions"
         )
-        .slice(0, 4);
+    ) {
 
-$("dashboardTransactions")
-    .innerHTML =
-    recentes.length
-        ? recentes
-            .map(
-                transacaoHtml
+        return;
+    }
+
+    const recentes =
+        [
+            ...data
+        ]
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    new Date(
+                        b.dataISO
+                    ) -
+                    new Date(
+                        a.dataISO
+                    )
             )
-            .join("")
-        : `
-            <div class="empty-state">
-                Ainda não há lançamentos registrados.
-            </div>
-        `;
+            .slice(
+                0,
+                4
+            );
 
+    $("dashboardTransactions")
+        .innerHTML =
+        recentes.length
+
+            ? recentes
+                .map(
+                    transacaoHtml
+                )
+                .join("")
+
+            : `
+                <div class="empty-state">
+                    Ainda não há lançamentos registrados.
+                </div>
+            `;
 }
 
-/* =====================================================
-LANÇAMENTOS
-===================================================== */
+
+// =====================================================
+// LANÇAMENTOS
+// =====================================================
 
 function renderLancamentos() {
 
-if (!has("list")) {
-    return;
-}
+    if (!has("list")) {
 
-const filtradas =
-    obterFiltradas();
+        return;
+    }
 
-const totalPages =
-    Math.max(
-        1,
-        Math.ceil(
-            filtradas.length /
-            ITEMS_PER_PAGE
-        )
-    );
+    const filtradas =
+        obterFiltradas();
 
-currentPage =
-    Math.min(
-        currentPage,
-        totalPages
-    );
-
-const inicio =
-    (
-        currentPage -
-        1
-    ) *
-    ITEMS_PER_PAGE;
-
-const pagina =
-    filtradas.slice(
-        inicio,
-        inicio +
-        ITEMS_PER_PAGE
-    );
-
-$("transactionCounter")
-    .textContent =
-    `${filtradas.length} ${
-        filtradas.length === 1
-            ? "item"
-            : "itens"
-    }`;
-
-$("list").innerHTML =
-    pagina.length
-        ? pagina
-            .map(
-                transacaoHtml
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                filtradas.length /
+                ITEMS_PER_PAGE
             )
-            .join("")
-        : `
-            <div class="empty-state">
-                Nenhum lançamento encontrado com os filtros atuais.
-            </div>
-        `;
-
-if (has("pageInfo")) {
-
-    $("pageInfo").textContent =
-        `Página ${currentPage} de ${totalPages}`;
-}
-
-if (has("prevPageBtn")) {
-
-    $("prevPageBtn").disabled =
-        currentPage <= 1;
-}
-
-if (has("nextPageBtn")) {
-
-    $("nextPageBtn").disabled =
-        currentPage >=
-        totalPages;
-}
-
-if (has("pagination")) {
-
-    $("pagination")
-        .classList.toggle(
-            "hidden",
-            totalPages <= 1
         );
+
+    currentPage =
+        Math.min(
+            currentPage,
+            totalPages
+        );
+
+    const inicio =
+        (
+            currentPage -
+            1
+        ) *
+        ITEMS_PER_PAGE;
+
+    const pagina =
+        filtradas.slice(
+            inicio,
+            inicio +
+            ITEMS_PER_PAGE
+        );
+
+    $("transactionCounter")
+        .textContent =
+        `${filtradas.length} ${
+            filtradas.length === 1
+                ? "item"
+                : "itens"
+        }`;
+
+    $("list")
+        .innerHTML =
+        pagina.length
+
+            ? pagina
+                .map(
+                    transacaoHtml
+                )
+                .join("")
+
+            : `
+                <div class="empty-state">
+                    Nenhum lançamento encontrado com os filtros atuais.
+                </div>
+            `;
+
+    if (has("pageInfo")) {
+
+        $("pageInfo")
+            .textContent =
+            `Página ${currentPage} de ${totalPages}`;
+    }
+
+    if (has("prevPageBtn")) {
+
+        $("prevPageBtn")
+            .disabled =
+            currentPage <= 1;
+    }
+
+    if (has("nextPageBtn")) {
+
+        $("nextPageBtn")
+            .disabled =
+            currentPage >=
+            totalPages;
+    }
+
+    if (has("pagination")) {
+
+        $("pagination")
+            .classList.toggle(
+                "hidden",
+                totalPages <= 1
+            );
+    }
 }
 
-}
 
-/* =====================================================
-SALVAR META
-===================================================== */
+// =====================================================
+// SALVAR META
+// =====================================================
 
 function salvarMetaHandler() {
 
-const valor =
-    parseFloat(
-        $("metaInput").value
-    );
+    const valor =
+        parseFloat(
+            $("metaInput").value
+        );
 
-const titulo =
-    $("metaTitulo")
-        .value
-        .trim() ||
-    "Meta principal";
+    const titulo =
+        $("metaTitulo")
+            .value
+            .trim() ||
+        "Meta principal";
 
-if (
-    !valor ||
-    valor <= 0
-) {
+    if (
+        !valor ||
+        valor <= 0
+    ) {
+
+        mostrarNotificacao(
+            "Digite um valor de meta válido.",
+            "erro"
+        );
+
+        return;
+    }
+
+    meta = {
+
+        titulo,
+
+        valor
+
+    };
+
+    salvarMeta();
+
+    atualizarResumo();
+
+    atualizarMeta();
 
     mostrarNotificacao(
-        "Digite um valor de meta válido.",
-        "erro"
+        "Meta salva com sucesso.",
+        "sucesso"
     );
-
-    return;
 }
 
-meta = {
-    titulo,
-    valor
-};
 
-salvarMeta();
-
-atualizarResumo();
-
-atualizarMeta();
-
-mostrarNotificacao(
-    "meta salva com sucesso.",
-    "sucesso"
-);
-
-}
-
-/* =====================================================
-SALVAR ORÇAMENTO
-===================================================== */
+// =====================================================
+// SALVAR ORÇAMENTO
+// =====================================================
 
 function salvarBudgetHandler() {
 
-const categoria =
-    $("budgetCategoria")
-        .value;
+    const categoria =
+        $("budgetCategoria")
+            .value;
 
-const valor =
-    parseFloat(
-        $("budgetValor")
-            .value
-    );
-
-if (!categoria) {
-
-    mostrarNotificacao(
-        "Selecione uma categoria.",
-        "erro"
-    );
-
-    return;
-}
-
-if (
-    !valor ||
-    valor <= 0
-) {
-
-    mostrarNotificacao(
-        "Digite um valor de limite válido.",
-        "erro"
-    );
-
-    return;
-}
-
-budgets[categoria] =
-    valor;
-
-salvarBudgets();
-
-$("budgetValor").value =
-    "";
-
-atualizarBudgets();
-
-mostrarNotificacao(
-    "Orçamento salvo com sucesso.",
-    "sucesso"
-);
-
-}
-
-/* =====================================================
-ADICIONAR / EDITAR LANÇAMENTO
-===================================================== */
-
-function handleSubmit(e) {
-
-e.preventDefault();
-
-const descricao =
-    $("desc")
-        .value
-        .trim();
-
-const valor =
-    parseFloat(
-        $("valor").value
-    );
-
-if (!descricao) {
-
-    mostrarNotificacao(
-        "Digite uma descrição.",
-        "erro"
-    );
-
-    return;
-}
-
-if (
-    !valor ||
-    valor <= 0
-) {
-
-    mostrarNotificacao(
-        "Digite um valor válido.",
-        "erro"
-    );
-
-    return;
-}
-
-const dataISO =
-    $("dataLancamento")
-        .value;
-
-if (!dataISO) {
-
-    mostrarNotificacao(
-        "Selecione a data do lançamento.",
-        "erro"
-    );
-
-    return;
-}
-
-const editId =
-    $("editId").value;
-
-const payload = {
-
-    id:
-        editId
-            ? Number(editId)
-            : Date.now(),
-
-    descricao,
-
-    valor,
-
-    tipo:
-        $("tipo").value,
-
-    categoria:
-        $("cat").value,
-
-    pagamento:
-        $("pagamento").value,
-
-    observacao:
-        $("obs")
-            .value
-            .trim(),
-
-    dataISO,
-
-    dataFormatada:
-        formatarData(
-            dataISO
-        )
-};
-
-if (editId) {
-
-    data =
-        data.map(
-            item =>
-                item.id ===
-                Number(editId)
-                    ? payload
-                    : item
+    const valor =
+        parseFloat(
+            $("budgetValor")
+                .value
         );
 
-} else {
+    if (!categoria) {
 
-    data.unshift(
-        payload
+        mostrarNotificacao(
+            "Selecione uma categoria.",
+            "erro"
+        );
+
+        return;
+    }
+
+    if (
+        !valor ||
+        valor <= 0
+    ) {
+
+        mostrarNotificacao(
+            "Digite um valor de limite válido.",
+            "erro"
+        );
+
+        return;
+    }
+
+    budgets[
+        categoria
+    ] =
+        valor;
+
+    salvarBudgets();
+
+    $("budgetValor")
+        .value =
+        "";
+
+    atualizarBudgets();
+
+    mostrarNotificacao(
+        "Orçamento salvo com sucesso.",
+        "sucesso"
     );
 }
 
-salvarDados();
 
-$("transactionForm")
-    .reset();
+// =====================================================
+// ADICIONAR / EDITAR LANÇAMENTO
+// =====================================================
 
-$("editId").value =
-    "";
+function handleSubmit(
+    e
+) {
 
-$("submitBtn").textContent =
-    "Adicionar lançamento";
+    e.preventDefault();
 
-$("cancelEditBtn")
-    .classList.add(
-        "hidden"
+    const descricao =
+        $("desc")
+            .value
+            .trim();
+
+    const valor =
+        parseFloat(
+            $("valor").value
+        );
+
+    if (!descricao) {
+
+        mostrarNotificacao(
+            "Digite uma descrição.",
+            "erro"
+        );
+
+        return;
+    }
+
+    if (
+        !valor ||
+        valor <= 0
+    ) {
+
+        mostrarNotificacao(
+            "Digite um valor válido.",
+            "erro"
+        );
+
+        return;
+    }
+
+    const dataISO =
+        $("dataLancamento")
+            .value;
+
+    if (!dataISO) {
+
+        mostrarNotificacao(
+            "Selecione a data do lançamento.",
+            "erro"
+        );
+
+        return;
+    }
+
+    const editId =
+        $("editId").value;
+
+    const payload = {
+
+        id:
+            editId
+                ? Number(
+                    editId
+                )
+                : Date.now(),
+
+        descricao,
+
+        valor,
+
+        tipo:
+            $("tipo").value,
+
+        categoria:
+            $("cat").value,
+
+        pagamento:
+            $("pagamento").value,
+
+        observacao:
+            $("obs")
+                .value
+                .trim(),
+
+        dataISO,
+
+        dataFormatada:
+            formatarData(
+                dataISO
+            )
+    };
+
+    if (editId) {
+
+        data =
+            data.map(
+                item =>
+                    item.id ===
+                    Number(
+                        editId
+                    )
+                        ? payload
+                        : item
+            );
+
+    } else {
+
+        data.unshift(
+            payload
+        );
+    }
+
+    salvarDados();
+
+    $("transactionForm")
+        .reset();
+
+    $("editId").value =
+        "";
+
+    $("submitBtn")
+        .textContent =
+        "Adicionar lançamento";
+
+    $("cancelEditBtn")
+        .classList.add(
+            "hidden"
+        );
+
+    setDefaultDate();
+
+    currentPage =
+        1;
+
+    atualizarResumo();
+
+    atualizarMeta();
+
+    renderLancamentos();
+
+    renderDashboard();
+
+    atualizarBudgets();
+
+    atualizarGraficos();
+
+    mostrarNotificacao(
+        editId
+            ? "Lançamento atualizado com sucesso."
+            : "Lançamento adicionado com sucesso.",
+        "sucesso"
     );
-
-setDefaultDate();
-
-currentPage = 1;
-
-atualizarResumo();
-
-atualizarMeta();
-
-renderLancamentos();
-
-renderDashboard();
-
-atualizarBudgets();
-
-atualizarGraficos();
-
-mostrarNotificacao(
-    editId
-        ? "Lançamento atualizado com sucesso."
-        : "Lançamento adicionado com sucesso.",
-    "sucesso"
-);
-
 }
 
-/* =====================================================
-EDITAR ITEM
-===================================================== */
 
-function editarItem(id) {
+// =====================================================
+// EDITAR ITEM
+// =====================================================
 
-if (!has("transactionForm")) {
+function editarItem(
+    id
+) {
 
-    window.location.href =
-        "lancamentos.html";
+    if (
+        !has(
+            "transactionForm"
+        )
+    ) {
 
-    return;
-}
+        window.location.href =
+            "lancamentos.html";
 
-const item =
-    data.find(
-        x =>
-            x.id === id
+        return;
+    }
+
+    const item =
+        data.find(
+            x =>
+                x.id ===
+                id
+        );
+
+    if (!item) {
+
+        return;
+    }
+
+    $("editId").value =
+        item.id;
+
+    $("desc").value =
+        item.descricao;
+
+    $("valor").value =
+        item.valor;
+
+    $("tipo").value =
+        item.tipo;
+
+    $("cat").value =
+        item.categoria;
+
+    $("pagamento").value =
+        item.pagamento ||
+        "Pix";
+
+    $("dataLancamento").value =
+        item.dataISO;
+
+    $("obs").value =
+        item.observacao ||
+        "";
+
+    $("submitBtn")
+        .textContent =
+        "Salvar alterações";
+
+    $("cancelEditBtn")
+        .classList.remove(
+            "hidden"
+        );
+
+    window.scrollTo(
+        {
+            top:
+                0,
+
+            behavior:
+                "smooth"
+        }
     );
-
-if (!item) {
-    return;
 }
 
-$("editId").value =
-    item.id;
 
-$("desc").value =
-    item.descricao;
+// =====================================================
+// REMOVER ITEM
+// =====================================================
 
-$("valor").value =
-    item.valor;
-
-$("tipo").value =
-    item.tipo;
-
-$("cat").value =
-    item.categoria;
-
-$("pagamento").value =
-    item.pagamento ||
-    "Pix";
-
-$("dataLancamento").value =
-    item.dataISO;
-
-$("obs").value =
-    item.observacao ||
-    "";
-
-$("submitBtn").textContent =
-    "Salvar alterações";
-
-$("cancelEditBtn")
-    .classList.remove(
-        "hidden"
-    );
-
-window.scrollTo({
-    top: 0,
-    behavior:
-        "smooth"
-});
-
-}
-
-/* =====================================================
-REMOVER ITEM
-===================================================== */
-
-function removerItem(id) {
+function removerItem(
+    id
+) {
 
     mostrarConfirmacao(
         "Deseja remover este lançamento? Essa ação não poderá ser desfeita.",
@@ -1789,7 +2038,8 @@ function removerItem(id) {
             data =
                 data.filter(
                     item =>
-                        item.id !== id
+                        item.id !==
+                        id
                 );
 
             salvarDados();
@@ -1810,1154 +2060,1274 @@ function removerItem(id) {
                 "Lançamento removido com sucesso.",
                 "sucesso"
             );
+
         }
     );
 }
 
-/* =====================================================
-FILTROS
-===================================================== */
+
+// =====================================================
+// FILTROS
+// =====================================================
 
 function limparFiltros() {
 
-$("searchInput").value =
-    "";
+    $("searchInput").value =
+        "";
 
-$("filterTipo").value =
-    "todos";
+    $("filterTipo").value =
+        "todos";
 
-$("filterCategoria").value =
-    "todas";
+    $("filterCategoria").value =
+        "todas";
 
-$("filterMes").value =
-    "todos";
+    $("filterMes").value =
+        "todos";
 
-currentPage = 1;
+    currentPage =
+        1;
 
-renderLancamentos();
-
+    renderLancamentos();
 }
 
-/* =====================================================
-GRÁFICOS
-===================================================== */
+
+// =====================================================
+// GRÁFICOS
+// =====================================================
 
 function criarGrafico(
-id,
-config
-) {
-
-const canvas =
-    $(id);
-
-if (
-    !canvas ||
-    typeof Chart ===
-        "undefined"
-) {
-    return null;
-}
-
-return new Chart(
-    canvas,
+    id,
     config
-);
+) {
 
+    const canvas =
+        $(id);
+
+    if (
+        !canvas ||
+        typeof Chart ===
+            "undefined"
+    ) {
+
+        return null;
+    }
+
+    return new Chart(
+        canvas,
+        config
+    );
 }
 
 function atualizarGraficos() {
 
-if (!has("overviewChart")) {
-    return;
-}
-
-const entradas =
-    data
-        .filter(
-            i =>
-                i.tipo ===
-                "entrada"
+    if (
+        !has(
+            "overviewChart"
         )
-        .reduce(
-            (
-                a,
-                i
-            ) =>
-                a +
-                Number(
-                    i.valor
-                ),
-            0
+    ) {
+
+        return;
+    }
+
+    const entradas =
+        data
+            .filter(
+                i =>
+                    i.tipo ===
+                    "entrada"
+            )
+            .reduce(
+                (
+                    a,
+                    i
+                ) =>
+                    a +
+                    Number(
+                        i.valor
+                    ),
+                0
+            );
+
+    const saidas =
+        data
+            .filter(
+                i =>
+                    i.tipo ===
+                    "saida"
+            )
+            .reduce(
+                (
+                    a,
+                    i
+                ) =>
+                    a +
+                    Number(
+                        i.valor
+                    ),
+                0
+            );
+
+    if (
+        overviewChart
+    ) {
+
+        overviewChart.destroy();
+    }
+
+    overviewChart =
+        criarGrafico(
+            "overviewChart",
+            {
+
+                type:
+                    "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Entradas",
+                        "Saídas"
+                    ],
+
+                    datasets: [
+                        {
+
+                            data: [
+                                entradas,
+                                saidas
+                            ],
+
+                            backgroundColor:
+                                [
+                                    "#22c55e",
+                                    "#ef4444"
+                                ],
+
+                            borderWidth:
+                                0
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false
+                }
+            }
         );
 
-const saidas =
+
+    const cats = {};
+
     data
         .filter(
             i =>
                 i.tipo ===
                 "saida"
         )
-        .reduce(
-            (
-                a,
-                i
-            ) =>
-                a +
-                Number(
-                    i.valor
-                ),
-            0
+        .forEach(
+            i => {
+
+                cats[
+                    i.categoria
+                ] =
+                    (
+                        cats[
+                            i.categoria
+                        ] || 0
+                    ) +
+                    Number(
+                        i.valor
+                    );
+            }
         );
 
-if (overviewChart) {
+    if (
+        categoryChart
+    ) {
 
-    overviewChart.destroy();
-}
+        categoryChart.destroy();
+    }
 
-overviewChart =
-    criarGrafico(
-        "overviewChart",
-        {
+    categoryChart =
+        criarGrafico(
+            "categoryChart",
+            {
 
-            type:
-                "doughnut",
+                type:
+                    "bar",
 
-            data: {
+                data: {
 
-                labels: [
-                    "Entradas",
-                    "Saídas"
-                ],
+                    labels:
+                        Object.keys(
+                            cats
+                        ),
 
-                datasets: [
-                    {
+                    datasets: [
+                        {
 
-                        data: [
-                            entradas,
-                            saidas
-                        ],
+                            label:
+                                "Gastos",
 
-                        backgroundColor:
-                            [
-                                "#22c55e",
-                                "#ef4444"
-                            ],
+                            data:
+                                Object.values(
+                                    cats
+                                ),
 
-                        borderWidth:
-                            0
-                    }
-                ]
-            },
+                            backgroundColor:
+                                Object.keys(
+                                    cats
+                                ).map(
+                                    (
+                                        _,
+                                        i
+                                    ) =>
+                                        coresCategorias[
+                                            i %
+                                            coresCategorias.length
+                                        ]
+                                ),
 
-            options: {
+                            borderRadius:
+                                10
+                        }
+                    ]
+                },
 
-                responsive:
-                    true,
+                options: {
 
-                maintainAspectRatio:
-                    false
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false
+                }
             }
-        }
-    );
+        );
 
 
-const cats = {};
+    const mensal = {};
 
-data
-    .filter(
-        i =>
-            i.tipo ===
-            "saida"
-    )
-    .forEach(
+    data.forEach(
         i => {
 
-            cats[
-                i.categoria
-            ] =
-                (
-                    cats[
-                        i.categoria
-                    ] || 0
-                ) +
+            const chave =
+                i.dataISO?.slice(
+                    0,
+                    7
+                ) ||
+                "Sem data";
+
+            if (
+                !mensal[
+                    chave
+                ]
+            ) {
+
+                mensal[
+                    chave
+                ] = {
+
+                    entradas:
+                        0,
+
+                    saidas:
+                        0
+                };
+            }
+
+            mensal[
+                chave
+            ][
+                i.tipo ===
+                "entrada"
+                    ? "entradas"
+                    : "saidas"
+            ] +=
                 Number(
                     i.valor
                 );
         }
     );
 
+    const keys =
+        Object.keys(
+            mensal
+        ).sort();
 
-if (categoryChart) {
+    const labels =
+        keys.map(
+            k =>
+                k ===
+                "Sem data"
+                    ? k
+                    : getMonthNameKey(
+                        `${k}-01`
+                    )
+        );
 
-    categoryChart.destroy();
-}
+    const saldos =
+        keys.map(
+            k =>
+                mensal[
+                    k
+                ].entradas -
+                mensal[
+                    k
+                ].saidas
+        );
 
-categoryChart =
-    criarGrafico(
-        "categoryChart",
-        {
+    if (
+        monthlyChart
+    ) {
 
-            type:
-                "bar",
-
-            data: {
-
-                labels:
-                    Object.keys(
-                        cats
-                    ),
-
-                datasets: [
-                    {
-
-                        label:
-                            "Gastos",
-
-                        data:
-                            Object.values(
-                                cats
-                            ),
-
-                        backgroundColor:
-                            Object.keys(
-                                cats
-                            ).map(
-                                (
-                                    _,
-                                    i
-                                ) =>
-                                    coresCategorias[
-                                        i %
-                                        coresCategorias.length
-                                    ]
-                            ),
-
-                        borderRadius:
-                            10
-                    }
-                ]
-            },
-
-            options: {
-
-                responsive:
-                    true,
-
-                maintainAspectRatio:
-                    false
-            }
-        }
-    );
-
-
-const mensal = {};
-
-data.forEach(
-    i => {
-
-        const chave =
-            i.dataISO?.slice(
-                0,
-                7
-            ) ||
-            "Sem data";
-
-        if (!mensal[chave]) {
-
-            mensal[chave] = {
-
-                entradas:
-                    0,
-
-                saidas:
-                    0
-            };
-        }
-
-        mensal[chave][
-            i.tipo ===
-            "entrada"
-                ? "entradas"
-                : "saidas"
-        ] +=
-            Number(
-                i.valor
-            );
+        monthlyChart.destroy();
     }
-);
 
+    monthlyChart =
+        criarGrafico(
+            "monthlyChart",
+            {
 
-const keys =
-    Object.keys(
-        mensal
-    ).sort();
+                type:
+                    "line",
 
+                data: {
 
-const labels =
-    keys.map(
-        k =>
-            k === "Sem data"
-                ? k
-                : getMonthNameKey(
-                    `${k}-01`
-                )
-    );
+                    labels,
 
+                    datasets: [
+                        {
 
-const saldos =
-    keys.map(
-        k =>
-            mensal[k]
-                .entradas -
-            mensal[k]
-                .saidas
-    );
+                            label:
+                                "Saldo mensal",
 
+                            data:
+                                saldos,
 
-if (monthlyChart) {
+                            borderColor:
+                                "#38bdf8",
 
-    monthlyChart.destroy();
-}
+                            backgroundColor:
+                                "rgba(56,189,248,.18)",
 
+                            fill:
+                                true,
 
-monthlyChart =
-    criarGrafico(
-        "monthlyChart",
-        {
+                            tension:
+                                .35
+                        }
+                    ]
+                },
 
-            type:
-                "line",
+                options: {
 
-            data: {
+                    responsive:
+                        true,
 
-                labels,
-
-                datasets: [
-                    {
-
-                        label:
-                            "Saldo mensal",
-
-                        data:
-                            saldos,
-
-                        borderColor:
-                            "#38bdf8",
-
-                        backgroundColor:
-                            "rgba(56,189,248,.18)",
-
-                        fill:
-                            true,
-
-                        tension:
-                            .35
-                    }
-                ]
-            },
-
-            options: {
-
-                responsive:
-                    true,
-
-                maintainAspectRatio:
-                    false
+                    maintainAspectRatio:
+                        false
+                }
             }
-        }
-    );
-
+        );
 }
 
-/* =====================================================
-FUNDO ANIMADO
-===================================================== */
+
+// =====================================================
+// FUNDO ANIMADO
+// =====================================================
 
 function animateBackground() {
 
-const canvas =
-    $("bg");
+    const canvas =
+        $("bg");
 
-if (!canvas) {
-    return;
-}
+    if (!canvas) {
 
-const ctx =
-    canvas.getContext(
-        "2d"
-    );
+        return;
+    }
 
-let w =
-    canvas.width =
-        innerWidth;
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
 
-let h =
-    canvas.height =
-        innerHeight;
-
-const points =
-    Array.from(
-        {
-            length:
-                Math.min(
-                    65,
-                    Math.floor(
-                        w / 20
-                    )
-                )
-        },
-        () => ({
-
-            x:
-                Math.random() *
-                w,
-
-            y:
-                Math.random() *
-                h,
-
-            r:
-                Math.random() *
-                2.2 +
-                1,
-
-            sx:
-                (
-                    Math.random() -
-                    0.5
-                ) *
-                0.5,
-
-            sy:
-                (
-                    Math.random() -
-                    0.5
-                ) *
-                0.5
-        })
-    );
-
-
-function resize() {
-
-    w =
+    let w =
         canvas.width =
             innerWidth;
 
-    h =
+    let h =
         canvas.height =
             innerHeight;
-}
 
+    const points =
+        Array.from(
+            {
+                length:
+                    Math.min(
+                        65,
+                        Math.floor(
+                            w / 20
+                        )
+                    )
+            },
+            () => ({
 
-function draw() {
+                x:
+                    Math.random() *
+                    w,
 
-    ctx.clearRect(
-        0,
-        0,
-        w,
-        h
-    );
+                y:
+                    Math.random() *
+                    h,
 
-    points.forEach(
-        p => {
+                r:
+                    Math.random() *
+                    2.2 +
+                    1,
 
-            p.x +=
-                p.sx;
+                sx:
+                    (
+                        Math.random() -
+                        0.5
+                    ) *
+                    0.5,
 
-            p.y +=
-                p.sy;
+                sy:
+                    (
+                        Math.random() -
+                        0.5
+                    ) *
+                    0.5
+            })
+        );
 
-            if (
-                p.x < 0 ||
-                p.x > w
-            ) {
+    function resize() {
 
-                p.sx *=
-                    -1;
+        w =
+            canvas.width =
+                innerWidth;
+
+        h =
+            canvas.height =
+                innerHeight;
+    }
+
+    function draw() {
+
+        ctx.clearRect(
+            0,
+            0,
+            w,
+            h
+        );
+
+        points.forEach(
+            p => {
+
+                p.x +=
+                    p.sx;
+
+                p.y +=
+                    p.sy;
+
+                if (
+                    p.x < 0 ||
+                    p.x > w
+                ) {
+
+                    p.sx *=
+                        -1;
+                }
+
+                if (
+                    p.y < 0 ||
+                    p.y > h
+                ) {
+
+                    p.sy *=
+                        -1;
+                }
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    p.x,
+                    p.y,
+                    p.r,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fillStyle =
+                    "rgba(56,189,248,.35)";
+
+                ctx.fill();
             }
+        );
 
-            if (
-                p.y < 0 ||
-                p.y > h
-            ) {
+        requestAnimationFrame(
+            draw
+        );
+    }
 
-                p.sy *=
-                    -1;
-            }
-
-            ctx.beginPath();
-
-            ctx.arc(
-                p.x,
-                p.y,
-                p.r,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fillStyle =
-                "rgba(56,189,248,.35)";
-
-            ctx.fill();
-        }
+    addEventListener(
+        "resize",
+        resize
     );
 
-    requestAnimationFrame(
-        draw
-    );
+    draw();
 }
 
 
-addEventListener(
-    "resize",
-    resize
-);
-
-draw();
-
-}
-
-/* =====================================================
-PÁGINA ATUAL
-===================================================== */
+// =====================================================
+// PÁGINA ATUAL
+// =====================================================
 
 function marcarPaginaAtual() {
 
-const atual =
-    location.pathname
-        .split("/")
-        .pop() ||
-    "index.html";
+    const atual =
+        location.pathname
+            .split("/")
+            .pop() ||
+        "index.html";
 
-document
-    .querySelectorAll(
-        ".nav-btn"
-    )
-    .forEach(
-        link => {
+    document
+        .querySelectorAll(
+            ".nav-btn"
+        )
+        .forEach(
+            link => {
 
-            link.classList.toggle(
-                "active",
-                link.dataset.page ===
-                    atual
-            );
-        }
-    );
-
+                link.classList.toggle(
+                    "active",
+                    link.dataset.page ===
+                        atual
+                );
+            }
+        );
 }
 
-/* =====================================================
-EVENTOS
-===================================================== */
+
+// =====================================================
+// EVENTOS
+// =====================================================
 
 function bindEvents() {
 
-if (
-    has(
-        "transactionForm"
-    )
-) {
+    // =================================================
+    // MENU HAMBÚRGUER MOBILE
+    // =================================================
 
-    $("transactionForm")
-        .addEventListener(
-            "submit",
-            handleSubmit
+    const mobileMenuToggle =
+        $("mobileMenuToggle");
+
+    const sidebar =
+        document.querySelector(
+            ".sidebar"
         );
-}
 
+    if (
+        mobileMenuToggle &&
+        sidebar
+    ) {
 
-if (
-    has(
-        "cancelEditBtn"
-    )
-) {
-
-    $("cancelEditBtn")
-        .addEventListener(
+        mobileMenuToggle.addEventListener(
             "click",
             () => {
 
-                $("transactionForm")
-                    .reset();
-
-                $("editId").value =
-                    "";
-
-                $("submitBtn")
-                    .textContent =
-                    "Adicionar lançamento";
-
-                $("cancelEditBtn")
-                    .classList.add(
-                        "hidden"
+                const aberto =
+                    sidebar.classList.toggle(
+                        "menu-aberto"
                     );
 
-                setDefaultDate();
-            }
-        );
-}
+                mobileMenuToggle.textContent =
+                    aberto
+                        ? "✕"
+                        : "☰";
 
-
-if (
-    has(
-        "saveGoalBtn"
-    )
-) {
-
-    $("saveGoalBtn")
-        .addEventListener(
-            "click",
-            salvarMetaHandler
-        );
-}
-
-
-if (
-    has(
-        "saveBudgetBtn"
-    )
-) {
-
-    $("saveBudgetBtn")
-        .addEventListener(
-            "click",
-            salvarBudgetHandler
-        );
-}
-
-
-if (
-    has(
-        "clearFiltersBtn"
-    )
-) {
-
-    $("clearFiltersBtn")
-        .addEventListener(
-            "click",
-            limparFiltros
-        );
-}
-
-
-if (
-    has(
-        "prevPageBtn"
-    )
-) {
-
-    $("prevPageBtn")
-        .addEventListener(
-            "click",
-            () => {
-
-                if (
-                    currentPage >
-                    1
-                ) {
-
-                    currentPage--;
-
-                    renderLancamentos();
-                }
-            }
-        );
-}
-
-
-if (
-    has(
-        "nextPageBtn"
-    )
-) {
-
-    $("nextPageBtn")
-        .addEventListener(
-            "click",
-            () => {
-
-                const total =
-                    Math.max(
-                        1,
-                        Math.ceil(
-                            obterFiltradas()
-                                .length /
-                            ITEMS_PER_PAGE
-                        )
-                    );
-
-                if (
-                    currentPage <
-                    total
-                ) {
-
-                    currentPage++;
-
-                    renderLancamentos();
-                }
-            }
-        );
-}
-
-
-if (
-    has(
-        "searchInput"
-    )
-) {
-
-    $("searchInput")
-        .addEventListener(
-            "input",
-            () => {
-
-                currentPage = 1;
-
-                renderLancamentos();
-            }
-        );
-}
-
-
-[
-    "filterTipo",
-    "filterCategoria",
-    "filterMes"
-].forEach(
-    id => {
-
-        if (has(id)) {
-
-            $(id).addEventListener(
-                "change",
-                () => {
-
-                    currentPage = 1;
-
-                    renderLancamentos();
-                }
-            );
-        }
-    }
-);
-
-
-$("anoFiscal")?.addEventListener(
-    "change",
-    atualizarFiscal
-);
-
-
-document
-    .querySelectorAll(
-        ".nav-btn"
-    )
-    .forEach(
-        link => {
-
-            const destino =
-                link.getAttribute(
-                    "href"
+                mobileMenuToggle.setAttribute(
+                    "aria-expanded",
+                    aberto
                 );
 
-            if (!destino) {
-                return;
             }
+        );
 
-            link.addEventListener(
-                "click",
-                e => {
+        document
+            .querySelectorAll(
+                ".sidebar .nav-btn"
+            )
+            .forEach(
+                link => {
 
-                    e.preventDefault();
-
-                    document.body.classList.add(
-                        "fsx-saindo"
-                    );
-
-                    setTimeout(
+                    link.addEventListener(
+                        "click",
                         () => {
 
-                            window.location.href =
-                                destino;
+                            sidebar.classList.remove(
+                                "menu-aberto"
+                            );
 
-                        },
-                        180
+                            mobileMenuToggle.textContent =
+                                "☰";
+
+                            mobileMenuToggle.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
                     );
+
                 }
             );
+    }
+
+
+    // =================================================
+    // FORMULÁRIO
+    // =================================================
+
+    if (
+        has(
+            "transactionForm"
+        )
+    ) {
+
+        $("transactionForm")
+            .addEventListener(
+                "submit",
+                handleSubmit
+            );
+    }
+
+
+    // =================================================
+    // CANCELAR EDIÇÃO
+    // =================================================
+
+    if (
+        has(
+            "cancelEditBtn"
+        )
+    ) {
+
+        $("cancelEditBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    $("transactionForm")
+                        .reset();
+
+                    $("editId").value =
+                        "";
+
+                    $("submitBtn")
+                        .textContent =
+                        "Adicionar lançamento";
+
+                    $("cancelEditBtn")
+                        .classList.add(
+                            "hidden"
+                        );
+
+                    setDefaultDate();
+
+                }
+            );
+    }
+
+
+    // =================================================
+    // META
+    // =================================================
+
+    if (
+        has(
+            "saveGoalBtn"
+        )
+    ) {
+
+        $("saveGoalBtn")
+            .addEventListener(
+                "click",
+                salvarMetaHandler
+            );
+    }
+
+
+    // =================================================
+    // ORÇAMENTO
+    // =================================================
+
+    if (
+        has(
+            "saveBudgetBtn"
+        )
+    ) {
+
+        $("saveBudgetBtn")
+            .addEventListener(
+                "click",
+                salvarBudgetHandler
+            );
+    }
+
+
+    // =================================================
+    // LIMPAR FILTROS
+    // =================================================
+
+    if (
+        has(
+            "clearFiltersBtn"
+        )
+    ) {
+
+        $("clearFiltersBtn")
+            .addEventListener(
+                "click",
+                limparFiltros
+            );
+    }
+
+
+    // =================================================
+    // PAGINAÇÃO
+    // =================================================
+
+    if (
+        has(
+            "prevPageBtn"
+        )
+    ) {
+
+        $("prevPageBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        currentPage >
+                        1
+                    ) {
+
+                        currentPage--;
+
+                        renderLancamentos();
+                    }
+
+                }
+            );
+    }
+
+    if (
+        has(
+            "nextPageBtn"
+        )
+    ) {
+
+        $("nextPageBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    const total =
+                        Math.max(
+                            1,
+                            Math.ceil(
+                                obterFiltradas()
+                                    .length /
+                                ITEMS_PER_PAGE
+                            )
+                        );
+
+                    if (
+                        currentPage <
+                        total
+                    ) {
+
+                        currentPage++;
+
+                        renderLancamentos();
+                    }
+
+                }
+            );
+    }
+
+
+    // =================================================
+    // BUSCA
+    // =================================================
+
+    if (
+        has(
+            "searchInput"
+        )
+    ) {
+
+        $("searchInput")
+            .addEventListener(
+                "input",
+                () => {
+
+                    currentPage =
+                        1;
+
+                    renderLancamentos();
+
+                }
+            );
+    }
+
+
+    // =================================================
+    // FILTROS
+    // =================================================
+
+    [
+        "filterTipo",
+        "filterCategoria",
+        "filterMes"
+
+    ].forEach(
+        id => {
+
+            if (has(id)) {
+
+                $(id).addEventListener(
+                    "change",
+                    () => {
+
+                        currentPage =
+                            1;
+
+                        renderLancamentos();
+
+                    }
+                );
+            }
+
         }
     );
 
+
+    // =================================================
+    // FISCAL
+    // =================================================
+
+    $("anoFiscal")?.addEventListener(
+        "change",
+        atualizarFiscal
+    );
+
+
+    // =================================================
+    // NAVEGAÇÃO
+    // =================================================
+
+    document
+        .querySelectorAll(
+            ".nav-btn"
+        )
+        .forEach(
+            link => {
+
+                const destino =
+                    link.getAttribute(
+                        "href"
+                    );
+
+                if (!destino) {
+
+                    return;
+                }
+
+                link.addEventListener(
+                    "click",
+                    e => {
+
+                        e.preventDefault();
+
+                        document.body.classList.add(
+                            "fsx-saindo"
+                        );
+
+                        setTimeout(
+                            () => {
+
+                                window.location.href =
+                                    destino;
+
+                            },
+                            180
+                        );
+
+                    }
+                );
+
+            }
+        );
 }
 
-/* =====================================================
-FISCAL
-===================================================== */
+
+// =====================================================
+// FISCAL
+// =====================================================
 
 function atualizarFiscal() {
 
-if (!has("fiscalReceitas")) {
-    return;
-}
+    if (
+        !has(
+            "fiscalReceitas"
+        )
+    ) {
 
-const seletorAno =
-    $("anoFiscal");
+        return;
+    }
 
-const ano =
-    seletorAno
-        ? seletorAno.value
-        : "2026";
+    const seletorAno =
+        $("anoFiscal");
 
-const lancamentosAno =
-    data.filter(
-        item => {
+    const ano =
+        seletorAno
+            ? seletorAno.value
+            : "2026";
 
-            if (!item.dataISO) {
-                return false;
+    const lancamentosAno =
+        data.filter(
+            item => {
+
+                if (
+                    !item.dataISO
+                ) {
+
+                    return false;
+                }
+
+                return item.dataISO
+                    .startsWith(
+                        `${ano}-`
+                    );
             }
-
-            return item.dataISO
-                .startsWith(
-                    `${ano}-`
-                );
-        }
-    );
-
-
-const receitas =
-    lancamentosAno
-        .filter(
-            item =>
-                item.tipo ===
-                "entrada"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor ||
-                    0
-                ),
-            0
         );
 
+    const receitas =
+        lancamentosAno
+            .filter(
+                item =>
+                    item.tipo ===
+                    "entrada"
+            )
+            .reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    Number(
+                        item.valor ||
+                        0
+                    ),
+                0
+            );
 
-const despesas =
-    lancamentosAno
-        .filter(
-            item =>
-                item.tipo ===
-                "saida"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor ||
-                    0
-                ),
-            0
-        );
+    const despesas =
+        lancamentosAno
+            .filter(
+                item =>
+                    item.tipo ===
+                    "saida"
+            )
+            .reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    Number(
+                        item.valor ||
+                        0
+                    ),
+                0
+            );
 
+    const investimentos =
+        lancamentosAno
+            .filter(
+                item =>
+                    item.tipo ===
+                        "saida" &&
+                    item.categoria ===
+                        "Investimentos"
+            )
+            .reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    Number(
+                        item.valor ||
+                        0
+                    ),
+                0
+            );
 
-const investimentos =
-    lancamentosAno
-        .filter(
-            item =>
-                item.tipo ===
-                    "saida" &&
-                item.categoria ===
-                    "Investimentos"
-        )
-        .reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                Number(
-                    item.valor ||
-                    0
-                ),
-            0
-        );
-
-
-$("fiscalReceitas")
-    .textContent =
-    format(
-        receitas
-    );
-
-$("fiscalDespesas")
-    .textContent =
-    format(
-        despesas
-    );
-
-$("fiscalInvestimentos")
-    .textContent =
-    format(
-        investimentos
-    );
-
-$("fiscalMovimentacoes")
-    .textContent =
-    lancamentosAno.length;
-
-
-if (
-    has(
-        "fiscalResumoReceitas"
-    )
-) {
-
-    $("fiscalResumoReceitas")
+    $("fiscalReceitas")
         .textContent =
         format(
             receitas
         );
-}
 
-
-if (
-    has(
-        "fiscalResumoDespesas"
-    )
-) {
-
-    $("fiscalResumoDespesas")
+    $("fiscalDespesas")
         .textContent =
         format(
             despesas
         );
-}
 
-
-if (
-    has(
-        "fiscalResumoInvestimentos"
-    )
-) {
-
-    $("fiscalResumoInvestimentos")
+    $("fiscalInvestimentos")
         .textContent =
         format(
             investimentos
         );
-}
 
-
-if (
-    has(
-        "fiscalResumoMovimentacoes"
-    )
-) {
-
-    $("fiscalResumoMovimentacoes")
+    $("fiscalMovimentacoes")
         .textContent =
         lancamentosAno.length;
+
+    if (
+        has(
+            "fiscalResumoReceitas"
+        )
+    ) {
+
+        $("fiscalResumoReceitas")
+            .textContent =
+            format(
+                receitas
+            );
+    }
+
+    if (
+        has(
+            "fiscalResumoDespesas"
+        )
+    ) {
+
+        $("fiscalResumoDespesas")
+            .textContent =
+            format(
+                despesas
+            );
+    }
+
+    if (
+        has(
+            "fiscalResumoInvestimentos"
+        )
+    ) {
+
+        $("fiscalResumoInvestimentos")
+            .textContent =
+            format(
+                investimentos
+            );
+    }
+
+    if (
+        has(
+            "fiscalResumoMovimentacoes"
+        )
+    ) {
+
+        $("fiscalResumoMovimentacoes")
+            .textContent =
+            lancamentosAno.length;
+    }
 }
 
-}
 
-/* =====================================================
-INICIALIZAÇÃO
-===================================================== */
+// =====================================================
+// INICIALIZAÇÃO
+// =====================================================
 
 function esperarRender() {
 
-return new Promise(
-    resolve => {
+    return new Promise(
+        resolve => {
 
-        requestAnimationFrame(
-            () => {
+            requestAnimationFrame(
+                () => {
 
-                resolve();
+                    resolve();
 
-            }
-        );
-    }
-);
-
+                }
+            );
+        }
+    );
 }
 
 async function init() {
 
-mostrarLoading(
-    "Carregando dados..."
-);
+    mostrarLoading(
+        "Carregando dados..."
+    );
 
-atualizarLoading(
-    10,
-    "Lendo dados..."
-);
+    atualizarLoading(
+        10,
+        "Lendo dados..."
+    );
 
-await esperarRender();
-
-
-normalizarDados();
-
-atualizarLoading(
-    25,
-    "Preparando categorias..."
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-preencherCategorias();
+    normalizarDados();
 
-atualizarLoading(
-    35,
-    "Preparando filtros..."
-);
+    atualizarLoading(
+        25,
+        "Preparando categorias..."
+    );
 
-await esperarRender();
-
-
-preencherMesesFiltro();
-
-atualizarLoading(
-    45,
-    "Configurando data..."
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-setDefaultDate();
+    preencherCategorias();
 
-atualizarLoading(
-    55,
-    "Configurando eventos..."
-);
+    atualizarLoading(
+        35,
+        "Preparando filtros..."
+    );
 
-await esperarRender();
-
-
-bindEvents();
-
-atualizarLoading(
-    65,
-    "Atualizando página..."
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-marcarPaginaAtual();
+    preencherMesesFiltro();
 
-atualizarLoading(
-    75,
-    "Calculando resumo financeiro..."
-);
+    atualizarLoading(
+        45,
+        "Configurando data..."
+    );
 
-await esperarRender();
-
-
-atualizarResumo();
-
-atualizarLoading(
-    80,
-    "Atualizando metas..."
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-atualizarMeta();
+    setDefaultDate();
 
-atualizarLoading(
-    85,
-    "Atualizando orçamento..."
-);
+    atualizarLoading(
+        55,
+        "Configurando eventos..."
+    );
 
-await esperarRender();
-
-
-atualizarBudgets();
-
-atualizarLoading(
-    90,
-    "Preparando lançamentos..."
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-renderLancamentos();
+    bindEvents();
 
-renderDashboard();
+    atualizarLoading(
+        65,
+        "Atualizando página..."
+    );
 
-atualizarLoading(
-    95,
-    "Preparando gráficos..."
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-atualizarGraficos();
+    marcarPaginaAtual();
 
-atualizarFiscal();
+    atualizarLoading(
+        75,
+        "Calculando resumo financeiro..."
+    );
 
-animateBackground();
-
-
-atualizarLoading(
-    100,
-    "FinançaSX pronto!"
-);
-
-await esperarRender();
+    await esperarRender();
 
 
-mostrarNotificacao(
-    "FinançaSX pronto!",
-    "sucesso"
-);
+    atualizarResumo();
 
-esconderLoading();
-const mobieMenuToggle = $("mobileMenuToggle");
-const sidebar = document.querySelector(".sidebar");
+    atualizarLoading(
+        80,
+        "Atualizando metas..."
+    );
 
-if (mobieMenuToggle && sidebar) {
-    mobieMenuToggle.addEventListener("click", () => {
-    const aberto = sidebar.classList.toggle("menu aberto");
-    });
-    mobieMenuToggle.setAttribute("aria-expanded", sidebar.classList.contains("aberto"));
-    mobilemenutoggle.textContent= aberto ? "X" : "☰";
+    await esperarRender();
+
+
+    atualizarMeta();
+
+    atualizarLoading(
+        85,
+        "Atualizando orçamento..."
+    );
+
+    await esperarRender();
+
+
+    atualizarBudgets();
+
+    atualizarLoading(
+        90,
+        "Preparando lançamentos..."
+    );
+
+    await esperarRender();
+
+
+    renderLancamentos();
+
+    renderDashboard();
+
+    atualizarLoading(
+        95,
+        "Preparando gráficos..."
+    );
+
+    await esperarRender();
+
+
+    atualizarGraficos();
+
+    atualizarFiscal();
+
+    animateBackground();
+
+    atualizarLoading(
+        100,
+        "FinançaSX pronto!"
+    );
+
+    await esperarRender();
+
+
+    mostrarNotificacao(
+        "FinançaSX pronto!",
+        "sucesso"
+    );
+
+    esconderLoading();
 }
 
-document.querySelectorAll(".sidebar a").forEach(link => {
-link.addEventListener("click", () => {
-    sidebar.classList.remove("menu aberto");
-    mobilemenutoggle.textContent= "☰";
-    mobilemenutoggle.setAttribute("aria-expanded", "false");
-}
-);
-});
-}
-/* =====================================================
-FUNÇÕES GLOBAIS
-===================================================== */
+
+// =====================================================
+// FUNÇÕES GLOBAIS
+// =====================================================
 
 window.editarItem =
-editarItem;
+    editarItem;
 
 window.removerItem =
-removerItem;
+    removerItem;
 
-/* =====================================================
-INICIAR SISTEMA
-===================================================== */
+
+// =====================================================
+// INICIAR SISTEMA
+// =====================================================
 
 init();
