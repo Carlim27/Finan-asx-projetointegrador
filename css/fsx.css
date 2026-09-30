@@ -3813,3 +3813,146 @@ small {
     }
 
 }
+/* =========================================
+   CORREÇÕES MOBILE - FINANÇASX
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    /* ==============================
+       SIDEBAR / MENU
+       ============================== */
+
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    #fsxMobileNav {
+        display: none;
+        width: 100%;
+    }
+
+    #fsxMobileNav.menu-open {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    /* ==============================
+       CONTEÚDO PRINCIPAL
+       ============================== */
+
+    .main-content {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+
+    /* ==============================
+       GRIDS
+       ============================== */
+
+    .grid-main {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .charts-grid .full-span {
+        grid-column: auto;
+    }
+
+
+    /* ==============================
+       PAINÉIS
+       ============================== */
+
+    .panel,
+    .card,
+    .hero {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+
+    /* ==============================
+       FORMULÁRIOS
+       ============================== */
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form,
+    .budget-form,
+    .filters {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* ==============================
+       INPUTS
+       ============================== */
+
+    input,
+    select,
+    textarea,
+    button {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* ==============================
+       TABELA / TRANSAÇÕES
+       ============================== */
+
+    .transactions {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+    }
+
+
+    /* ==============================
+       TOPBAR
+       ============================== */
+
+    .topbar {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* ==============================
+       GRÁFICOS
+       ============================== */
+
+    .chart-panel {
+        min-width: 0;
+        width: 100%;
+    }
+
+}
