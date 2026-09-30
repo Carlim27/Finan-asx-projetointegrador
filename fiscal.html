@@ -18,53 +18,88 @@
 
     <div class="app-shell">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
+<aside class="sidebar">
 
-            <div class="brand">
-                <div class="brand-mark">F</div>
+    <div class="mobile-menu-header">
 
-                <div>
-                    <strong>FinançaSX</strong>
-                    <small>Controle financeiro</small>
-                </div>
+        <div class="brand">
+
+            <div class="brand-mark">F</div>
+
+            <div>
+                <strong>FinançaSX</strong>
+                <small>Controle financeiro</small>
             </div>
 
-            <nav class="nav">
+        </div>
 
-                <a class="nav-btn" href="index.html">
-                    <span>⌂</span> Dashboard
-                </a>
+        <button
+            class="mobile-menu-toggle"
+            id="mobileMenuToggle"
+            aria-label="Abrir menu"
+            aria-expanded="false">
+            ☰
+        </button>
 
-                <a class="nav-btn" href="lancamentos.html">
-                    <span>↕</span> Lançamentos
-                </a>
+    </div>
 
-                <a class="nav-btn" href="metas.html">
-                    <span>◎</span> Metas
-                </a>
+    <div class="brand desktop-brand">
 
-                <a class="nav-btn" href="orcamento.html">
-                    <span>▣</span> Orçamento
-                </a>
+        <div class="brand-mark">F</div>
 
-                <a class="nav-btn" href="graficos.html">
-                    <span>◔</span> Gráficos
-                </a>
+        <div>
+            <strong>FinançaSX</strong>
+            <small>Controle financeiro</small>
+        </div>
 
-                <a class="nav-btn" href="fiscal.html">
-                    <span>▤</span> Fiscal
-                </a>
+    </div>
 
-            </nav>
+    <nav class="nav" id="fsxMobileNav">
 
-            <div class="sidebar-footer">
-                <small>FinançaSX</small>
-                <span>Seu dinheiro, sob controle.</span>
-            </div>
+        <a class="nav-btn"
+           data-page="index.html"
+           href="index.html">
+            <span>⌂</span> Dashboard
+        </a>
 
-        </aside>
+        <a class="nav-btn"
+           data-page="lancamentos.html"
+           href="lancamentos.html">
+            <span>↕</span> Lançamentos
+        </a>
 
+        <a class="nav-btn"
+           data-page="metas.html"
+           href="metas.html">
+            <span>◎</span> Metas
+        </a>
+
+        <a class="nav-btn"
+           data-page="orcamento.html"
+           href="orcamento.html">
+            <span>▣</span> Orçamento
+        </a>
+
+        <a class="nav-btn"
+           data-page="graficos.html"
+           href="graficos.html">
+            <span>◔</span> Gráficos
+        </a>
+
+        <a class="nav-btn"
+           data-page="fiscal.html"
+           href="fiscal.html">
+            <span>▤</span> Fiscal
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+        <small>FinançaSX</small>
+        <span>Seu dinheiro, sob controle.</span>
+    </div>
+
+</aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">

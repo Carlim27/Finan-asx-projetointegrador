@@ -2620,44 +2620,56 @@ function marcarPaginaAtual() {
 
 function bindEvents() {
 
-    // =================================================
-    // MENU HAMBÚRGUER MOBILE
-    // =================================================
+// =========================================
+// NAVEGAÇÃO ENTRE PÁGINAS
+// =========================================
 
-    const mobileMenuToggle =
-        $("mobileMenuToggle");
+document.querySelectorAll(".nav-btn").forEach(link => {
 
-    const sidebar =
-        document.querySelector(
-            ".sidebar"
-        );
+    const destino = link.getAttribute("href");
 
-    if (
-        mobileMenuToggle &&
-        sidebar
-    ) {
+    if (!destino) return;
 
-        mobileMenuToggle.addEventListener(
-            "click",
-            () => {
+    link.addEventListener("click", e => {
 
-                const aberto =
-                    sidebar.classList.toggle(
-                        "menu-aberto"
-                    );
+        e.preventDefault();
 
-                mobileMenuToggle.textContent =
-                    aberto
-                        ? "✕"
-                        : "☰";
+        // Fecha o menu mobile
+        if (fsxMobileNav) {
+            fsxMobileNav.classList.remove("menu-open");
+        }
 
-                mobileMenuToggle.setAttribute(
-                    "aria-expanded",
-                    aberto
-                );
+        if (mobileMenuToggle) {
+            mobileMenuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
 
-            }
-        );
+            mobileMenuToggle.setAttribute(
+                "aria-label",
+                "Abrir menu"
+            );
+        }
+
+        // Fecha também qualquer estado visual do menu
+        document.body.classList.remove("menu-open");
+
+        const sidebar = document.querySelector(".sidebar");
+
+        if (sidebar) {
+            sidebar.classList.remove("menu-open");
+        }
+
+        // Animação de saída
+        document.body.classList.add("fsx-saindo");
+
+        setTimeout(() => {
+            window.location.href = destino;
+        }, 180);
+
+    });
+
+});
 
         document
             .querySelectorAll(
@@ -2681,6 +2693,7 @@ function bindEvents() {
                                 "aria-expanded",
                                 "false"
                             );
+
 
                         }
                     );
@@ -2976,7 +2989,6 @@ function bindEvents() {
 
             }
         );
-}
 
 
 // =====================================================
