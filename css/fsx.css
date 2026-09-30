@@ -3813,11 +3813,7 @@ small {
     }
 
 }
-/* =========================================
-   CORREÇÕES MOBILE - FINANÇASX
-   ========================================= */
 
-@media (max-width: 768px) {
 
     /* ==============================
        SIDEBAR / MENU
@@ -3953,109 +3949,6 @@ small {
     .chart-panel {
         min-width: 0;
         width: 100%;
-    }
-
-}
-/* =========================================
-   MENU MOBILE FINANÇASX
-   ========================================= */
-
-@media (max-width: 768px) {
-
-    /* Cabeçalho do menu */
-    .sidebar .mobile-menu-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-
-    /* Botão das três barras */
-    .sidebar .mobile-menu-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        width: 58px;
-        height: 58px;
-
-        border: 1px solid var(--line);
-        border-radius: 16px;
-
-        background: rgba(15, 23, 42, 0.75);
-        color: var(--text);
-
-        font-size: 30px;
-        line-height: 1;
-
-        cursor: pointer;
-
-        flex-shrink: 0;
-    }
-
-
-    /* Marca desktop fica escondida no celular */
-    .sidebar .desktop-brand {
-        display: none;
-    }
-
-
-    /* Menu fechado */
-    .sidebar #fsxMobileNav {
-        display: none;
-        width: 100%;
-    }
-
-
-    /* Menu ABERTO */
-    .sidebar #fsxMobileNav.menu-open {
-        display: flex;
-
-        flex-direction: column;
-
-        width: 100%;
-
-        margin-top: 14px;
-    }
-
-
-    /* Links */
-    .sidebar #fsxMobileNav.menu-open .nav-btn {
-        display: flex;
-
-        width: 100%;
-
-        box-sizing: border-box;
-    }
-
-
-    /* Conteúdo */
-    .main-content {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-    }
-
-}
-
-
-/* =========================================
-   DESKTOP
-   ========================================= */
-
-@media (min-width: 769px) {
-
-    .mobile-menu-header {
-        display: none !important;
-    }
-
-    .desktop-brand {
-        display: flex;
-    }
-
-    #fsxMobileNav {
-        display: flex !important;
     }
 
 }
