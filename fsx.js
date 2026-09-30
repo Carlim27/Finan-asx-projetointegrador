@@ -2634,37 +2634,34 @@ document.querySelectorAll(".nav-btn").forEach(link => {
 
         e.preventDefault();
 
-        // Fecha o menu mobile
-        if (fsxMobileNav) {
-            fsxMobileNav.classList.remove("menu-open");
+        const nav = $("fsxMobileNav");
+        const toggle = $("mobileMenuToggle");
+
+        if (nav) {
+            nav.classList.remove("menu-open");
         }
 
-        if (mobileMenuToggle) {
-            mobileMenuToggle.setAttribute(
+        if (toggle) {
+
+            toggle.setAttribute(
                 "aria-expanded",
                 "false"
             );
 
-            mobileMenuToggle.setAttribute(
+            toggle.setAttribute(
                 "aria-label",
                 "Abrir menu"
             );
+
+            toggle.textContent = "☰";
         }
 
-        // Fecha também qualquer estado visual do menu
-        document.body.classList.remove("menu-open");
-
-        const sidebar = document.querySelector(".sidebar");
-
-        if (sidebar) {
-            sidebar.classList.remove("menu-open");
-        }
-
-        // Animação de saída
         document.body.classList.add("fsx-saindo");
 
         setTimeout(() => {
+
             window.location.href = destino;
+
         }, 180);
 
     });
