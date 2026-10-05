@@ -1,195 +1,431 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="css/fsx.css">
-<script src="fsx.js" defer></script>
-<title>Lançamentos • FinançaSX</title></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FinançaSX - Lançamentos</title>
+
+    <link rel="stylesheet" href="css/fsx.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="fsx.js" defer></script>
+</head>
+
 <body>
-<canvas id="bg"></canvas>
-<div class="app-shell">
 
-<aside class="sidebar">
+    <canvas id="bg"></canvas>
 
-    <!-- CABEÇALHO MOBILE -->
-    <div class="mobile-menu-header">
+    <div class="app-shell">
 
-        <div class="brand">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
 
-            <div class="brand-mark">F</div>
+            <div class="mobile-menu-header">
 
-            <div>
-                <strong>FinançaSX</strong>
+                <div class="brand">
+                    <strong>Finança<span>SX</span></strong>
+                    <small>Controle financeiro</small>
+                </div>
+
+                <button
+                    id="mobileMenuToggle"
+                    class="mobile-menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-label="Abrir menu">
+                    ☰
+                </button>
+
+            </div>
+
+            <div class="brand desktop-brand">
+                <strong>Finança<span>SX</span></strong>
                 <small>Controle financeiro</small>
             </div>
 
-        </div>
+            <nav class="nav" id="fsxMobileNav">
 
-        <button
-            type="button"
-            class="mobile-menu-toggle"
-            id="mobileMenuToggle"
-            aria-label="Abrir menu"
-            aria-expanded="false">
-            ☰
-        </button>
+                <a href="index.html" class="nav-btn" data-page="index.html">
+                    Dashboard
+                </a>
+
+                <a href="lancamentos.html" class="nav-btn" data-page="lancamentos.html">
+                    Lançamentos
+                </a>
+
+                <a href="metas.html" class="nav-btn" data-page="metas.html">
+                    Metas
+                </a>
+
+                <a href="orcamento.html" class="nav-btn" data-page="orcamento.html">
+                    Orçamento
+                </a>
+
+                <a href="graficos.html" class="nav-btn" data-page="graficos.html">
+                    Gráficos
+                </a>
+
+                <a href="fiscal.html" class="nav-btn" data-page="fiscal.html">
+                    Fiscal
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="main-content">
+
+            <div class="topbar">
+
+                <div>
+                    <span class="eyebrow">FINANÇAS</span>
+                    <h1>Lançamentos</h1>
+                    <p>Registre e acompanhe suas movimentações.</p>
+                </div>
+
+            </div>
+
+
+            <div id="alert" class="alert"></div>
+
+
+            <section class="grid-main">
+
+                <!-- FORMULÁRIO -->
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="eyebrow">REGISTRO</span>
+                            <h3>Novo lançamento</h3>
+                        </div>
+
+                    </div>
+
+
+                    <form id="transactionForm">
+
+                        <input
+                            type="hidden"
+                            id="editingId">
+
+
+                        <div class="form-group">
+
+                            <label for="desc">
+                                Descrição
+                            </label>
+
+                            <input
+                                type="text"
+                                id="descricao"
+                                placeholder="Ex.: Mercado"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="valor">
+                                    Valor
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="valor"
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="0,00"
+                                    required>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="tipo">
+                                    Tipo
+                                </label>
+
+                                <select id="tipo">
+
+                                    <option value="entrada">
+                                        Entrada
+                                    </option>
+
+                                    <option value="saida">
+                                        Saída
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="cat">
+                                    Categoria
+                                </label>
+
+                                <select id="cat"></select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="pagamento">
+                                    Pagamento
+                                </label>
+
+                                <select id="pagamento">
+
+                                    <option value="Pix">
+                                        Pix
+                                    </option>
+
+                                    <option value="Dinheiro">
+                                        Dinheiro
+                                    </option>
+
+                                    <option value="Cartão de débito">
+                                        Cartão de débito
+                                    </option>
+
+                                    <option value="Cartão de crédito">
+                                        Cartão de crédito
+                                    </option>
+
+                                    <option value="Transferência">
+                                        Transferência
+                                    </option>
+
+                                    <option value="Outro">
+                                        Outro
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="dataLancamento">
+                                Data
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dataLancamento"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="obs">
+                                Observação
+                            </label>
+
+                            <textarea
+                                id="observaçao"
+                                rows="3"
+                                placeholder="Opcional"></textarea>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                id="submitBtn"
+                                class="btn primary">
+                                Salvar lançamento
+                            </button>
+
+                            <button
+                                type="button"
+                                id="cancelEditBtn"
+                                class="btn secondary"
+                                hidden>
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </article>
+
+
+                <!-- FILTROS -->
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="eyebrow">FILTROS</span>
+                            <h3>Pesquisar lançamentos</h3>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="searchInput">
+                            Buscar
+                        </label>
+
+                        <input
+                            type="search"
+                            id="searchInput"
+                            placeholder="Pesquisar...">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="filterTipo">
+                            Tipo
+                        </label>
+
+                        <select id="filterTipo">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="entrada">
+                                Entradas
+                            </option>
+
+                            <option value="saida">
+                                Saídas
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="filterCategoria">
+                            Categoria
+                        </label>
+
+                        <select id="filterCategoria">
+
+                            <option value="">
+                                Todas
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="filterMes">
+                            Mês
+                        </label>
+
+                        <select id="filterMes">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="clearFiltersBtn"
+                        class="btn secondary">
+                        Limpar filtros
+                    </button>
+
+                </article>
+
+            </section>
+
+
+            <!-- LISTA -->
+            <section class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span class="eyebrow">HISTÓRICO</span>
+                        <h3>Lançamentos</h3>
+                    </div>
+
+                    <span id="transactionCounter">
+                        0 lançamentos
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="list"
+                    class="transactions-list">
+                </div>
+
+
+                <div
+                    id="pagination"
+                    class="pagination">
+
+                    <button
+                        type="button"
+                        id="prevPageBtn"
+                        class="btn secondary">
+                        Anterior
+                    </button>
+
+                    <span id="pageInfo">
+                        Página 1
+                    </span>
+
+                    <button
+                        type="button"
+                        id="nextPageBtn"
+                        class="btn secondary">
+                        Próxima
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
 
     </div>
 
-
-    <!-- MARCA PARA DESKTOP -->
-    <div class="brand desktop-brand">
-
-        <div class="brand-mark">F</div>
-
-        <div>
-            <strong>FinançaSX</strong>
-            <small>Controle financeiro</small>
-        </div>
-
-    </div>
-
-
-    <!-- MENU -->
-    <nav class="nav" id="fsxMobileNav">
-
-        <a
-            class="nav-btn"
-            data-page="index.html"
-            href="index.html">
-
-            <span>⌂</span>
-            Dashboard
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="lancamentos.html"
-            href="lancamentos.html">
-
-            <span>↕</span>
-            Lançamentos
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="metas.html"
-            href="metas.html">
-
-            <span>◎</span>
-            Metas
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="orcamento.html"
-            href="orcamento.html">
-
-            <span>▣</span>
-            Orçamento
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="graficos.html"
-            href="graficos.html">
-
-            <span>◔</span>
-            Gráficos
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="fiscal.html"
-            href="fiscal.html">
-
-            <span>▤</span>
-            Fiscal
-
-        </a>
-
-    </nav>
-
-
-    <!-- RODAPÉ -->
-    <div class="sidebar-footer">
-
-        <small>FinançaSX</small>
-
-        <span>
-            Seu dinheiro, sob controle.
-        </span>
-
-    </div>
-
-</aside>
-
-        <a class="nav-btn" data-page="index.html" href="index.html"><span>⌂</span> Dashboard</a>
-        <a class="nav-btn" data-page="lancamentos.html" href="lancamentos.html"><span>↕</span> Lançamentos</a>
-        <a class="nav-btn" data-page="metas.html" href="metas.html"><span>◎</span> Metas</a>
-        <a class="nav-btn" data-page="orcamento.html" href="orcamento.html"><span>▣</span> Orçamento</a>
-        <a class="nav-btn" data-page="graficos.html" href="graficos.html"><span>◔</span> Gráficos</a>
-        <a class="nav-btn" data-page="fiscal.html" href="fiscal.html"><span>▤</span> Fiscal</a>
-    </nav>
-    <div class="sidebar-footer"><small>FinançaSX</small><span>Seu dinheiro, sob controle.</span></div>
-</aside>
-
-<main class="main-content">
-<header class="topbar">
-    <div><p class="eyebrow">Receitas e despesas</p><h1>Lançamentos</h1></div>
-    <div class="topbar-status"><span class="status-dot"></span> Dados salvos neste navegador</div>
-</header>
-<div id="alert"></div>
-
-<div class="grid-main">
-<article class="panel">
-<div class="panel-header"><div><p class="panel-label">Lançamentos</p><h2>Novo registro</h2></div></div>
-<form class="form" id="transactionForm">
-<input type="hidden" id="editId">
-<div class="form-grid">
-<div><label for="desc">Descrição</label><input id="desc" type="text" placeholder="Ex.: Salário, aluguel, mercado"></div>
-<div><label for="valor">Valor</label><input id="valor" type="number" min="0" step="0.01" placeholder="0,00"></div>
-<div><label for="tipo">Tipo</label><select id="tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
-<div><label for="cat">Categoria</label><select id="cat"></select></div>
-<div><label for="pagamento">Forma de pagamento</label><select id="pagamento"><option>Pix</option><option>Cartão de crédito</option><option>Cartão de débito</option><option>Dinheiro</option><option>Transferência</option><option>Boleto</option></select></div>
-<div><label for="dataLancamento">Data</label><input id="dataLancamento" type="date"></div>
-</div>
-<div><label for="obs">Observação</label><textarea id="obs" rows="3" placeholder="Detalhes opcionais"></textarea></div>
-<div class="form-actions"><button type="submit" id="submitBtn">Adicionar lançamento</button><button type="button" class="secondary-btn" id="cancelEditBtn">Cancelar edição</button></div>
-</form>
-</article>
-
-<article class="panel">
-<div class="panel-header"><div><p class="panel-label">Análise</p><h2>Filtros e busca</h2></div></div>
-<div class="filters">
-<input id="searchInput" type="text" placeholder="Buscar por descrição, categoria ou pagamento">
-<select id="filterTipo"><option value="todos">Todos os tipos</option><option value="entrada">Somente entradas</option><option value="saida">Somente saídas</option></select>
-<select id="filterCategoria"><option value="todas">Todas as categorias</option></select>
-<select id="filterMes"><option value="todos">Todos os meses</option></select>
-<button class="secondary-btn" id="clearFiltersBtn">Limpar filtros</button>
-</div>
-</article>
-</div>
-
-<section class="panel">
-<div class="panel-header"><div><p class="panel-label">Histórico</p><h2>Transações</h2></div><span id="transactionCounter">0 itens</span></div>
-<div id="list" class="transactions"></div>
-<div class="pagination hidden" id="pagination"><button type="button" class="secondary-btn" id="prevPageBtn">Anterior</button><span id="pageInfo">Página 1</span><button type="button" class="secondary-btn" id="nextPageBtn">Próxima</button></div>
-</section>
-
-</main>
-</div>
 </body>
 </html>

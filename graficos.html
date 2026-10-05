@@ -1,155 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="css/fsx.css">
-<script src="fsx.js" defer></script>
-<title>Gráficos • FinançaSX</title></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FinançaSX - Gráficos</title>
+
+    <link rel="stylesheet" href="css/fsx.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="fsx.js" defer></script>
+</head>
+
 <body>
-<canvas id="bg"></canvas>
-<div class="app-shell">
 
-<aside class="sidebar">
+    <canvas id="bg"></canvas>
 
-    <!-- CABEÇALHO MOBILE -->
-    <div class="mobile-menu-header">
+    <div class="app-shell">
 
-        <div class="brand">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
 
-            <div class="brand-mark">F</div>
+            <div class="mobile-menu-header">
 
-            <div>
-                <strong>FinançaSX</strong>
+                <div class="brand">
+                    <strong>Finança<span>SX</span></strong>
+                    <small>Controle financeiro</small>
+                </div>
+
+                <button
+                    id="mobileMenuToggle"
+                    class="mobile-menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-label="Abrir menu">
+                    ☰
+                </button>
+
+            </div>
+
+            <div class="brand desktop-brand">
+                <strong>Finança<span>SX</span></strong>
                 <small>Controle financeiro</small>
             </div>
 
-        </div>
+            <nav class="nav" id="fsxMobileNav">
 
-        <button
-            type="button"
-            class="mobile-menu-toggle"
-            id="mobileMenuToggle"
-            aria-label="Abrir menu"
-            aria-expanded="false">
-            ☰
-        </button>
+                <a href="index.html" class="nav-btn" data-page="index.html">
+                    Dashboard
+                </a>
+
+                <a href="lancamentos.html" class="nav-btn" data-page="lancamentos.html">
+                    Lançamentos
+                </a>
+
+                <a href="metas.html" class="nav-btn" data-page="metas.html">
+                    Metas
+                </a>
+
+                <a href="orcamento.html" class="nav-btn" data-page="orcamento.html">
+                    Orçamento
+                </a>
+
+                <a href="graficos.html" class="nav-btn" data-page="graficos.html">
+                    Gráficos
+                </a>
+
+                <a href="fiscal.html" class="nav-btn" data-page="fiscal.html">
+                    Fiscal
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="main-content">
+
+            <div class="topbar">
+
+                <div>
+                    <span class="eyebrow">ANÁLISE</span>
+                    <h1>Gráficos</h1>
+                    <p>Visualize o comportamento das suas finanças.</p>
+                </div>
+
+            </div>
+
+
+            <div id="alert" class="alert"></div>
+
+
+            <section class="charts-grid">
+
+                <article class="panel chart-card">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="eyebrow">RESUMO</span>
+                            <h3>Visão geral</h3>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+
+                </article>
+
+
+                <article class="panel chart-card">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="eyebrow">CATEGORIAS</span>
+                            <h3>Gastos por categoria</h3>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+
+                </article>
+
+
+                <article class="panel chart-card">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="eyebrow">EVOLUÇÃO</span>
+                            <h3>Movimentação mensal</h3>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+
+                </article>
+
+            </section>
+
+        </main>
 
     </div>
 
-
-    <!-- MARCA PARA DESKTOP -->
-    <div class="brand desktop-brand">
-
-        <div class="brand-mark">F</div>
-
-        <div>
-            <strong>FinançaSX</strong>
-            <small>Controle financeiro</small>
-        </div>
-
-    </div>
-
-
-    <!-- MENU -->
-    <nav class="nav" id="fsxMobileNav">
-
-        <a
-            class="nav-btn"
-            data-page="index.html"
-            href="index.html">
-
-            <span>⌂</span>
-            Dashboard
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="lancamentos.html"
-            href="lancamentos.html">
-
-            <span>↕</span>
-            Lançamentos
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="metas.html"
-            href="metas.html">
-
-            <span>◎</span>
-            Metas
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="orcamento.html"
-            href="orcamento.html">
-
-            <span>▣</span>
-            Orçamento
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="graficos.html"
-            href="graficos.html">
-
-            <span>◔</span>
-            Gráficos
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="fiscal.html"
-            href="fiscal.html">
-
-            <span>▤</span>
-            Fiscal
-
-        </a>
-
-    </nav>
-
-
-    <!-- RODAPÉ -->
-    <div class="sidebar-footer">
-
-        <small>FinançaSX</small>
-
-        <span>
-            Seu dinheiro, sob controle.
-        </span>
-
-    </div>
-
-</aside>
-
-<main class="main-content">
-<header class="topbar">
-    <div><p class="eyebrow">Análise visual</p><h1>Gráficos</h1></div>
-    <div class="topbar-status"><span class="status-dot"></span> Dados salvos neste navegador</div>
-</header>
-<div id="alert"></div>
-
-<section class="charts-grid">
-<article class="panel chart-panel"><div class="panel-header"><div><p class="panel-label">Visualização</p><h2>Entradas x saídas</h2></div></div><canvas id="overviewChart"></canvas></article>
-<article class="panel chart-panel"><div class="panel-header"><div><p class="panel-label">Visualização</p><h2>Gastos por categoria</h2></div></div><canvas id="categoryChart"></canvas></article>
-<article class="panel chart-panel full-span"><div class="panel-header"><div><p class="panel-label">Tendência</p><h2>Evolução mensal</h2></div></div><canvas id="monthlyChart"></canvas></article>
-</section>
-
-</main>
-</div>
 </body>
 </html>

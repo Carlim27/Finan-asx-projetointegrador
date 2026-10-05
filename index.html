@@ -1,190 +1,220 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="css/fsx.css">
-<script src="fsx.js" defer></script>
-<title>Dashboard • FinançaSX</title></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FinançaSX - Dashboard</title>
+
+    <link rel="stylesheet" href="css/fsx.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="fsx.js" defer></script>
+</head>
+
 <body>
-<canvas id="bg"></canvas>
-<div class="app-shell">
 
-<aside class="sidebar">
+    <canvas id="bg"></canvas>
 
-    <!-- CABEÇALHO MOBILE -->
-    <div class="mobile-menu-header">
+    <div class="app-shell">
 
-        <div class="brand">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
 
-            <div class="brand-mark">F</div>
+            <div class="mobile-menu-header">
+                <div class="brand">
+                    <strong>Finança<span>SX</span></strong>
+                    <small>Controle financeiro</small>
+                </div>
 
-            <div>
-                <strong>FinançaSX</strong>
+                <button
+                    id="mobileMenuToggle"
+                    class="mobile-menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-label="Abrir menu">
+                    ☰
+                </button>
+            </div>
+
+            <div class="brand desktop-brand">
+                <strong>Finança<span>SX</span></strong>
                 <small>Controle financeiro</small>
             </div>
 
-        </div>
+            <nav class="nav" id="fsxMobileNav">
 
-        <button
-            type="button"
-            class="mobile-menu-toggle"
-            id="mobileMenuToggle"
-            aria-label="Abrir menu"
-            aria-expanded="false">
-            ☰
-        </button>
+                <a href="index.html" class="nav-btn" data-page="index.html">
+                    Dashboard
+                </a>
+
+                <a href="lancamentos.html" class="nav-btn" data-page="lancamentos.html">
+                    Lançamentos
+                </a>
+
+                <a href="metas.html" class="nav-btn" data-page="metas.html">
+                    Metas
+                </a>
+
+                <a href="orcamento.html" class="nav-btn" data-page="orcamento.html">
+                    Orçamento
+                </a>
+
+                <a href="graficos.html" class="nav-btn" data-page="graficos.html">
+                    Gráficos
+                </a>
+
+                <a href="fiscal.html" class="nav-btn" data-page="fiscal.html">
+                    Fiscal
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+
+            <div class="topbar">
+                <div>
+                    <span class="eyebrow">VISÃO GERAL</span>
+                    <h1>Dashboard</h1>
+                    <p>Acompanhe sua vida financeira.</p>
+                </div>
+            </div>
+
+
+            <section class="hero">
+
+                <div>
+                    <span class="eyebrow">FINANÇA SX</span>
+
+                    <h2>
+                        Organize seu dinheiro.
+                        <span>Construa seu futuro.</span>
+                    </h2>
+
+                    <p>
+                        Controle suas entradas, despesas, metas e orçamento
+                        em um único lugar.
+                    </p>
+                </div>
+
+                <a href="lancamentos.html" class="btn primary">
+                    Novo lançamento
+                </a>
+
+            </section>
+
+
+            <div id="alert" class="alert"></div>
+
+
+            <!-- CARDS -->
+            <section class="cards">
+
+                <article class="card">
+                    <span class="card-label">Saldo atual</span>
+                    <strong id="saldo">R$ 0,00</strong>
+                    <small id="saldoStatus">Sem movimentações</small>
+                </article>
+
+                <article class="card">
+                    <span class="card-label">Entradas</span>
+                    <strong id="entradas">R$ 0,00</strong>
+                </article>
+
+                <article class="card">
+                    <span class="card-label">Saídas</span>
+                    <strong id="saidas">R$ 0,00</strong>
+                </article>
+
+                <article class="card">
+                    <span class="card-label">Economia do mês</span>
+                    <strong id="economiaMes">R$ 0,00</strong>
+                    <small id="economiaStatus">Sem dados</small>
+                </article>
+
+                <article class="card">
+                    <span class="card-label">Taxa de poupança</span>
+                    <strong id="taxaPoupanca">0%</strong>
+                </article>
+
+                <article class="card">
+                    <span class="card-label">Maior gasto</span>
+                    <strong id="maiorGasto">R$ 0,00</strong>
+                    <small id="maiorGastoDesc">Nenhum gasto registrado</small>
+                </article>
+
+            </section>
+
+
+            <!-- GRID -->
+            <section class="grid-main">
+
+                <article class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <span class="eyebrow">META</span>
+                            <h3 id="dashboardMetaTitulo">
+                                Meta principal
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="goal-dashboard">
+
+                        <strong id="metaNomeExibida">
+                            Meta principal
+                        </strong>
+
+                        <div class="progress">
+                            <div
+                                id="metaBar"
+                                class="progress-bar"
+                                style="width: 0%">
+                            </div>
+                        </div>
+
+                        <div class="goal-info">
+                            <span id="metaPercent">0%</span>
+                            <span id="metaValor">R$ 0,00</span>
+                        </div>
+
+                        <p id="metaHint">
+                            Configure sua meta financeira.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <span class="eyebrow">ATIVIDADE</span>
+                            <h3>Últimos lançamentos</h3>
+                        </div>
+
+                        <a href="lancamentos.html" class="btn secondary">
+                            Ver todos
+                        </a>
+                    </div>
+
+                    <div id="dashboardTransactions" class="transactions-list"></div>
+
+                </article>
+
+            </section>
+
+        </main>
 
     </div>
 
-
-    <!-- MARCA PARA DESKTOP -->
-    <div class="brand desktop-brand">
-
-        <div class="brand-mark">F</div>
-
-        <div>
-            <strong>FinançaSX</strong>
-            <small>Controle financeiro</small>
-        </div>
-
-    </div>
-
-
-    <!-- MENU -->
-    <nav class="nav" id="fsxMobileNav">
-
-        <a
-            class="nav-btn"
-            data-page="index.html"
-            href="index.html">
-
-            <span>⌂</span>
-            Dashboard
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="lancamentos.html"
-            href="lancamentos.html">
-
-            <span>↕</span>
-            Lançamentos
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="metas.html"
-            href="metas.html">
-
-            <span>◎</span>
-            Metas
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="orcamento.html"
-            href="orcamento.html">
-
-            <span>▣</span>
-            Orçamento
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="graficos.html"
-            href="graficos.html">
-
-            <span>◔</span>
-            Gráficos
-
-        </a>
-
-
-        <a
-            class="nav-btn"
-            data-page="fiscal.html"
-            href="fiscal.html">
-
-            <span>▤</span>
-            Fiscal
-
-        </a>
-
-    </nav>
-
-
-    <!-- RODAPÉ -->
-    <div class="sidebar-footer">
-
-        <small>FinançaSX</small>
-
-        <span>
-            Seu dinheiro, sob controle.
-        </span>
-
-    </div>
-
-</aside>
-
-    <div class="sidebar-footer">
-        <small>FinançaSX</small>
-        <span>Seu dinheiro, sob controle.</span>
-    </div>
-
-</aside>
-
-<main class="main-content">
-<header class="topbar">
-    <div><p class="eyebrow">Visão geral</p><h1>Dashboard</h1></div>
-    <div class="topbar-status"><span class="status-dot"></span> Dados salvos neste navegador</div>
-</header>
-<div id="alert"></div>
-
-<section class="hero compact">
-    <div>
-        <p class="eyebrow">Controle financeiro pessoal</p>
-        <h2>Tenha uma visão clara das suas finanças.</h2>
-        <p class="hero-text">Acompanhe saldo, receitas, despesas, economia e seus principais objetivos.</p>
-    </div>
-    <a class="primary-btn link-btn" href="lancamentos.html">+ Novo lançamento</a>
-</section>
-
-<section class="cards">
-    <article class="card"><span class="card-label">Saldo atual</span><strong class="value" id="saldo">R$ 0,00</strong><small id="saldoStatus">Situação estável.</small></article>
-    <article class="card"><span class="card-label">Entradas</span><strong class="value green" id="entradas">R$ 0,00</strong><small>Total recebido.</small></article>
-    <article class="card"><span class="card-label">Saídas</span><strong class="value red" id="saidas">R$ 0,00</strong><small>Total gasto.</small></article>
-    <article class="card"><span class="card-label">Economia do mês</span><strong class="value accent" id="economiaMes">R$ 0,00</strong><small id="economiaStatus">Acompanhe seu ritmo.</small></article>
-    <article class="card"><span class="card-label">Taxa de poupança</span><strong class="value" id="taxaPoupanca">0%</strong><small>Entradas que não viraram gastos.</small></article>
-    <article class="card"><span class="card-label">Maior gasto</span><strong class="value" id="maiorGasto">R$ 0,00</strong><small id="maiorGastoDesc">Sem despesas registradas.</small></article>
-</section>
-
-<div class="grid-main">
-    <article class="panel">
-        <div class="panel-header"><div><p class="panel-label">Meta financeira</p><h2 id="dashboardMetaTitulo">Meta principal</h2></div><a class="text-btn link-btn" href="metas.html">Ver meta</a></div>
-        <div class="meta-box">
-            <div class="meta-top"><strong id="metaNomeExibida">Meta principal</strong><span id="metaPercent">0%</span></div>
-            <div id="metaValor" class="value">R$ 0,00 / R$ 0,00</div>
-            <progress id="metaBar" value="0" max="100"></progress>
-            <small id="metaHint">Defina um objetivo para acompanhar seu progresso.</small>
-        </div>
-    </article>
-    <article class="panel">
-        <div class="panel-header"><div><p class="panel-label">Resumo</p><h2>Últimos lançamentos</h2></div><a class="text-btn link-btn" href="lancamentos.html">Ver todos</a></div>
-        <div id="dashboardTransactions" class="transactions"></div>
-    </article>
-</div>
-
-</main>
-</div>
 </body>
 </html>
