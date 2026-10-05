@@ -1343,99 +1343,110 @@ function obterIdEdicao() {
 
 function editarItem(id) {
 
-    const item =
-        data.find(
-            registro =>
-                String(registro.id) ===
-                String(id)
-        );
-
+    const item = data.find(
+        registro =>
+            String(registro.id) === String(id)
+    );
 
     if (!item) {
-
         mostrarNotificacao(
             "Lançamento não encontrado.",
             "erro"
         );
-
         return;
     }
 
 
-    if (!has("descricao")) {
-        return;
+    // DESCRIÇÃO
+    if (has("descricao")) {
+        $("descricao").value =
+            item.descricao || "";
+    } else if (has("desc")) {
+        $("desc").value =
+            item.descricao || "";
     }
 
 
-    $("descricao").value =
-        item.descricao || "";
-
-    $("valor").value =
-        item.valor || "";
-
-    $("tipo").value =
-        item.tipo || "saida";
-
-    $("cat").value =
-        item.categoria || "Geral";
-
-    $("dataLancamento").value =
-        item.dataISO || "";
+    // VALOR
+    if (has("valor")) {
+        $("valor").value =
+            item.valor || "";
+    }
 
 
+    // TIPO
+    if (has("tipo")) {
+        $("tipo").value =
+            item.tipo || "saida";
+    }
+
+
+    // CATEGORIA
+    if (has("cat")) {
+        $("cat").value =
+            item.categoria || "Geral";
+    }
+
+
+    // PAGAMENTO
     if (has("pagamento")) {
-
         $("pagamento").value =
             item.pagamento || "Pix";
     }
 
 
-    if (has("obs")) {
+    // DATA
+    if (has("dataLancamento")) {
+        $("dataLancamento").value =
+            item.dataISO || "";
+    }
+
+
+    // OBSERVAÇÃO
+    if (has("observacao")) {
+
+        $("observacao").value =
+            item.observacao || "";
+
+    } else if (has("obs")) {
 
         $("obs").value =
             item.observacao || "";
     }
 
-    if (has("observacao")) {
 
-        $("observacao").value =
-            item.observacao || "";
-    }
-
-
+    // ID DO LANÇAMENTO
     if (has("editId")) {
-
         $("editId").value =
             item.id;
     }
 
     if (has("editingId")) {
-
         $("editingId").value =
             item.id;
     }
 
 
+    // ALTERA BOTÃO
     if (has("submitBtn")) {
-
         $("submitBtn").textContent =
             "Atualizar lançamento";
     }
 
 
+    // MOSTRA CANCELAR
     if (has("cancelEditBtn")) {
-
         $("cancelEditBtn").style.display =
             "inline-flex";
     }
 
     if (has("cancelEdit")) {
-
         $("cancelEdit").style.display =
             "inline-flex";
     }
 
 
+    // VOLTA PARA O FORMULÁRIO
     const form =
         $("transactionForm");
 
@@ -1446,8 +1457,29 @@ function editarItem(id) {
             block: "start"
         });
     }
-}
 
+    
+    mostrarNotificacao(
+        "Editando lançamento...",
+        "sucesso"
+    );
+}
+function irParaEdicao(id){
+    window.location.href = 'lancamentos.html?editar=${encodeURIcomponent(id)}';
+}
+function abrirEdicaoPeloUrl() {
+    if (!has("transactionForm")) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("editar");
+
+    if (!id) return;
+
+    editarItem(id);
+
+    // Limpa a URL depois de carregar a edição
+    history.replaceState({}, document.title, "lancamentos.html");
+}
 
 /* =========================================================
    EXCLUIR
@@ -1567,11 +1599,14 @@ function limparFormulario() {
 ========================================================= */
 
 function transacaoHtml(item) {
+    const icone = iconesCategorias[item.categoria] || "📦";
 
-    const icone =
-        iconesCategorias[
-            item.categoria
-        ] || "📦";
+    const estaNaPaginaLancamentos =
+        window.location.pathname.toLowerCase().includes("lancamentos.html");
+
+    const acaoEditar = estaNaPaginaLancamentos
+        ? `editarItem(${item.id})`
+        : `irParaEdicao(${item.id})`;
 
     return `
         <div class="item">
@@ -1585,69 +1620,41 @@ function transacaoHtml(item) {
                     </strong>
 
                     <span class="badge ${item.tipo}">
-                        ${
-                            item.tipo === "entrada"
-                                ? "Entrada"
-                                : "Saída"
-                        }
+                        ${item.tipo === "entrada" ? "Entrada" : "Saída"}
                     </span>
 
                 </div>
 
                 <div class="small">
-
                     ${icone}
                     ${escaparHtml(item.categoria)}
-
-                    •
-                    ${escaparHtml(item.dataFormatada)}
-
-                    •
-                    ${escaparHtml(
-                        item.pagamento ||
-                        "Pix"
-                    )}
+                    • ${escaparHtml(item.dataFormatada)}
+                    • ${escaparHtml(item.pagamento || "Pix")}
 
                     ${
                         item.observacao
                             ? `<br>${escaparHtml(item.observacao)}`
                             : ""
                     }
-
                 </div>
 
             </div>
 
-
             <div class="item-value">
 
-                <span
-                    class="${
-                        item.tipo === "entrada"
-                            ? "green"
-                            : "red"
-                    }">
-
-                    ${
-                        item.tipo === "entrada"
-                            ? "+"
-                            : "-"
-                    }
-
+                <span class="${item.tipo === "entrada" ? "green" : "red"}">
+                    ${item.tipo === "entrada" ? "+" : "-"}
                     ${format(item.valor)}
-
                 </span>
-
 
                 <button
                     class="icon-btn edit-btn"
                     type="button"
-                    onclick="editarItem(${item.id})"
+                    onclick="${acaoEditar}"
                     title="Editar lançamento"
                     aria-label="Editar lançamento">
                     ✏️
                 </button>
-
 
                 <button
                     class="icon-btn delete-btn"
@@ -1663,7 +1670,6 @@ function transacaoHtml(item) {
         </div>
     `;
 }
-
 
 /* =========================================================
    DASHBOARD
@@ -3091,6 +3097,7 @@ function init() {
 
         animateBackground();
 
+        abrirEdicaoPeloUrl();
 
         console.log(
             "FinançaSX iniciado corretamente."
