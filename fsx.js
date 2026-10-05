@@ -498,96 +498,82 @@ function preencherMesesFiltro() {
 
 function obterFiltradas() {
 
-    let resultado =
-        [...data];
-
-    const termo =
-        has("searchInput")
-            ? $("searchInput")
-                .value
-                .trim()
-                .toLowerCase()
-            : "";
-
-    const tipo =
-        has("filterTipo")
-            ? $("filterTipo").value
-            : "todos";
-
-    const categoria =
-        has("filterCategoria")
-            ? $("filterCategoria").value
-            : "todas";
-
-    const mes =
-        has("filterMes")
-            ? $("filterMes").value
-            : "todos";
-
-
-    if (tipo !== "todos") {
-
-        resultado =
-            resultado.filter(
-                item =>
-                    item.tipo === tipo
-            );
+    if (!Array.isArray(data)) {
+        return [];
     }
 
+    const termo = has("searchInput")
+        ? $("searchInput").value.trim().toLowerCase()
+        : "";
 
-    if (categoria !== "todas") {
+    const tipo = has("filterTipo")
+        ? $("filterTipo").value
+        : "todos";
 
-        resultado =
-            resultado.filter(
-                item =>
-                    item.categoria ===
-                    categoria
-            );
-    }
+    const categoria = has("filterCategoria")
+        ? $("filterCategoria").value
+        : "todas";
 
+    const mes = has("filterMes")
+        ? $("filterMes").value
+        : "todos";
 
-    if (mes !== "todos") {
+    return [...data]
+        .filter(item => {
 
-        resultado =
-            resultado.filter(
-                item =>
-                    extrairMes(
-                        item.dataISO
-                    ) === mes
-            );
-    }
+            // TIPO
+            if (
+                tipo &&
+                tipo !== "todos" &&
+                item.tipo !== tipo
+            ) {
+                return false;
+            }
 
+            // CATEGORIA
+            if (
+                categoria &&
+                categoria !== "todas" &&
+                item.categoria !== categoria
+            ) {
+                return false;
+            }
 
-    if (termo) {
+            // MÊS
+            if (
+                mes &&
+                mes !== "todos" &&
+                extrairMes(item.dataISO) !== mes
+            ) {
+                return false;
+            }
 
-        resultado =
-            resultado.filter(item => {
+            // PESQUISA
+            if (termo) {
 
                 const texto = [
-
                     item.descricao,
                     item.categoria,
                     item.pagamento,
                     item.observacao
-
                 ]
+                    .filter(Boolean)
                     .join(" ")
                     .toLowerCase();
 
-                return texto.includes(
-                    termo
-                );
-            });
-    }
+                if (!texto.includes(termo)) {
+                    return false;
+                }
+            }
 
-
-    return resultado.sort(
-        (a, b) =>
-            new Date(b.dataISO) -
-            new Date(a.dataISO)
-    );
+            return true;
+        })
+        .sort(
+            (a, b) =>
+                new Date(b.dataISO) -
+                new Date(a.dataISO)
+        );
 }
-
 
 /* =========================================================
    RESUMO FINANCEIRO
