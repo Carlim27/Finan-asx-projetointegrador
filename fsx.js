@@ -990,7 +990,6 @@ function salvarBudgetHandler() {
             $("budgetValor").value
         );
 
-
     if (!categoria) {
 
         mostrarNotificacao(
@@ -1000,7 +999,6 @@ function salvarBudgetHandler() {
 
         return;
     }
-
 
     if (!valor || valor <= 0) {
 
@@ -1012,14 +1010,11 @@ function salvarBudgetHandler() {
         return;
     }
 
-
-    budgets[categoria] =
-        valor;
+    budgets[categoria] = valor;
 
     salvarBudgets();
 
-    $("budgetValor").value =
-        "";
+    $("budgetValor").value = "";
 
     atualizarBudgets();
 
@@ -1029,7 +1024,6 @@ function salvarBudgetHandler() {
     );
 }
 
-
 function atualizarBudgets() {
 
     if (!has("budgetList")) {
@@ -1038,7 +1032,6 @@ function atualizarBudgets() {
 
     const categoriasOrcadas =
         Object.keys(budgets);
-
 
     if (!categoriasOrcadas.length) {
 
@@ -1051,64 +1044,100 @@ function atualizarBudgets() {
         return;
     }
 
+    const agora = new Date();
+
+    const mesAtual =
+        `${agora.getFullYear()}-${String(
+            agora.getMonth() + 1
+        ).padStart(2, "0")}`;
 
     $("budgetList").innerHTML =
         categoriasOrcadas
             .map(categoria => {
 
                 const limite =
-                    Number(
-                        budgets[categoria]
-                    );
+                    Number(budgets[categoria]) || 0;
 
                 const gasto =
                     data
-                        .filter(
-                            item =>
-                                item.tipo ===
-                                    "saida" &&
-                                item.categoria ===
-                                    categoria
+                        .filter(item =>
+                            item.tipo === "saida" &&
+                            item.categoria === categoria &&
+                            item.dataISO &&
+                            item.dataISO.startsWith(mesAtual)
                         )
                         .reduce(
                             (total, item) =>
                                 total +
-                                Number(
-                                    item.valor || 0
-                                ),
+                                Number(item.valor || 0),
                             0
                         );
 
-                const percentual =
+                const percentualReal =
                     limite > 0
-                        ? Math.min(
-                            100,
-                            (gasto / limite) *
-                            100
-                        )
+                        ? (gasto / limite) * 100
                         : 0;
+
+                const percentualBarra =
+                    Math.min(
+                        100,
+                        percentualReal
+                    );
 
                 const restante =
                     limite - gasto;
 
+                let status =
+                    "normal";
+
+                let mensagem =
+                    `Restante: ${format(restante)}`;
+
+                if (percentualReal >= 100) {
+
+                    status =
+                        "estourado";
+
+                    mensagem =
+                        `Acima em ${format(
+                            Math.abs(restante)
+                        )}`;
+
+                } else if (
+                    percentualReal >= 80
+                ) {
+
+                    status =
+                        "atencao";
+
+                    mensagem =
+                        `Restante: ${format(
+                            restante
+                        )}`;
+                }
+
+                const icone =
+                    iconesCategorias[categoria] ||
+                    "📦";
+
                 return `
-                    <div class="budget-item">
+                    <div class="budget-item ${status}">
 
                         <div class="budget-head">
 
                             <strong>
-                                ${iconesCategorias[categoria] || "📦"}
+                                ${icone}
                                 ${escaparHtml(categoria)}
                             </strong>
 
                             <span>
-                                ${percentual.toFixed(1)}%
+                                ${percentualReal.toFixed(1)}%
                             </span>
 
                         </div>
 
                         <progress
-                            value="${percentual}"
+                            value="${percentualBarra}"
                             max="100">
                         </progress>
 
@@ -1120,14 +1149,33 @@ function atualizarBudgets() {
                             </span>
 
                             <span>
-                                ${
-                                    restante >= 0
-                                        ? `Restante: ${format(restante)}`
-                                        : `Acima em ${format(Math.abs(restante))}`
-                                }
+                                Limite:
+                                ${format(limite)}
+                            </span>
+
+                            <span>
+                                ${mensagem}
                             </span>
 
                         </div>
+
+<div class="budget-actions">
+
+    <button
+        type="button"
+        class="btn-edit"
+        onclick="editarBudget('${categoria}')">
+        ✏️ Editar
+    </button>
+
+    <button
+        type="button"
+        class="btn-delete"
+        onclick="removerBudget('${categoria}')">
+        🗑️ Excluir
+    </button>
+
+</div>
 
                     </div>
                 `;
@@ -1135,6 +1183,121 @@ function atualizarBudgets() {
             .join("");
 }
 
+function editarBudget(categoria) {
+
+    if (
+        !has("budgetCategoria") ||
+        !has("budgetValor")
+    ) {
+        return;
+    }
+
+    const valor =
+        Number(budgets[categoria]) || 0;
+
+    $("budgetCategoria").value =
+        categoria;
+
+    $("budgetValor").value =
+        valor;
+
+    $("budgetValor").focus();
+
+    mostrarNotificacao(
+        `Editando orçamento de ${categoria}.`,
+        "sucesso"
+    );
+}
+
+
+function removerBudget(categoria) {
+
+    if (budgets[categoria] === undefined) {
+        return;
+    }
+
+    const modal = document.createElement("div");
+
+    modal.className = "fsx-modal-overlay";
+
+    modal.innerHTML = `
+        <div class="fsx-modal">
+
+            <div class="fsx-modal-icon">
+                🗑️
+            </div>
+
+            <div class="fsx-modal-content">
+
+                <h3>Excluir orçamento?</h3>
+
+                <p>
+                    Tem certeza que deseja excluir o orçamento
+                    de <strong>${escaparHtml(categoria)}</strong>?
+                </p>
+
+                <span>
+                    Essa ação não poderá ser desfeita.
+                </span>
+
+            </div>
+
+            <div class="fsx-modal-actions">
+
+                <button
+                    type="button"
+                    class="fsx-btn-cancel"
+                    onclick="fecharModalBudget()">
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="fsx-btn-delete"
+                    onclick="confirmarExclusaoBudget('${escaparHtml(categoria)}')">
+                    Excluir
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
+
+
+function fecharModalBudget() {
+
+    const modal =
+        document.querySelector(".fsx-modal-overlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+function confirmarExclusaoBudget(categoria) {
+
+    if (budgets[categoria] === undefined) {
+        fecharModalBudget();
+        return;
+    }
+
+    delete budgets[categoria];
+
+    salvarBudgets();
+
+    atualizarBudgets();
+
+    fecharModalBudget();
+
+    mostrarNotificacao(
+        "Orçamento excluído com sucesso.",
+        "sucesso"
+    );
+}
 
 /* =========================================================
    LANÇAMENTOS
@@ -3127,6 +3290,9 @@ function init() {
 window.editarItem =
     editarItem;
 
+window.irParaEdicao =
+    irParaEdicao;
+
 window.removerItem =
     removerItem;
 
@@ -3136,6 +3302,11 @@ window.salvarLancamento =
 window.limparFormulario =
     limparFormulario;
 
+    window.editarBudget = 
+    editarBudget;
+
+    window.removerBudget = 
+    removerBudget;
 
 /* =========================================================
    INICIAR
