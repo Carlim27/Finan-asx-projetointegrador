@@ -2478,3 +2478,250 @@ progress::-moz-progress-bar {
         font-size: 1.3rem;
     }
 }
+/* =========================================
+   ORÇAMENTOS
+========================================= */
+
+.budget-item {
+    position: relative;
+    transition: 0.25s ease;
+}
+
+.budget-item.atencao {
+    border-color: rgba(245, 158, 11, 0.55);
+}
+
+.budget-item.estourado {
+    border-color: rgba(239, 68, 68, 0.65);
+}
+
+.budget-item.atencao progress {
+    accent-color: #f59e0b;
+}
+
+.budget-item.estourado progress {
+    accent-color: #ef4444;
+}
+
+.budget-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.budget-actions button {
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-edit {
+    background: rgba(56, 189, 248, 0.12);
+    color: #38bdf8;
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.budget-actions button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.15);
+}
+/* =========================================================
+   MODAL DE CONFIRMAÇÃO
+========================================================= */
+
+.fsx-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(2, 8, 23, 0.72);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    z-index: 9999;
+
+    animation: fsxModalFade .2s ease;
+}
+
+.fsx-modal {
+
+    width: min(420px, calc(100% - 32px));
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17, 25, 40, .98),
+            rgba(8, 19, 36, .98)
+        );
+
+    border: 1px solid rgba(148, 163, 184, .16);
+
+    border-radius: 18px;
+
+    padding: 26px;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, .45),
+        0 0 0 1px rgba(255,255,255,.02);
+
+    animation: fsxModalOpen .22s ease;
+}
+
+.fsx-modal-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: rgba(239, 68, 68, .12);
+
+    color: #ef4444;
+
+    font-size: 22px;
+
+    margin-bottom: 18px;
+}
+
+.fsx-modal-content h3 {
+
+    margin: 0 0 8px;
+
+    color: #f8fafc;
+
+    font-size: 20px;
+}
+
+.fsx-modal-content p {
+
+    margin: 0;
+
+    color: #cbd5e1;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+}
+
+.fsx-modal-content strong {
+
+    color: #f8fafc;
+}
+
+.fsx-modal-content span {
+
+    display: block;
+
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.fsx-modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 24px;
+}
+
+.fsx-modal-actions button {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 10px 16px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.fsx-btn-cancel {
+
+    background: rgba(148, 163, 184, .10);
+
+    color: #cbd5e1;
+}
+
+.fsx-btn-cancel:hover {
+
+    background: rgba(148, 163, 184, .18);
+
+    transform: translateY(-1px);
+}
+
+.fsx-btn-delete {
+
+    background: rgba(239, 68, 68, .14);
+
+    color: #ef4444;
+
+    border: 1px solid rgba(239, 68, 68, .20) !important;
+}
+
+.fsx-btn-delete:hover {
+
+    background: #ef4444;
+
+    color: white;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 20px rgba(239, 68, 68, .25);
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+========================================================= */
+
+@keyframes fsxModalFade {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fsxModalOpen {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
