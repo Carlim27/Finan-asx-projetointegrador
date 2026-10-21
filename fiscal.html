@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" href="css/fsx.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="fsx.js" defer></script>
 </head>
 
@@ -19,7 +18,7 @@
 
     <div class="app-shell">
 
-        <!-- SIDEBAR -->
+        <!-- MENU LATERAL -->
         <aside class="sidebar">
 
             <div class="mobile-menu-header">
@@ -47,27 +46,39 @@
 
             <nav class="nav" id="fsxMobileNav">
 
-                <a href="index.html" class="nav-btn" data-page="index.html">
+                <a href="index.html"
+                   class="nav-btn"
+                   data-page="index.html">
                     Dashboard
                 </a>
 
-                <a href="lancamentos.html" class="nav-btn" data-page="lancamentos.html">
+                <a href="lancamentos.html"
+                   class="nav-btn"
+                   data-page="lancamentos.html">
                     Lançamentos
                 </a>
 
-                <a href="metas.html" class="nav-btn" data-page="metas.html">
+                <a href="metas.html"
+                   class="nav-btn"
+                   data-page="metas.html">
                     Metas
                 </a>
 
-                <a href="orcamento.html" class="nav-btn" data-page="orcamento.html">
+                <a href="orcamento.html"
+                   class="nav-btn"
+                   data-page="orcamento.html">
                     Orçamento
                 </a>
 
-                <a href="graficos.html" class="nav-btn" data-page="graficos.html">
+                <a href="graficos.html"
+                   class="nav-btn"
+                   data-page="graficos.html">
                     Gráficos
                 </a>
 
-                <a href="fiscal.html" class="nav-btn" data-page="fiscal.html">
+                <a href="fiscal.html"
+                   class="nav-btn"
+                   data-page="fiscal.html">
                     Fiscal
                 </a>
 
@@ -75,8 +86,7 @@
 
         </aside>
 
-
-        <!-- MAIN -->
+        <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">
 
             <div class="topbar">
@@ -89,137 +99,58 @@
 
                 <div class="form-group">
 
-                    <label for="anoFiscal">
-                        Ano
-                    </label>
+                    <label for="anoFiscal">Ano</label>
 
                     <select id="anoFiscal">
-
-                        <option value="2026">
-                            2026
-                        </option>
-
-                        <option value="2025">
-                            2025
-                        </option>
-
-                        <option value="2024">
-                            2024
-                        </option>
-
-                        <option value="2023">
-                            2023
-                        </option>
-
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
                     </select>
 
                 </div>
 
             </div>
 
-
             <div id="alert" class="alert"></div>
 
-
+            <!-- INDICADORES FINANCEIROS -->
             <section class="cards">
 
                 <article class="card">
-
-                    <span class="card-label">
-                        Receitas
-                    </span>
-
+                    <span class="card-label">Receitas</span>
                     <strong id="fiscalReceitas">
                         R$ 0,00
                     </strong>
-
                 </article>
 
-
                 <article class="card">
-
-                    <span class="card-label">
-                        Despesas
-                    </span>
-
+                    <span class="card-label">Despesas</span>
                     <strong id="fiscalDespesas">
                         R$ 0,00
                     </strong>
-
                 </article>
 
+                <article class="card">
+                    <span class="card-label">Saldo anual</span>
+                    <strong id="fiscalSaldo">
+                        R$ 0,00
+                    </strong>
+                </article>
 
                 <article class="card">
-
-                    <span class="card-label">
-                        Investimentos
-                    </span>
-
+                    <span class="card-label">Investimentos</span>
                     <strong id="fiscalInvestimentos">
                         R$ 0,00
                     </strong>
-
                 </article>
 
-
                 <article class="card">
-
-                    <span class="card-label">
-                        Movimentações
-                    </span>
-
+                    <span class="card-label">Movimentações</span>
                     <strong id="fiscalMovimentacoes">
                         0
                     </strong>
-
                 </article>
-
-            </section>
-
-
-            <section class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-                        <span class="eyebrow">RESUMO ANUAL</span>
-                        <h3>Movimentações</h3>
-                    </div>
-
-                </div>
-
-
-                <div class="fiscal-summary">
-
-                    <div>
-                        <span>Receitas</span>
-                        <strong id="fiscalResumoReceitas">
-                            R$ 0,00
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>Despesas</span>
-                        <strong id="fiscalResumoDespesas">
-                            R$ 0,00
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>Investimentos</span>
-                        <strong id="fiscalResumoInvestimentos">
-                            R$ 0,00
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>Movimentações</span>
-                        <strong id="fiscalResumoMovimentacoes">
-                            0
-                        </strong>
-                    </div>
-
-                </div>
 
             </section>
 

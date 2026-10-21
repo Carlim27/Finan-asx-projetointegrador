@@ -2072,218 +2072,359 @@ function destruirGrafico(
 
 function atualizarGraficos() {
 
-    if (
-        typeof Chart ===
-        "undefined"
-    ) {
-
-        console.warn(
-            "Chart.js não foi carregado."
-        );
-
+    if (typeof Chart === "undefined") {
+        console.warn("Chart.js não foi carregado.");
         return;
     }
 
+    const resumo = calcularResumo();
 
-    const resumo =
-        calcularResumo();
+    const moeda = valor =>
+        Number(valor || 0).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
 
+    const tooltipPadrao = {
+        backgroundColor: "#0f172a",
+        titleColor: "#f8fafc",
+        bodyColor: "#cbd5e1",
+        borderColor: "rgba(56,189,248,.3)",
+        borderWidth: 1,
+        padding: 12,
+        displayColors: true
+    };
 
-    /* -----------------------------------------
-       VISÃO GERAL
-    ----------------------------------------- */
+    /* VISÃO GERAL */
 
     if (has("overviewChart")) {
 
-        destruirGrafico(
-            overviewChart
-        );
+        destruirGrafico(overviewChart);
 
+        overviewChart = new Chart($("overviewChart"), {
+            type: "doughnut",
 
-        overviewChart =
-            new Chart(
-                $("overviewChart"),
-                {
-                    type: "doughnut",
+            data: {
+                labels: ["Entradas", "Saídas"],
 
-                    data: {
+                datasets: [{
+                    data: [
+                        resumo.entradas,
+                        resumo.saidas
+                    ],
 
-                        labels: [
-                            "Entradas",
-                            "Saídas"
-                        ],
+                    backgroundColor: [
+                        "#22c55e",
+                        "#ef4444"
+                    ],
 
-                        datasets: [
+                    hoverOffset: 8,
+                    borderWidth: 0,
+                    spacing: 4
+                }]
+            },
 
-                            {
-                                data: [
-                                    resumo.entradas,
-                                    resumo.saidas
-                                ],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "70%",
 
-                                backgroundColor: [
-                                    "#22c55e",
-                                    "#ef4444"
-                                ],
+                animation: {
+                    duration: 800
+                },
 
-                                borderWidth: 0
-                            }
-                        ]
+                plugins: {
+                    legend: {
+                        position: "bottom",
+
+                        labels: {
+                            color: "#dbeafe",
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: "circle"
+                        }
                     },
 
-                    options: {
+                    tooltip: {
+                        ...tooltipPadrao,
 
-                        responsive: true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        plugins: {
-
-                            legend: {
-
-                                position:
-                                    "bottom",
-
-                                labels: {
-
-                                    color:
-                                        "#dbeafe"
-                                }
-                            }
+                        callbacks: {
+                            label: context =>
+                                context.label + ": " +
+                                moeda(context.raw)
                         }
                     }
                 }
-            );
+            }
+        });
     }
 
-
-    /* -----------------------------------------
-       CATEGORIAS
-    ----------------------------------------- */
+    /* GASTOS POR CATEGORIA */
 
     if (has("categoryChart")) {
 
-        destruirGrafico(
-            categoryChart
-        );
+        destruirGrafico(categoryChart);
 
+        const gastos = categorias.map(categoria => {
 
-        const valores =
-            categorias.map(
-                categoria =>
+            const total = data
+                .filter(item =>
+                    item.tipo === "saida" &&
+                    item.categoria === categoria
+                )
+                .reduce((soma, item) =>
+                    soma + Number(item.valor || 0), 0
+                );
 
-                    data
-                        .filter(
-                            item =>
-                                item.tipo ===
-                                    "saida" &&
-                                item.categoria ===
-                                    categoria
-                        )
-                        .reduce(
-                            (total, item) =>
-                                total +
-                                Number(
-                                    item.valor || 0
-                                ),
-                            0
-                        )
-            );
+            return {
+                categoria,
+                total
+            };
+        }).filter(item => item.total > 0)
+          .sort((a, b) => b.total - a.total);
 
+        categoryChart = new Chart($("categoryChart"), {
+            type: "bar",
 
-        categoryChart =
-            new Chart(
-                $("categoryChart"),
-                {
-                    type: "bar",
+            data: {
+                labels: gastos.map(item => item.categoria),
 
-                    data: {
+                datasets: [{
+                    label: "Gastos",
 
-                        labels:
-                            categorias,
+                    data: gastos.map(item => item.total),
 
-                        datasets: [
+                    backgroundColor: gastos.map(
+                        item => coresCategorias[
+                            categorias.indexOf(item.categoria)
+                        ] || "#38bdf8"
+                    ),
 
-                            {
-                                label:
-                                    "Gastos",
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    borderWidth: 0,
+                    maxBarThickness: 42
+                }]
+            },
 
-                                data:
-                                    valores,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
 
-                                backgroundColor:
-                                    coresCategorias,
+                animation: {
+                    duration: 700
+                },
 
-                                borderRadius:
-                                    8,
-
-                                borderWidth:
-                                    0
-                            }
-                        ]
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        scales: {
-
-                            x: {
-
-                                ticks: {
-                                    color:
-                                        "#9fb3d1"
-                                },
-
-                                grid: {
-                                    display:
-                                        false
-                                }
-                            },
-
-                            y: {
-
-                                beginAtZero:
-                                    true,
-
-                                ticks: {
-
-                                    color:
-                                        "#9fb3d1",
-
-                                    callback:
-                                        valor =>
-                                            format(
-                                                valor
-                                            )
-                                },
-
-                                grid: {
-
-                                    color:
-                                        "rgba(148,163,184,.10)"
-                                }
-                            }
+                scales: {
+                    x: {
+                        ticks: {
+                            color: "#9fb3d1"
                         },
 
-                        plugins: {
+                        grid: {
+                            display: false
+                        },
 
-                            legend: {
-                                display:
-                                    false
-                            }
+                        border: {
+                            display: false
+                        }
+                    },
+
+                   y: {
+    beginAtZero: true,
+
+    grace: "5%",
+
+    ticks: {
+        color: "#9fb3d1",
+        maxTicksLimit: 6,
+
+        callback: valor => moeda(valor)
+    },
+
+    grid: {
+        color: "rgba(148,163,184,.10)"
+    },
+
+    border: {
+        display: false
+    }
+},
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        ...tooltipPadrao,
+
+                        callbacks: {
+                            label: context =>
+                                "Gastos: " + moeda(context.raw)
                         }
                     }
                 }
-            );
+            }
+        });
     }
 
+    /* EVOLUÇÃO MENSAL */
 
+    if (has("monthlyChart")) {
+
+        destruirGrafico(monthlyChart);
+
+        const meses = {};
+
+        data.forEach(item => {
+
+            if (!item.dataISO) return;
+
+            const chave = item.dataISO.slice(0, 7);
+
+            if (!meses[chave]) {
+                meses[chave] = {
+                    entradas: 0,
+                    saidas: 0
+                };
+            }
+
+            const valor = Number(item.valor || 0);
+
+            if (item.tipo === "entrada") {
+                meses[chave].entradas += valor;
+            } else if (item.tipo === "saida") {
+                meses[chave].saidas += valor;
+            }
+        });
+
+        const chaves = Object.keys(meses).sort();
+
+        const labels = chaves.map(chave => {
+            const [ano, mes] = chave.split("-");
+
+            return new Date(
+                Number(ano),
+                Number(mes) - 1,
+                1
+            ).toLocaleDateString("pt-BR", {
+                month: "short",
+                year: "numeric"
+            });
+        });
+
+        monthlyChart = new Chart($("monthlyChart"), {
+            type: "line",
+
+            data: {
+                labels,
+
+                datasets: [
+                    {
+                        label: "Entradas",
+
+                        data: chaves.map(mes =>
+                            meses[mes].entradas
+                        ),
+
+                        borderColor: "#22c55e",
+                        backgroundColor: "rgba(34,197,94,.10)",
+                        pointBackgroundColor: "#22c55e",
+                        pointRadius: 4,
+                        pointHoverRadius: 7,
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true
+                    },
+
+                    {
+                        label: "Saídas",
+
+                        data: chaves.map(mes =>
+                            meses[mes].saidas
+                        ),
+
+                        borderColor: "#ef4444",
+                        backgroundColor: "rgba(239,68,68,.10)",
+                        pointBackgroundColor: "#ef4444",
+                        pointRadius: 4,
+                        pointHoverRadius: 7,
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    mode: "index",
+                    intersect: false
+                },
+
+                scales: {
+                    x: {
+                        ticks: {
+                            color: "#9fb3d1"
+                        },
+
+                        grid: {
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            color: "#9fb3d1",
+                            callback: valor => moeda(valor)
+                        },
+
+                        grid: {
+                            color: "rgba(148,163,184,.10)"
+                        },
+
+                        border: {
+                            display: false
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        position: "bottom",
+
+                        labels: {
+                            color: "#dbeafe",
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: "circle"
+                        }
+                    },
+
+                    tooltip: {
+                        ...tooltipPadrao,
+
+                        callbacks: {
+                            label: context =>
+                                context.dataset.label + ": " +
+                                moeda(context.raw)
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
     /* -----------------------------------------
        EVOLUÇÃO MENSAL
     ----------------------------------------- */
@@ -2587,6 +2728,15 @@ function atualizarFiscal() {
                     ),
                 0
             );
+
+
+            const saldo =
+        receitas - despesas;
+
+        atualizarElemento(
+            "fiscalSaldo",
+            format(saldo)
+        );
 
 
     atualizarElemento(
