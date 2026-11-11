@@ -622,15 +622,14 @@ function calcularResumo() {
 }
 
 
+
 function atualizarResumo() {
 
     if (!has("saldo")) {
         return;
     }
 
-    const resumo =
-        calcularResumo();
-
+    const resumo = calcularResumo();
 
     $("saldo").textContent =
         format(resumo.saldo);
@@ -641,21 +640,13 @@ function atualizarResumo() {
     $("saidas").textContent =
         format(resumo.saidas);
 
-
     const taxa =
         resumo.entradas > 0
-            ? (
-                resumo.saldo /
-                resumo.entradas
-            ) * 100
+            ? (resumo.saldo / resumo.entradas) * 100
             : 0;
 
     $("taxaPoupanca").textContent =
-        `${Math.max(
-            0,
-            taxa
-        ).toFixed(1)}%`;
-
+        `${Math.max(0, taxa).toFixed(1)}%`;
 
     $("saldoStatus").textContent =
         resumo.saldo > 0
@@ -664,69 +655,41 @@ function atualizarResumo() {
                 ? "Seu saldo exige atenção."
                 : "Sem sobra financeira no momento.";
 
-
+    // Mês atual e mês anterior
     const agora = new Date();
 
-const mesAtual =
-    `${agora.getFullYear()}-${String(
-        agora.getMonth() + 1
-    ).padStart(2, "0")}`;
+    const mesAtual =
+        `${agora.getFullYear()}-${String(
+            agora.getMonth() + 1
+        ).padStart(2, "0")}`;
 
-const dataMesAnterior = new Date(
-    agora.getFullYear(),
-    agora.getMonth() - 1,
-    1
-);
-
-const mesAnterior =
-    `${dataMesAnterior.getFullYear()}-${String(
-        dataMesAnterior.getMonth() + 1
-    ).padStart(2, "0")}`;
-
-    const movimentacoesMes =
-        data.filter(item =>
-            item.dataISO &&
-            item.dataISO.startsWith(
-                mesAtual
-            )
-        );
-
-    const entradasMes =
-        movimentacoesMes
-            .filter(
-                item =>
-                    item.tipo ===
-                    "entrada"
-            )
-            .reduce(
-                (total, item) =>
-                    total +
-                    Number(item.valor || 0),
-                0
-            );
-
-    const saidasMes =
-        movimentacoesMes
-            .filter(
-                item =>
-                    item.tipo ===
-                    "saida"
-            )
-            .reduce(
-                (total, item) =>
-                    total +
-                    Number(item.valor || 0),
-                0
-            );
-
-            const movimentacoesMesAnterior =
-    data.filter(item =>
-        item.dataISO &&
-        item.dataISO.startsWith(mesAnterior)
+    const dataMesAnterior = new Date(
+        agora.getFullYear(),
+        agora.getMonth() - 1,
+        1
     );
 
-const saidasMesAnterior =
-    movimentacoesMesAnterior
+    const mesAnterior =
+        `${dataMesAnterior.getFullYear()}-${String(
+            dataMesAnterior.getMonth() + 1
+        ).padStart(2, "0")}`;
+
+    // Movimentações do mês atual
+    const movimentacoesMes = data.filter(
+        item =>
+            item.dataISO &&
+            item.dataISO.startsWith(mesAtual)
+    );
+
+    const entradasMes = movimentacoesMes
+        .filter(item => item.tipo === "entrada")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    const saidasMes = movimentacoesMes
         .filter(item => item.tipo === "saida")
         .reduce(
             (total, item) =>
@@ -734,114 +697,241 @@ const saidasMesAnterior =
             0
         );
 
-const diferencaDespesas =
-    saidasMes - saidasMesAnterior;
+    // Movimentações do mês anterior
+    const movimentacoesMesAnterior = data.filter(
+        item =>
+            item.dataISO &&
+            item.dataISO.startsWith(mesAnterior)
+    );
 
-let mensagemComparacao;
+    const saidasMesAnterior = movimentacoesMesAnterior
+        .filter(item => item.tipo === "saida")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
 
-if (
-    movimentacoesMes.length === 0 &&
-    movimentacoesMesAnterior.length === 0
-) {
-    mensagemComparacao =
-        "Sem movimentações nos dois meses.";
+    const diferencaDespesas =
+        saidasMes - saidasMesAnterior;
 
-} else if (
-    saidasMes === 0 &&
-    saidasMesAnterior === 0
-) {
-    mensagemComparacao =
-        "Sem despesas para comparar.";
+    // Comparação mensal
+    let mensagemComparacao;
 
-} else if (saidasMesAnterior === 0) {
-    mensagemComparacao =
-        "Sem despesas no mês anterior para comparar.";
-
-} else {
-    const variacao =
-        (diferencaDespesas / saidasMesAnterior) * 100;
-
-    if (diferencaDespesas > 0) {
+    if (
+        movimentacoesMes.length === 0 &&
+        movimentacoesMesAnterior.length === 0
+    ) {
         mensagemComparacao =
-            `Despesas aumentaram ${variacao.toFixed(1)}% em relação ao mês anterior.`;
+            "Sem movimentações nos dois meses.";
 
-    } else if (diferencaDespesas < 0) {
+    } else if (
+        saidasMes === 0 &&
+        saidasMesAnterior === 0
+    ) {
         mensagemComparacao =
-            `Despesas diminuíram ${Math.abs(variacao).toFixed(1)}% em relação ao mês anterior.`;
+            "Sem despesas para comparar.";
+
+    } else if (saidasMesAnterior === 0) {
+        mensagemComparacao =
+            "Sem despesas no mês anterior para comparar.";
 
     } else {
-        mensagemComparacao =
-            "Despesas iguais às do mês anterior.";
+        const variacao =
+            (diferencaDespesas / saidasMesAnterior) * 100;
+
+        if (diferencaDespesas > 0) {
+            mensagemComparacao =
+                `Despesas aumentaram ${variacao.toFixed(1)}% em relação ao mês anterior.`;
+
+        } else if (diferencaDespesas < 0) {
+            mensagemComparacao =
+                `Despesas diminuíram ${Math.abs(variacao).toFixed(1)}% em relação ao mês anterior.`;
+
+        } else {
+            mensagemComparacao =
+                "Despesas iguais às do mês anterior.";
+        }
     }
-}
 
-if (has("comparacaoDespesas")) {
-    $("comparacaoDespesas").textContent =
-        format(diferencaDespesas);
-}
+    if (has("comparacaoDespesas")) {
+        $("comparacaoDespesas").textContent =
+            format(diferencaDespesas);
+    }
 
-if (has("comparacaoDespesasStatus")) {
-    $("comparacaoDespesasStatus").textContent =
-        mensagemComparacao;
-}
+    if (has("comparacaoDespesasStatus")) {
+        $("comparacaoDespesasStatus").textContent =
+            mensagemComparacao;
+    }
 
-
+    // Economia mensal
     if (has("economiaMes")) {
-
         $("economiaMes").textContent =
-            format(
-                entradasMes -
-                saidasMes
-            );
+            format(entradasMes - saidasMes);
     }
-
 
     if (has("economiaStatus")) {
-
         $("economiaStatus").textContent =
             movimentacoesMes.length
                 ? "Movimentações registradas neste mês."
                 : "Sem dados neste mês.";
     }
 
-
-    const maiorGasto =
-        data
-            .filter(
-                item =>
-                    item.tipo ===
-                    "saida"
-            )
-            .sort(
-                (a, b) =>
-                    b.valor - a.valor
-            )[0];
-
+    // Maior gasto
+    const maiorGasto = data
+        .filter(item => item.tipo === "saida")
+        .sort(
+            (a, b) =>
+                Number(b.valor || 0) -
+                Number(a.valor || 0)
+        )[0];
 
     if (has("maiorGasto")) {
-
         $("maiorGasto").textContent =
             maiorGasto
-                ? format(
-                    maiorGasto.valor
-                )
+                ? format(maiorGasto.valor)
                 : format(0);
     }
 
-
     if (has("maiorGastoDesc")) {
-
         $("maiorGastoDesc").textContent =
             maiorGasto
                 ? maiorGasto.descricao
                 : "Nenhum gasto registrado";
     }
 
+    // Atualiza a meta e os insights
+    atualizarMeta(resumo.saldo);
 
-    atualizarMeta(
-        resumo.saldo
-    );
+    atualizarInsightsFinanceiros();
 }
+
+
+// =========================================================
+// INTELIGÊNCIA FINANCEIRA
+// =========================================================
+
+function atualizarInsightsFinanceiros() {
+
+    if (!has("insightFinanceiro")) {
+        return;
+    }
+
+    const agora = new Date();
+
+    const mesAtual =
+        `${agora.getFullYear()}-${String(
+            agora.getMonth() + 1
+        ).padStart(2, "0")}`;
+
+    const dataAnterior = new Date(
+        agora.getFullYear(),
+        agora.getMonth() - 1,
+        1
+    );
+
+    const mesAnterior =
+        `${dataAnterior.getFullYear()}-${String(
+            dataAnterior.getMonth() + 1
+        ).padStart(2, "0")}`;
+
+    const registrosMes = data.filter(
+        item =>
+            item.dataISO &&
+            item.dataISO.startsWith(mesAtual)
+    );
+
+    const registrosAnteriores = data.filter(
+        item =>
+            item.dataISO &&
+            item.dataISO.startsWith(mesAnterior)
+    );
+
+    const entradasMes = registrosMes
+        .filter(item => item.tipo === "entrada")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    const saidasMes = registrosMes
+        .filter(item => item.tipo === "saida")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    const saidasAnteriores = registrosAnteriores
+        .filter(item => item.tipo === "saida")
+        .reduce(
+            (total, item) =>
+                total + Number(item.valor || 0),
+            0
+        );
+
+    const saldoMes = entradasMes - saidasMes;
+
+    let titulo = "Tudo pronto para começar";
+
+    let mensagem =
+        "Registre suas movimentações para receber análises financeiras.";
+
+    if (registrosMes.length > 0) {
+
+        if (saldoMes < 0) {
+            titulo = "Atenção ao seu saldo";
+
+            mensagem =
+                "Neste mês, suas despesas superam suas receitas. Revise os gastos e o orçamento.";
+
+        } else if (saldoMes === 0) {
+            titulo = "Saldo equilibrado";
+
+            mensagem =
+                "Suas receitas e despesas estão iguais neste mês.";
+
+        } else {
+            titulo = "Saldo positivo";
+
+            mensagem =
+                `Você tem ${format(saldoMes)} de saldo neste mês. Continue acompanhando seus gastos.`;
+        }
+
+        if (
+            saidasAnteriores > 0 &&
+            saidasMes > saidasAnteriores
+        ) {
+            mensagem +=
+                " Suas despesas aumentaram em relação ao mês anterior.";
+
+        } else if (
+            saidasAnteriores > 0 &&
+            saidasMes < saidasAnteriores
+        ) {
+            mensagem +=
+                " Suas despesas diminuíram em relação ao mês anterior.";
+        }
+
+    } else if (registrosAnteriores.length > 0) {
+
+        titulo = "Sem movimentações neste mês";
+
+        mensagem =
+            "Ainda não há lançamentos neste mês. Registre suas movimentações para acompanhar sua evolução.";
+    }
+
+    if (has("insightFinanceiroTitulo")) {
+        $("insightFinanceiroTitulo").textContent =
+            titulo;
+    }
+
+    $("insightFinanceiro").textContent =
+        mensagem;
+}
+
+    atualizarInsightsFinanceiros();
 
     function atualizarInsightsFinanceiros() {
 
@@ -956,9 +1046,7 @@ if (has("comparacaoDespesasStatus")) {
     $("insightFinanceiro").textContent =
         mensagem;
 }
-
-    atualizarInsigthsFinanceiro();
-
+    atualizarMeta();
 
 /* =========================================================
    META
@@ -1106,6 +1194,7 @@ function atualizarElemento(
 
         $(id).textContent =
             valor;
+
     }
 }
 
